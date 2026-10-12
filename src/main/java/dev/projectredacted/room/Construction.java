@@ -106,7 +106,6 @@ public final class Construction {
         }
         if (!fastLeft && !site.forcedChunks.isEmpty()) {
             SiteGen.releaseChunks(level, site);
-            site.log("Level 0 facility construction complete.");
             String msg = "Level 0 facility construction complete.";
             if (!Cassie.announce(site, msg)) Cassie.broadcast(site, Component.literal(msg).withStyle(ChatFormatting.GREEN), false);
         }
