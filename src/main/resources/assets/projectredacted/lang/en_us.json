@@ -55,5 +55,8 @@
   "lore.projectredacted.6.title": "Engineering Note",
   "lore.projectredacted.6.body": "C.A.S.S.I.E. runs on her own circuit. If the Mainframe goes, she keeps talking. Whoever rebuilds: install her first.",
   "lore.projectredacted.7.title": "Wondertainment Flyer",
-  "lore.projectredacted.7.body": "Has the end of the world got you down? Dr. Wondertainment's Little Misters are still only 4 low payments! Find our friendly Sales Representative today!"
+  "lore.projectredacted.7.body": "Has the end of the world got you down? Dr. Wondertainment's Little Misters are still only 4 low payments! Find our friendly Sales Representative today!",
+  "key.category.projectredacted.controls": "Project [REDACTED]",
+  "key.projectredacted.rotate": "Rotate room preview",
+  "key.projectredacted.reroll": "Reroll room layout"
 }

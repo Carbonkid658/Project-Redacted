@@ -1,6 +1,8 @@
 package dev.projectredacted.item;
 
-import dev.projectredacted.gui.DesignatorGui;
+import dev.projectredacted.gui.Gui;
+import dev.projectredacted.gui.screen.RoomPickerScreen;
+import dev.projectredacted.gui.screen.RoomPreviewScreen;
 import dev.projectredacted.room.DesignSession;
 import dev.projectredacted.site.Site;
 import dev.projectredacted.site.SiteManager;
@@ -62,8 +64,8 @@ public class DesignatorItem extends Item {
             Msg.send(player, "Mark two corners first by using the device on blocks.", ChatFormatting.YELLOW);
             return InteractionResult.SUCCESS;
         }
-        if (session.typeId != null) DesignatorGui.openPreview((ServerPlayer) player, site, session);
-        else DesignatorGui.openCategories((ServerPlayer) player, site, session);
+        if (session.typeId != null) Gui.open((ServerPlayer) player, new RoomPreviewScreen(site, session));
+        else Gui.open((ServerPlayer) player, new RoomPickerScreen(site, session));
         return InteractionResult.SUCCESS;
     }
 }

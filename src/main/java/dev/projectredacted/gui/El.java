@@ -125,7 +125,8 @@ public class El {
     /** Demand against supply: green with headroom, amber when nearly full, red when over. */
     public static El usage(String label, double used, double supply) {
         double r = supply <= 0 ? (used > 0 ? 2 : 0) : used / supply;
-        return bar(label, used, Math.max(supply, used), r > 1 ? "red" : r >= 0.85 ? "amber" : "green").set("text", fmt(used) + " / " + fmt(supply));
+        return bar(label, used, Math.max(supply, used), r > 1 ? "red" : r >= 0.85 ? "amber" : "green").set("text", fmt(used) + " / " + fmt(supply))
+                .set("supply", supply);
     }
 
     /** A 0-100 need where high is good (morale, food, rest, integrity). */
@@ -417,6 +418,11 @@ public class El {
         Row(String id, String title) {
             o.addProperty("id", id);
             o.addProperty("title", title);
+        }
+
+        public Row title(String title) {
+            o.addProperty("title", title);
+            return this;
         }
 
         public Row icon(ItemLike item) {

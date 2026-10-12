@@ -1,6 +1,8 @@
 package dev.projectredacted.block;
 
-import dev.projectredacted.registry.ModItems;
+import dev.projectredacted.gui.Gui;
+import dev.projectredacted.gui.screen.BlockPanels;
+import net.minecraft.server.level.ServerPlayer;
 import dev.projectredacted.site.Site;
 import dev.projectredacted.site.SiteManager;
 import dev.projectredacted.site.Upgrade;
@@ -49,32 +51,8 @@ public class CassieBlock extends FacingBlock {
     }
 
     @Override
-    protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        if (!stack.is(ModItems.REPAIR_KIT)) return InteractionResult.TRY_WITH_EMPTY_HAND;
-        if (level.isClientSide()) return InteractionResult.SUCCESS;
-        Site site = SiteManager.at(level, pos);
-        if (site != null && pos.equals(site.cassie) && (site.cassieDisabled || site.cassieHack > 0)) {
-            site.cassieDisabled = false;
-            site.cassieHack = 0;
-            if (!player.isCreative()) stack.shrink(1);
-            dev.projectredacted.site.Cassie.announce(site, "Systems restored. Security protocols re-engaged.");
-        } else {
-            Msg.send(player, "C.A.S.S.I.E. doesn't need repairs.", ChatFormatting.GRAY);
-        }
-        return InteractionResult.SUCCESS;
-    }
-
-    @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
-        if (level.isClientSide()) return InteractionResult.SUCCESS;
-        Site site = SiteManager.at(level, pos);
-        if (site == null || !pos.equals(site.cassie)) {
-            Msg.send(player, "C.A.S.S.I.E. is not linked to a site.", ChatFormatting.GRAY);
-        } else if (site.cassieDisabled) {
-            Msg.send(player, "C.A.S.S.I.E. is DISABLED. Use a Repair Kit.", ChatFormatting.RED);
-        } else {
-            Msg.send(player, "C.A.S.S.I.E. operational. Intrusion level: " + site.cassieHackStage() + "/4.", ChatFormatting.AQUA);
-        }
+        if (!level.isClientSide()) Gui.open((ServerPlayer) player, new BlockPanels.CassieConsole(pos));
         return InteractionResult.SUCCESS;
     }
 }

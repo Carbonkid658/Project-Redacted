@@ -70,7 +70,11 @@ public class DesignSession {
         return cachedPlan;
     }
 
+    private static int hudTick;
+
+    /** Runs every 10 ticks: ghost particles, and once a second the HUD strip in the action bar. */
     public static void tickPreviews(MinecraftServer server) {
+        boolean hud = ++hudTick % 2 == 0;
         for (Map.Entry<UUID, DesignSession> e : SESSIONS.entrySet()) {
             DesignSession s = e.getValue();
             if (!s.previewing) continue;
@@ -78,6 +82,12 @@ public class DesignSession {
             if (player == null || !player.getMainHandItem().is(ModItems.ROOM_DESIGNATOR)) continue;
             RoomBuilder.Plan plan = s.plan();
             if (plan == null) continue;
+            if (hud) {
+                RoomType type = RoomTypes.get(s.typeId);
+                player.sendOverlayMessage(net.minecraft.network.chat.Component.literal((type == null ? "" : type.name) + " · Door: "
+                        + new String[]{"north", "east", "south", "west"}[s.rotation & 3] + " · R Rotate · G Reroll · Use device for menu")
+                        .withStyle(net.minecraft.ChatFormatting.AQUA));
+            }
             ServerLevel level = (ServerLevel) player.level();
             List<RoomBuilder.Placement> shown = new ArrayList<>();
             for (RoomBuilder.Placement p : plan.placements) {

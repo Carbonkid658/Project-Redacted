@@ -14,6 +14,8 @@ import java.util.*;
 /** One player's Foundation site. Saved as JSON in the world folder. */
 public class Site {
     public String id;
+    /** Shown in screen headers and typed to arm the Alpha Warhead. The Director can rename it. */
+    public String name;
     public UUID director;
     public String directorName;
     public BlockPos mainframe;
@@ -54,6 +56,11 @@ public class Site {
     public transient boolean mainframePresent = true;
     public transient boolean cassiePresent = true;
     public transient int powerSupply, powerDemand, connectCapacity, waterSupply, waterDemand, beds, scpCount, scpWeight;
+
+    public String name() {
+        if (name == null || name.isBlank()) name = "Site-" + (10 + Math.floorMod(id == null ? 0 : id.hashCode(), 90));
+        return name;
+    }
 
     // ---- Membership and permissions ----
 
@@ -204,7 +211,8 @@ public class Site {
     }
 
     public void log(String line) {
-        logLines.add(line);
+        net.minecraft.server.level.ServerLevel level = SiteManager.overworld();
+        logLines.add(level == null ? line : "[Day " + (dev.projectredacted.util.Time.day(level) + 1) + "] " + line);
         while (logLines.size() > 60) logLines.remove(0);
     }
 }

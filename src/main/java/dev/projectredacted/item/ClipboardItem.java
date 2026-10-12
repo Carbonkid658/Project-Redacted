@@ -1,6 +1,7 @@
 package dev.projectredacted.item;
 
-import dev.projectredacted.gui.ClipboardGui;
+import dev.projectredacted.gui.Gui;
+import dev.projectredacted.gui.screen.RosterScreen;
 import dev.projectredacted.site.Site;
 import dev.projectredacted.site.SiteManager;
 import dev.projectredacted.util.Msg;
@@ -14,7 +15,7 @@ import net.minecraft.world.level.Level;
 
 /**
  * Task assignment. Use it on a staff member to write them a target (room number, SCP number, checkpoint or
- * entrance). Use it in the air to see the site's roster. Assigning is handled in StaffEntity#mobInteract.
+ * entrance). Use it in the air for the roster, where tasks can be given remotely. Assigning is handled in StaffEntity#mobInteract.
  */
 public class ClipboardItem extends Item {
     public ClipboardItem(Properties properties) {
@@ -29,7 +30,7 @@ public class ClipboardItem extends Item {
             Msg.send(player, "You don't belong to a site.", ChatFormatting.GRAY);
             return InteractionResult.SUCCESS;
         }
-        ClipboardGui.openRoster((ServerPlayer) player, site, 0);
+        Gui.open((ServerPlayer) player, new RosterScreen(site));
         return InteractionResult.SUCCESS;
     }
 }

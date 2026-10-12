@@ -21,6 +21,11 @@ public class View {
         size("large");
     }
 
+    public View title(String title) {
+        o.addProperty("title", title);
+        return this;
+    }
+
     public View size(String size) {
         o.addProperty("size", size);
         return this;

@@ -1,6 +1,7 @@
 package dev.projectredacted.block;
 
-import dev.projectredacted.registry.ModItems;
+import dev.projectredacted.gui.Gui;
+import dev.projectredacted.gui.screen.BlockPanels;
 import dev.projectredacted.site.SiteFounding;
 import dev.projectredacted.util.Msg;
 import net.minecraft.ChatFormatting;
@@ -25,24 +26,8 @@ public class RuinedMainframeBlock extends FacingBlock {
     }
 
     @Override
-    protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        if (!stack.is(ModItems.REPAIR_KIT)) return InteractionResult.TRY_WITH_EMPTY_HAND;
-        if (level.isClientSide()) return InteractionResult.SUCCESS;
-        if (!player.isCreative() && stack.getCount() < REPAIR_KITS) {
-            Msg.send(player, "Repairing this Mainframe takes " + REPAIR_KITS + " Repair Kits.", ChatFormatting.YELLOW);
-            return InteractionResult.SUCCESS;
-        }
-        if (SiteFounding.repairRuinedMainframe((ServerLevel) level, pos, (ServerPlayer) player)) {
-            if (!player.isCreative()) stack.shrink(REPAIR_KITS);
-        }
-        return InteractionResult.SUCCESS;
-    }
-
-    @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
-        if (!level.isClientSide()) {
-            Msg.send(player, "A dead Foundation Mainframe. " + REPAIR_KITS + " Repair Kits could bring it back.", ChatFormatting.GRAY);
-        }
+        if (!level.isClientSide()) Gui.open((ServerPlayer) player, new BlockPanels.Repair(pos, true));
         return InteractionResult.SUCCESS;
     }
 }

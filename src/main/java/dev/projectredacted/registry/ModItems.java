@@ -28,7 +28,7 @@ public final class ModItems {
     public static final Item CLIPBOARD = register("clipboard", ClipboardItem::new, new Item.Properties().stacksTo(1));
     public static final Item ROOM_DESIGNATOR = register("room_designator", DesignatorItem::new, new Item.Properties().stacksTo(1));
     public static final Item FACILITY_TABLET = register("facility_tablet", TabletItem::new, new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON));
-    public static final Item RESEARCH_DOCUMENT = register("research_document", Item::new, new Item.Properties());
+    public static final Item RESEARCH_DOCUMENT = register("research_document", dev.projectredacted.item.ResearchDocumentItem::new, new Item.Properties());
     public static final Item REPAIR_KIT = register("repair_kit", RepairKitItem::new, new Item.Properties().stacksTo(16));
     public static final Item LIBRARY_TOME = register("library_tome", Item::new, new Item.Properties().rarity(Rarity.RARE));
     public static final Item LORE_DOCUMENT = register("lore_document", LoreDocumentItem::new, new Item.Properties().stacksTo(1));

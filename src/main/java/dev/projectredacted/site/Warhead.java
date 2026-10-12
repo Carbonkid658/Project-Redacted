@@ -25,6 +25,13 @@ public final class Warhead {
         if (!Cassie.announce(site, msg)) Cassie.alarm(site, msg);
     }
 
+    /** Ticks until detonation, or -1 when the warhead isn't armed. */
+    public static long ticksLeft(Site site) {
+        long[] armed = ARMED.get(site.id);
+        ServerLevel level = SiteManager.overworld();
+        return armed == null || level == null ? -1 : Math.max(0, armed[0] - level.getGameTime());
+    }
+
     public static void abort(Site site) {
         if (ARMED.remove(site.id) != null) {
             if (!Cassie.announce(site, "Detonation cancelled. Restarting all systems.")) Cassie.alarm(site, "Detonation cancelled.");

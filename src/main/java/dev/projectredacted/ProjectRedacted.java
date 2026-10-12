@@ -1,6 +1,9 @@
 package dev.projectredacted;
 
 import dev.projectredacted.command.SiteCommand;
+import dev.projectredacted.gui.Gui;
+import dev.projectredacted.gui.screen.RoomPreviewScreen;
+import dev.projectredacted.net.ModNetwork;
 import dev.projectredacted.npc.WanderingContacts;
 import dev.projectredacted.registry.*;
 import dev.projectredacted.room.RoomTypes;
@@ -39,6 +42,8 @@ public class ProjectRedacted implements ModInitializer {
         ModEntities.init();
         ModTabs.init();
         ModWorldgen.init();
+        ModNetwork.init();
+        RoomPreviewScreen.registerKeys();
 
         ClaimProtection.init();
         SiteEvents.init();
@@ -53,11 +58,15 @@ public class ProjectRedacted implements ModInitializer {
             if (success) RoomTypes.reload(server.getResourceManager());
         });
         ServerLifecycleEvents.SERVER_STOPPING.register(server -> SiteManager.save());
-        ServerLifecycleEvents.SERVER_STOPPED.register(server -> SiteManager.unload());
+        ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
+            SiteManager.unload();
+            Gui.clear();
+        });
 
         ServerTickEvents.END_SERVER_TICK.register(server -> {
             Scheduler.tick();
             SiteManager.tick(server);
+            Gui.tick(server);
             WanderingContacts.tick(server);
         });
 

@@ -1,6 +1,8 @@
 package dev.projectredacted.block;
 
-import dev.projectredacted.registry.ModBlocks;
+import dev.projectredacted.gui.Gui;
+import dev.projectredacted.gui.screen.BlockPanels;
+import net.minecraft.server.level.ServerPlayer;
 import dev.projectredacted.registry.ModItems;
 import dev.projectredacted.site.Site;
 import dev.projectredacted.site.SiteManager;
@@ -27,28 +29,8 @@ public class RuinedCassieBlock extends FacingBlock {
     }
 
     @Override
-    protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        if (!stack.is(ModItems.REPAIR_KIT)) return InteractionResult.TRY_WITH_EMPTY_HAND;
-        if (level.isClientSide()) return InteractionResult.SUCCESS;
-        Site site = SiteManager.at(level, pos);
-        if (site == null || !site.isDirector(player)) {
-            Msg.send(player, "Claim this area as your site before repairing C.A.S.S.I.E.", ChatFormatting.YELLOW);
-            return InteractionResult.SUCCESS;
-        }
-        if (!site.hasUpgrade(Upgrade.CASSIE_PROGRAM) && !player.isCreative()) {
-            Msg.send(player, "Unlock the C.A.S.S.I.E. Program upgrade first.", ChatFormatting.RED);
-            return InteractionResult.SUCCESS;
-        }
-        if (!player.isCreative() && stack.getCount() < REPAIR_KITS) {
-            Msg.send(player, "Repairing C.A.S.S.I.E. takes " + REPAIR_KITS + " Repair Kits.", ChatFormatting.YELLOW);
-            return InteractionResult.SUCCESS;
-        }
-        if (!player.isCreative()) stack.shrink(REPAIR_KITS);
-        level.setBlock(pos, ModBlocks.CASSIE.defaultBlockState().setValue(FACING, state.getValue(FACING)), 3);
-        site.cassie = pos.immutable();
-        site.cassieHack = 0;
-        site.cassieDisabled = false;
-        dev.projectredacted.site.Cassie.announce(site, "C.A.S.S.I.E. restored. Hello again, Director.");
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
+        if (!level.isClientSide()) Gui.open((ServerPlayer) player, new BlockPanels.Repair(pos, false));
         return InteractionResult.SUCCESS;
     }
 }

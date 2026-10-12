@@ -1,7 +1,8 @@
 package dev.projectredacted.site;
 
 import dev.projectredacted.block.FacingBlock;
-import dev.projectredacted.gui.ConfirmGui;
+import dev.projectredacted.gui.Gui;
+import dev.projectredacted.gui.screen.OneOffScreens;
 import dev.projectredacted.registry.ModBlocks;
 import dev.projectredacted.registry.ModItems;
 import dev.projectredacted.room.Room;
@@ -48,11 +49,7 @@ public final class SiteFounding {
         }
         Site site = found(player, pos);
         SiteManager.RuinRecord ruin = ruinInClaim(site);
-        if (ruin != null) {
-            ConfirmGui.open(player, "Old facility detected", "A ruined Foundation Mainframe is inside your claim. Move into the old facility?",
-                    () -> adoptRuin(level, site, ruin, player),
-                    () -> Msg.send(player, "Understood. Building a new facility instead.", ChatFormatting.GRAY));
-        }
+        Gui.open(player, ruin != null ? new OneOffScreens.OldFacility(site, ruin) : new OneOffScreens.SiteFounded(site));
     }
 
     public static boolean repairRuinedMainframe(ServerLevel level, BlockPos pos, ServerPlayer player) {
@@ -109,9 +106,7 @@ public final class SiteFounding {
         site.log("Site founded by " + site.directorName + ".");
         // Founding a site grants a Level 4 keycard, which opens Foundation Bunkers.
         Cost.give(player, new ItemStack(ModItems.KEYCARD_4));
-        Msg.send(player, "Site founded. Welcome, Director " + site.directorName + ".", ChatFormatting.GOLD);
-        Msg.send(player, "You've been issued a Level 4 keycard. It opens Foundation Bunkers, where you can recruit staff.", ChatFormatting.AQUA);
-        Msg.send(player, "Next: place a Site Director's Computer nearby and use it to pick a site type and generate your facility.", ChatFormatting.AQUA);
+        Msg.send(player, site.name() + " founded. Welcome, Director " + site.directorName + ".", ChatFormatting.GOLD);
         return site;
     }
 
@@ -135,7 +130,7 @@ public final class SiteFounding {
         return null;
     }
 
-    private static void adoptRuin(ServerLevel level, Site site, SiteManager.RuinRecord ruin, ServerPlayer player) {
+    public static void adoptRuin(ServerLevel level, Site site, SiteManager.RuinRecord ruin, ServerPlayer player) {
         BlockPos placed = site.mainframe;
         if (level.getBlockState(placed).is(ModBlocks.MAINFRAME)) {
             level.setBlock(placed, Blocks.AIR.defaultBlockState(), 3);

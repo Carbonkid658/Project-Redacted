@@ -2,7 +2,6 @@ package dev.projectredacted.npc;
 
 import dev.projectredacted.api.ScpApi;
 import dev.projectredacted.api.ScpDefinition;
-import dev.projectredacted.gui.ChestGui;
 import dev.projectredacted.registry.ModComponents;
 import dev.projectredacted.registry.ModItems;
 import dev.projectredacted.registry.ModTags;
@@ -20,9 +19,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-/** Shops priced in Dollars. */
-public final class ShopGui {
-    public record Offer(ItemStack result, int price, int stock) {}
+/** Shops priced in Dollars. The screen is {@link dev.projectredacted.gui.screen.ShopScreen}. */
+public final class Shops {
+    /** {@code stock} is -1 for unlimited; {@code scp} is set for MC&D delivery flares. */
+    public record Offer(ItemStack result, int price, int stock, ScpDefinition scp) {
+        Offer(ItemStack result, int price, int stock) {
+            this(result, price, stock, null);
+        }
+    }
 
     public static List<Offer> offers(TraderEntity trader) {
         List<Offer> list = new ArrayList<>();
@@ -61,7 +65,7 @@ public final class ShopGui {
                     ItemStack flare = new ItemStack(ModItems.DELIVERY_FLARE);
                     flare.set(ModComponents.DELIVERY, def.id);
                     flare.set(net.minecraft.core.component.DataComponents.CUSTOM_NAME, Component.literal("Delivery Flare: " + def.number));
-                    list.add(new Offer(flare, def.mcdPrice, -1));
+                    list.add(new Offer(flare, def.mcdPrice, -1, def));
                 }
             }
             default -> {}
@@ -69,7 +73,8 @@ public final class ShopGui {
         return list;
     }
 
-    public static void open(ServerPlayer player, TraderEntity trader) {
+    /** Fills the trader's stock for today (Wondertainment restocks once per in-game day). */
+    public static List<Offer> restock(TraderEntity trader) {
         List<Offer> offers = offers(trader);
         long day = Time.day(trader.level());
         if (trader.lastRestockDay != day || trader.stock.length != offers.size()) {
@@ -77,39 +82,8 @@ public final class ShopGui {
             trader.stock = new int[offers.size()];
             for (int i = 0; i < offers.size(); i++) trader.stock[i] = offers.get(i).stock();
         }
-        ChestGui gui = new ChestGui(trader.kind().displayName, 3);
-        if (offers.isEmpty()) {
-            gui.set(13, ChestGui.icon(Items.PAPER, "Nothing for sale", ChatFormatting.GRAY,
-                    trader.kind() == TraderKind.MCD_CONTACT ? "\"Our inventory is... between shipments.\"" : "Come back later."));
-        }
-        for (int i = 0; i < Math.min(18, offers.size()); i++) {
-            Offer o = offers.get(i);
-            int index = i;
-            List<String> lore = new ArrayList<>();
-            lore.add("Price: $" + o.price());
-            if (o.stock() >= 0) lore.add("In stock: " + trader.stock[i]);
-            lore.add("You have $" + Cost.count(player, ModItems.DOLLAR) + ". Dollars are crafted from coins.");
-            ItemStack icon = o.result().copy();
-            icon.set(net.minecraft.core.component.DataComponents.LORE, new net.minecraft.world.item.component.ItemLore(
-                    lore.stream().map(s -> (Component) Component.literal(s).withStyle(ChatFormatting.GRAY)).toList()));
-            gui.button(i, icon, (p, right) -> {
-                if (o.stock() >= 0 && trader.stock[index] <= 0) {
-                    p.sendSystemMessage(Component.literal("Sold out until tomorrow.").withStyle(ChatFormatting.RED));
-                    return;
-                }
-                if (!p.isCreative() && Cost.count(p, ModItems.DOLLAR) < o.price()) {
-                    p.sendSystemMessage(Component.literal("You need $" + o.price() + ".").withStyle(ChatFormatting.RED));
-                    return;
-                }
-                if (!p.isCreative()) Cost.take(p, ModItems.DOLLAR, o.price());
-                if (o.stock() >= 0) trader.stock[index]--;
-                Cost.give(p, o.result().copy());
-                ChestGui.later(() -> open(p, trader));
-            });
-        }
-        gui.footer(null);
-        gui.open(player);
+        return offers;
     }
 
-    private ShopGui() {}
+    private Shops() {}
 }

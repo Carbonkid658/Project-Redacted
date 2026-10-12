@@ -1,10 +1,7 @@
 # API lookups for CI (find:<regex>, class:<fqcn>[:<line regex>]); empty means skip.
-find:[Kk]ey[Mm]apping|[Kk]ey[Bb]ind
-class:net.minecraft.client.gui.GuiGraphicsExtractor
-class:net.minecraft.client.gui.screens.Screen:protected|Screen\(
-class:net.minecraft.client.Minecraft:[Ss]creen|getWindow|gui
-class:net.minecraft.client.resources.language.I18n
-class:net.minecraft.client.gui.components.events.AbstractContainerEventHandler
-class:net.minecraft.client.gui.components.Renderable
-class:net.minecraft.client.gui.GuiGraphicsExtractor$ScissorStack
-class:net.minecraft.client.gui.components.Tooltip
+class:net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper
+class:net.minecraft.client.KeyMapping$Category
+class:net.minecraft.client.KeyMapping:KeyMapping\(|consumeClick
+class:net.minecraft.sounds.SoundEvents:UI_BUTTON
+class:net.minecraft.server.level.ServerLevel:getEntity
+class:net.minecraft.client.gui.screens.Screen:onClose|removed|charTyped|keyPressed|mouseClicked|mouseScrolled

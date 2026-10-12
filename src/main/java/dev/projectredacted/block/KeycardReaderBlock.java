@@ -1,6 +1,9 @@
 package dev.projectredacted.block;
 
+import dev.projectredacted.gui.Gui;
+import dev.projectredacted.gui.screen.BlockPanels;
 import dev.projectredacted.item.KeycardItem;
+import net.minecraft.server.level.ServerPlayer;
 import dev.projectredacted.registry.ModItems;
 import dev.projectredacted.site.DoorControl;
 import dev.projectredacted.site.Site;
@@ -24,7 +27,7 @@ import net.minecraft.world.phys.BlockHitResult;
 
 /**
  * Opens nearby iron or reinforced doors for a keycard of at least {@link #LEVEL}. Staff with enough clearance
- * are let through automatically. The Director changes the level by using a Clipboard on it.
+ * are let through automatically. The Director sets the level by using a Clipboard on it.
  */
 public class KeycardReaderBlock extends FacingBlock {
     public static final IntegerProperty LEVEL = IntegerProperty.create("level", 1, 5);
@@ -51,14 +54,8 @@ public class KeycardReaderBlock extends FacingBlock {
         if (stack.is(ModItems.CLIPBOARD)) {
             if (level.isClientSide()) return InteractionResult.SUCCESS;
             Site site = SiteManager.at(level, pos);
-            if (site != null && site.isDirector(player)) {
-                int next = state.getValue(LEVEL) % 5 + 1;
-                level.setBlock(pos, state.setValue(LEVEL, next), 3);
-                SiteManager.addReader(pos);
-                Msg.send(player, "Reader now requires Level " + next + " clearance.", ChatFormatting.AQUA);
-            } else {
-                Msg.send(player, "Only the Site Director can reprogram readers.", ChatFormatting.RED);
-            }
+            if (site != null && site.isDirector(player)) Gui.open((ServerPlayer) player, new BlockPanels.ReaderSetup(pos));
+            else Msg.actionBar(player, "Only the Site Director can reprogram readers.", ChatFormatting.RED);
             return InteractionResult.SUCCESS;
         }
         if (!(stack.getItem() instanceof KeycardItem card)) return InteractionResult.TRY_WITH_EMPTY_HAND;
