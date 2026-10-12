@@ -25,12 +25,11 @@ jobs:
         run: python3 .github/ci-report.py errors
         env:
           GITHUB_TOKEN: ${{ github.token }}
-      - name: Smoke test (temporary)
-        if: always()
+      - name: Server smoke test
         run: |
           mkdir -p run/server && echo "eula=true" > run/server/eula.txt
-          timeout 240 ./gradlew runServer --args=nogui > smoke.log 2>&1 || true
-          python3 .github/ci-report.py smoke
+          (sleep 5; echo stop) | timeout 300 ./gradlew runServer --args=nogui > smoke.log 2>&1 || true
+          grep -q "projectredacted" smoke.log && grep -q "Done (" smoke.log || { python3 .github/ci-report.py smoke; exit 1; }
         env:
           GITHUB_TOKEN: ${{ github.token }}
       - uses: actions/upload-artifact@v5
