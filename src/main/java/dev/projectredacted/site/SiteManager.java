@@ -141,6 +141,8 @@ public final class SiteManager {
             Construction.tick(level, site);
             if (tickCounter % 20 == 0) SiteLogic.tickSecond(level, site);
             if (tickCounter % 100 == 0) SiteLogic.tickStaff(level, site);
+            if (tickCounter % 100 == 50) dev.projectredacted.site.gen.Expansion.restock(level, site);
+            dev.projectredacted.site.gen.Expansion.tick(level, site);
             RaidManager.tick(level, site, tickCounter);
             Warhead.tick(level, site);
         }

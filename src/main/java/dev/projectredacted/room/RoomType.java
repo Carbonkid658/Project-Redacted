@@ -29,6 +29,8 @@ public class RoomType {
     /** Staff role that must work at the site before this room unlocks (null for none). */
     public String requiredRole;
     public int requiredLevel = 0;
+    /** Only one of these per site (the Supply Depot). */
+    public boolean unique;
     /** Keycard level for the room's door reader (0 means a plain door). */
     public int clearance = 0;
     public String icon = "minecraft:bricks";

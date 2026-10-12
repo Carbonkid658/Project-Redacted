@@ -62,7 +62,9 @@ public class AutoPlaceScreen extends GuiScreen {
             v.add(El.text("Cost (room" + (halls > 0 ? " and hallways" : "") + "):", "gray"));
             v.add(El.cost(Ui.costLines(p, cost)));
             String problem = auto.problem();
-            String blocked = problem != null ? problem : p.isCreative() ? null : Ui.shortfall(p, cost);
+            boolean depot = problem == null && !p.isCreative() && !cost.canAfford(p) && auto.depotCanPay(p, plan);
+            if (depot) v.add(El.text("You're short, but the Supply Depot has enough. It pays.", "green"));
+            String blocked = problem != null ? problem : p.isCreative() || depot ? null : Ui.shortfall(p, cost);
             var build = El.button("Build", "build").style("confirm").disabled(blocked)
                     .tip("Pays the cost and starts construction at the normal speed.");
             if (plan.overwrites > 0) build.style("danger").confirm("Replace " + plan.overwrites + " player-built blocks to build here?");

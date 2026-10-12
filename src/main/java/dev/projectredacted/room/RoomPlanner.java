@@ -13,6 +13,7 @@ public final class RoomPlanner {
     /** Why this room type isn't available yet, or null. */
     public static String lockedReason(Site site, RoomType type) {
         if (site.level < type.requiredLevel) return "Requires Facility Level " + type.requiredLevel;
+        if (type.unique && !site.rooms(type.id).isEmpty()) return "Only one per site";
         StaffRole role = type.role();
         if (role != null && site.countStaff(role) == 0) return "Requires a " + role.displayName + " on staff";
         return null;

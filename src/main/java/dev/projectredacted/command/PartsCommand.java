@@ -63,6 +63,7 @@ public final class PartsCommand {
                 .then(Commands.literal("live").then(Commands.argument("type", StringArgumentType.word())
                         .executes(ctx -> live(ctx.getSource(), StringArgumentType.getString(ctx, "type")))))
                 .then(Commands.literal("status").executes(ctx -> status(ctx.getSource())))
+                .then(Commands.literal("expandtest").executes(ctx -> expandTest(ctx.getSource())))
                 .then(Commands.literal("test")
                         .executes(ctx -> test(ctx.getSource(), null, null))
                         .then(Commands.argument("kit", StringArgumentType.word())
@@ -448,6 +449,48 @@ public final class PartsCommand {
                     + (unreachable.isEmpty() ? "all rooms walkable" : "unreachable: " + String.join(", ", unreachable)),
                     built == site.parts.size() && site.forcedChunks.isEmpty() && unreachable.isEmpty() ? ChatFormatting.GREEN : ChatFormatting.RED);
             for (String line : site.logLines) say(src, "  log: " + line, ChatFormatting.GRAY);
+        }
+        return 1;
+    }
+
+    /** CI: gives each live test site a stocked Storage Room and switches auto-expand on. */
+    private static int expandTest(CommandSourceStack src) {
+        ServerLevel level = src.getLevel();
+        for (Site site : dev.projectredacted.site.SiteManager.sites()) {
+            if (!"Test".equals(site.directorName)) continue;
+            SiteGen.Survey s = SiteGen.survey(level, site, RANDOM.nextLong());
+            s.input().exitOk = (p, d) -> true;
+            List<SitePart> sizes = PartKit.active().sizes(Expansion.STORAGE_ROOM);
+            SitePlan plan = SiteGen.addRoom(site, s.input(), Expansion.STORAGE_ROOM, sizes.get(sizes.size() - 1));
+            if (!plan.ok()) {
+                say(src, site.type.displayName + ": no space for a Storage Room: " + plan.error, ChatFormatting.RED);
+                continue;
+            }
+            int from = site.parts.size();
+            SiteGen.commit(level, site, plan, s, false);
+            for (int i = from; i < site.parts.size(); i++) {
+                PartBuilder.Job job = PartBuilder.job(level, site, i);
+                for (RoomBuilder.Placement p : job.placements) Construction.place(level, p);
+                PartBuilder.finish(level, site, i, job, true);
+            }
+            int filled = 0;
+            for (dev.projectredacted.room.Room r : site.rooms(Expansion.STORAGE_ROOM)) {
+                for (net.minecraft.world.Container c : Expansion.containers(level, r)) {
+                    List<net.minecraft.world.item.Item> items = new ArrayList<>();
+                    items.add(net.minecraft.world.item.Items.STONE_BRICKS);
+                    items.add(net.minecraft.world.item.Items.IRON_INGOT);
+                    items.add(net.minecraft.world.item.Items.LADDER);
+                    for (RoomType t : RoomTypes.all()) for (var item : t.cost().items.keySet()) if (!items.contains(item)) items.add(item);
+                    for (int i = 0; i < c.getContainerSize() && i < items.size(); i++) {
+                        c.setItem(i, new net.minecraft.world.item.ItemStack(items.get(i), items.get(i).getDefaultMaxStackSize()));
+                        filled++;
+                    }
+                }
+            }
+            site.autoExpand = true;
+            site.nextExpandCheck = 0;
+            say(src, site.type.displayName + ": Storage Room built and stocked (" + filled + " stacks); auto-expand on, next order: "
+                    + (Expansion.next(site) == null ? "nothing" : Expansion.next(site).name), ChatFormatting.GRAY);
         }
         return 1;
     }

@@ -167,6 +167,11 @@ public class AutoPlace {
         c.items.forEach(into::add);
     }
 
+    /** Whether the Supply Depot alone could pay for this spot. */
+    public boolean depotCanPay(ServerPlayer player, SitePlan plan) {
+        return !site.rooms(Expansion.SUPPLY_DEPOT).isEmpty() && Expansion.canPay(Expansion.pool((ServerLevel) player.level(), site, true), cost(plan));
+    }
+
     public int hallways(SitePlan plan) {
         return plan.count(SitePart.Kind.HALLWAY) + plan.count(SitePart.Kind.STAIRWELL);
     }
@@ -197,7 +202,16 @@ public class AutoPlace {
         if (problem != null) return problem;
         SitePlan plan = current();
         Cost cost = cost(plan);
-        if (!player.isCreative() && !cost.pay(player)) return "Not enough materials. Needs: " + String.join(", ", cost.describe());
+        if (!player.isCreative()) {
+            if (cost.canAfford(player)) {
+                cost.pay(player);
+            } else {
+                // The Supply Depot is a shared pool for auto-placed rooms (§8.3).
+                var depot = Expansion.pool((ServerLevel) player.level(), site, true);
+                if (!Expansion.canPay(depot, cost)) return "Not enough materials. Needs: " + String.join(", ", cost.describe());
+                Expansion.pay(depot, cost);
+            }
+        }
         SiteGen.commit((ServerLevel) player.level(), site, plan, survey, false);
         String msg = "Construction of a " + type().name + " has begun" + (hallways(plan) > 0 ? " with " + hallways(plan) + " connecting part(s)." : ".");
         site.log(msg);
@@ -221,22 +235,9 @@ public class AutoPlace {
         }
     }
 
-    /** Room types the site would most likely want next, for the Suggested row. */
+    /** Room types the site would most likely want next, for the Suggested row (§8.1). */
     public static List<RoomType> suggested(Site site) {
-        List<RoomType> out = new ArrayList<>();
-        RoomType barracks = RoomTypes.get(RoomTypes.BARRACKS);
-        if (barracks != null && site.beds >= 0 && site.housedStaff() >= site.beds) out.add(barracks);
-        List<RoomType> missing = new ArrayList<>();
-        for (RoomType t : RoomTypes.all()) {
-            if (t.id.equals(RoomTypes.ENTRANCE) || t.id.equals(RoomTypes.DIRECTORS_OFFICE) || out.contains(t)) continue;
-            if (RoomPlanner.lockedReason(site, t) != null || !site.rooms(t.id).isEmpty()) continue;
-            missing.add(t);
-        }
-        missing.sort(Comparator.comparingInt((RoomType t) -> t.requiredLevel).thenComparing(t -> t.powerDraw > 0 ? 1 : 0).thenComparing(t -> t.name));
-        for (RoomType t : missing) {
-            if (out.size() >= 4) break;
-            out.add(t);
-        }
-        return out;
+        List<RoomType> list = Expansion.suggested(site);
+        return list.size() > 4 ? list.subList(0, 4) : list;
     }
 }

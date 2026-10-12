@@ -43,6 +43,10 @@ public final class RoomTypes {
                 "A nook with a breaker. Lets more rooms connect to power.", "minecraft:iron_ingot", 8, "minecraft:redstone", 16);
         add("storage_room", "Storage Room", "Engineering", "storage", 5, 16, 4, 8, 1, 0, "ENGINEER", 0, 1, "minecraft:barrel",
                 "Engineer storage. Lowers the cost of engineering upgrades.", "minecraft:chest", 4, "minecraft:iron_ingot", 4);
+        add("supply_depot", "Supply Depot", "Engineering", "storage", 9, 24, 4, 8, 1, 0, null, 2, 1, "minecraft:chest",
+                "One shared pool of chests and barrels. Auto-placed rooms and auto-expand pay from it first; engineers assigned here restock it from Storage Rooms. One per site.",
+                "minecraft:chest", 8, "minecraft:barrel", 8, "minecraft:iron_ingot", 8);
+        TYPES.get("projectredacted:supply_depot").unique = true;
         add("medbay", "Medbay", "Medical", "medbay", 7, 24, 4, 8, 2, 1, "MEDICAL", 0, 1, "minecraft:golden_apple",
                 "Hospital-style ward where staff are treated.", "minecraft:white_wool", 6, "projectredacted:plastic_block", 8);
         add("checkup_room", "Checkup Room", "Medical", "checkup", 4, 10, 4, 6, 1, 0, "MEDICAL", 0, 1, "minecraft:brewing_stand",

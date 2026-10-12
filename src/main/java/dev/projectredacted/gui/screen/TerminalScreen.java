@@ -632,6 +632,13 @@ public class TerminalScreen extends GuiScreen {
         if (row.size() > 1) v.add(El.row(row));
         v.add(El.row(El.button("Pick a room type…", "add_room_pick").disabled(blocked)
                 .tip("Pick any room type and size; the mod finds a free spot and shows it as an outline.")));
+        boolean director = site.isDirector(p);
+        var next = dev.projectredacted.site.gen.Expansion.next(site);
+        v.add(El.row(El.toggle("Auto-expand", site.autoExpand, "auto_expand"),
+                El.button("Priorities…", "expand_priorities").disabled(director ? null : "Only the Site Director can change this.")));
+        v.add(El.text(site.autoExpand
+                ? "The site orders its own rooms, paid from the Supply Depot and Storage Rooms. Next: " + (next == null ? "nothing needed" : next.name) + "."
+                : "Off. When on, the site orders the Suggested room by itself whenever the Supply Depot and Storage Rooms can pay.", "gray"));
     }
 
     // ---------------------------------------------------------------- log
@@ -775,6 +782,18 @@ public class TerminalScreen extends GuiScreen {
                 var placing = dev.projectredacted.site.gen.AutoPlace.start(p, site, t.id, 0);
                 placing.search(p);
                 Gui.openChild(p, new AutoPlaceScreen(placing));
+            }
+            case "auto_expand" -> {
+                if (!director) {
+                    Gui.toast(p, "Only the Site Director can switch auto-expand.", true);
+                    return;
+                }
+                site.autoExpand = !site.autoExpand;
+                site.nextExpandCheck = 0;
+                site.log("Auto-expand switched " + (site.autoExpand ? "on" : "off") + ".");
+            }
+            case "expand_priorities" -> {
+                if (director) Gui.openChild(p, new ExpandPriorityScreen(site));
             }
             case "add_room_continue" -> {
                 var placing = dev.projectredacted.site.gen.AutoPlace.get(p);
