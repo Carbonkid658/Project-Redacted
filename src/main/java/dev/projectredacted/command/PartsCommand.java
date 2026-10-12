@@ -487,7 +487,7 @@ public final class PartsCommand {
             boolean reached = false;
             for (int x = r.x1 + 1; x < r.x2 && !reached; x++)
                 for (int z = r.z1 + 1; z < r.z2 && !reached; z++) reached = seen.contains(BlockPos.asLong(x, r.y1 + 1, z));
-            if (!reached) out.add(r.displayName());
+            if (!reached) out.add(r.displayName() + (r.part >= 0 ? " [" + site.parts.get(r.part).id + " " + new BlockPos(r.x1, r.y1, r.z1).toShortString() + "]" : ""));
         }
         if (!out.isEmpty()) {
             StringBuilder sb = new StringBuilder("(walked " + seen.size() + " blocks from " + start.toShortString() + ":");
@@ -512,7 +512,7 @@ public final class PartsCommand {
 
     private static boolean passable(ServerLevel level, BlockPos pos) {
         BlockState s = level.getBlockState(pos);
-        return !s.isSolid() || s.is(net.minecraft.tags.BlockTags.DOORS);
+        return !s.isSolid() || s.is(net.minecraft.tags.BlockTags.DOORS) || s.is(dev.projectredacted.registry.ModBlocks.REINFORCED_DOOR);
     }
 
     private PartsCommand() {}

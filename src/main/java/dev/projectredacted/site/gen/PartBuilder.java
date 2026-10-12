@@ -227,7 +227,11 @@ public final class PartBuilder {
         Direction along = c.facing().getClockWise();
         int half = c.width() / 2;
         for (int k = -half; k <= half; k++)
-            for (int y = 0; y < c.height(); y++) out.add(new RoomBuilder.Placement(c.pos().relative(along, k).above(y), air, false, false));
+            for (int y = 0; y < c.height(); y++) {
+                out.add(new RoomBuilder.Placement(c.pos().relative(along, k).above(y), air, false, false));
+                // Furniture may stand against the wall where the new doorway is; clear the step inside.
+                out.add(new RoomBuilder.Placement(c.pos().relative(along, k).above(y).relative(c.facing().getOpposite()), air, false, false));
+            }
     }
 
     // ---------------------------------------------------------------- finishing
