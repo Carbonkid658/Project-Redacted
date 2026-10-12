@@ -328,7 +328,25 @@ public final class PartsCommand {
                 return 0;
             }
             SiteGen.commit(level, site, plan, survey, false);
-            buildNow(src, level, site, type);
+            buildNow(src, level, site, type, 0);
+            if (src.getEntity() == null) {
+                // Console (CI): also grow the built site by every room type, then build and walk it again.
+                int before = site.parts.size(), grown = 0;
+                site.generated = true;
+                for (RoomType t : RoomTypes.all()) {
+                    if (t.id.equals(RoomTypes.ENTRANCE) || t.id.equals(RoomTypes.DIRECTORS_OFFICE)) continue;
+                    SiteGen.Survey s = SiteGen.survey(level, site, RANDOM.nextLong());
+                    s.input().kit = kit;
+                    List<SitePart> sizes = kit.sizes(t.id);
+                    if (sizes.isEmpty()) continue;
+                    SitePlan room = SiteGen.addRoom(site, s.input(), t.id, sizes.get(sizes.size() - 1));
+                    if (!room.ok()) continue;
+                    SiteGen.commit(level, site, room, s, false);
+                    grown++;
+                }
+                say(src, "Grew " + grown + " rooms (" + (site.parts.size() - before) + " parts).", ChatFormatting.GRAY);
+                buildNow(src, level, site, type, before);
+            }
             return 1;
         }
         say(src, "Testing kit " + kit.name + " (" + kit.parts.size() + " own parts) at " + at.toShortString(), ChatFormatting.GOLD);
@@ -391,16 +409,16 @@ public final class PartsCommand {
     }
 
     /** Places every part of the test site right away. */
-    private static void buildNow(CommandSourceStack src, ServerLevel level, Site site, SiteType type) {
+    private static void buildNow(CommandSourceStack src, ServerLevel level, Site site, SiteType type, int from) {
         long start = System.nanoTime();
         int blocks = 0;
-        for (int i = 0; i < site.parts.size(); i++) {
+        for (int i = from; i < site.parts.size(); i++) {
             PartBuilder.Job job = PartBuilder.job(level, site, i);
             for (RoomBuilder.Placement p : job.placements) Construction.place(level, p);
             blocks += job.placements.size();
             PartBuilder.finish(level, site, i, job, false);
         }
-        say(src, "Built a " + type.displayName + " Level 0 test site at " + site.anchor.toShortString() + ": " + site.parts.size() + " parts, "
+        say(src, "Built a " + type.displayName + " test site at " + site.anchor.toShortString() + ": " + site.parts.size() + " parts, "
                 + blocks + " blocks in " + (System.nanoTime() - start) / 1_000_000 + " ms.", ChatFormatting.GREEN);
         List<String> unreachable = walk(level, site);
         if (!unreachable.isEmpty()) for (PlacedPart p : site.parts) say(src, "  " + p.id + " r" + p.rot + " storey " + p.storey + " " + p.box() + " used " + Integer.toBinaryString(p.used), ChatFormatting.GRAY);
