@@ -491,7 +491,18 @@ public final class PartsCommand {
             say(src, "Ruined site: Mainframe at " + r.mainframe.toShortString() + " is " + block + ", rooms: " + String.join(", ", types),
                     block.equals("ruined_mainframe") ? ChatFormatting.GREEN : ChatFormatting.RED);
         }
-        if (!any) say(src, "The ruined site near " + ruinTarget.toShortString() + " didn't register a Mainframe.", ChatFormatting.RED);
+        if (!any) {
+            say(src, "The ruined site near " + ruinTarget.toShortString() + " didn't register a Mainframe.", ChatFormatting.RED);
+            var structure = level.registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.STRUCTURE)
+                    .getValue(ProjectRedacted.id("ruined_site"));
+            var start = level.getChunk(ruinTarget.getX() >> 4, ruinTarget.getZ() >> 4).getStartForStructure(structure);
+            if (start == null) say(src, "  no structure start in that chunk", ChatFormatting.RED);
+            else for (var piece : start.getPieces()) {
+                var b = piece.getBoundingBox();
+                say(src, "  piece " + piece + " box " + b.minX() + "," + b.minY() + "," + b.minZ() + " to " + b.maxX() + "," + b.maxY() + "," + b.maxZ()
+                        + " block at min+1: " + BuiltInRegistries.BLOCK.getKey(level.getBlockState(new BlockPos(b.minX() + 1, b.minY() + 1, b.minZ() + 1)).getBlock()).getPath(), ChatFormatting.GRAY);
+            }
+        }
         return any ? 1 : 0;
     }
 

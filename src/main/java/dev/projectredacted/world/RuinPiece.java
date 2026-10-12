@@ -70,6 +70,11 @@ public class RuinPiece extends StructurePiece {
         }
     }
 
+    @Override
+    public String toString() {
+        return kit + "/" + id + " rot " + rot + " rooms " + rooms.size();
+    }
+
     private static BoundingBox box(Box b) {
         return new BoundingBox(b.x1(), b.y1(), b.z1(), b.x2(), b.y2(), b.z2());
     }
@@ -98,7 +103,10 @@ public class RuinPiece extends StructurePiece {
     @Override
     public void postProcess(WorldGenLevel level, StructureManager structures, ChunkGenerator generator, RandomSource random, BoundingBox chunkBox, ChunkPos chunkPos, BlockPos pivot) {
         SitePart part = PartKit.active().byId(kit, id);
-        if (part == null) return;
+        if (part == null) {
+            dev.projectredacted.ProjectRedacted.LOG.warn("[parts] ruin part {}/{} not found", kit, id);
+            return;
+        }
         PlacedPart pp = new PlacedPart();
         pp.kit = kit;
         pp.id = id;
@@ -125,6 +133,7 @@ public class RuinPiece extends StructurePiece {
             BlockPos w = PartBuilder.world(pp, m.pos());
             if (m.name().startsWith("loot") && chunkBox.isInside(w)) GenUtil.lootChest(level, w, RandomSource.create(seed ^ w.asLong()), true);
         }
+        if (!rooms.isEmpty() && job.mainframeSpot == null) dev.projectredacted.ProjectRedacted.LOG.warn("[parts] ruin office {} has no Mainframe spot", id);
         if (job.mainframeSpot != null && chunkBox.isInside(job.mainframeSpot)) {
             level.setBlock(job.mainframeSpot, ModBlocks.RUINED_MAINFRAME.defaultBlockState().setValue(FacingBlock.FACING, Direction.SOUTH), 2);
             if (job.terminalSpot != null && Math.floorMod(seed, 3) == 0)
@@ -136,6 +145,7 @@ public class RuinPiece extends StructurePiece {
             record.mainframe = job.mainframeSpot;
             record.rooms.addAll(rooms);
             SiteManager.queueRuin(record);
+            dev.projectredacted.ProjectRedacted.LOG.info("[parts] ruined site generated with its Mainframe at {}", job.mainframeSpot.toShortString());
         }
     }
 
