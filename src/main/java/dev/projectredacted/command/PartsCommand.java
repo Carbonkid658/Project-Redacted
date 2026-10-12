@@ -400,6 +400,74 @@ public final class PartsCommand {
         }
         say(src, "Built a " + type.displayName + " Level 0 test site at " + site.anchor.toShortString() + ": " + site.parts.size() + " parts, "
                 + blocks + " blocks in " + (System.nanoTime() - start) / 1_000_000 + " ms.", ChatFormatting.GREEN);
+        List<String> unreachable = walk(level, site);
+        say(src, unreachable.isEmpty() ? "Every room can be walked to from the surface." : "Can't walk from the surface to: " + String.join(", ", unreachable),
+                unreachable.isEmpty() ? ChatFormatting.GREEN : ChatFormatting.RED);
+    }
+
+    /** Rooms a player can't reach on foot from outside the Entrance (doors and ladders count as passable). */
+    public static List<String> walk(ServerLevel level, Site site) {
+        Box bounds = null;
+        BlockPos start = null;
+        for (PlacedPart p : site.parts) {
+            Box b = p.box();
+            SitePart part = p.part();
+            if (b == null || part == null) continue;
+            bounds = bounds == null ? b : new Box(Math.min(bounds.x1(), b.x1()), Math.min(bounds.y1(), b.y1()), Math.min(bounds.z1(), b.z1()),
+                    Math.max(bounds.x2(), b.x2()), Math.max(bounds.y2(), b.y2()), Math.max(bounds.z2(), b.z2()));
+            for (int i = 0; i < part.connectors.size(); i++) {
+                SitePart.Connector c = part.worldConnector(i, p.origin, p.rot);
+                if (c.type().equals(SitePart.SURFACE_EXIT)) start = c.pos().relative(c.facing(), 2);
+            }
+        }
+        List<String> out = new ArrayList<>();
+        if (bounds == null || start == null) {
+            out.add("(no entrance)");
+            return out;
+        }
+        Box area = bounds.grow(3);
+        java.util.Set<Long> seen = new java.util.HashSet<>();
+        java.util.ArrayDeque<BlockPos> queue = new java.util.ArrayDeque<>();
+        // Drop the start onto the ground in front of the exit.
+        while (start.getY() > area.y1() && passable(level, start.below())) start = start.below();
+        queue.add(start);
+        seen.add(start.asLong());
+        while (!queue.isEmpty() && seen.size() < 200_000) {
+            BlockPos p = queue.poll();
+            boolean ladder = level.getBlockState(p).is(Blocks.LADDER);
+            for (net.minecraft.core.Direction d : net.minecraft.core.Direction.values()) {
+                BlockPos n = p.relative(d);
+                if (!area.contains(n) || seen.contains(n.asLong())) continue;
+                if (!passable(level, n)) continue;
+                if (d == net.minecraft.core.Direction.UP && !ladder && !level.getBlockState(n).is(Blocks.LADDER)) continue;
+                if (d.getAxis() != net.minecraft.core.Direction.Axis.Y) {
+                    // Needs headroom and something to stand on (or a ladder).
+                    if (!passable(level, n.above())) continue;
+                    boolean nLadder = level.getBlockState(n).is(Blocks.LADDER);
+                    if (!nLadder && passable(level, n.below()) && !level.getBlockState(n.below()).is(Blocks.LADDER)) {
+                        // Walking off an edge: fall to the ground below.
+                        BlockPos f = n;
+                        while (f.getY() > area.y1() && passable(level, f.below()) && !level.getBlockState(f.below()).is(Blocks.LADDER)) f = f.below();
+                        if (seen.add(f.asLong())) queue.add(f);
+                        continue;
+                    }
+                }
+                seen.add(n.asLong());
+                queue.add(n);
+            }
+        }
+        for (dev.projectredacted.room.Room r : site.rooms) {
+            boolean reached = false;
+            for (int x = r.x1 + 1; x < r.x2 && !reached; x++)
+                for (int z = r.z1 + 1; z < r.z2 && !reached; z++) reached = seen.contains(BlockPos.asLong(x, r.y1 + 1, z));
+            if (!reached) out.add(r.displayName());
+        }
+        return out;
+    }
+
+    private static boolean passable(ServerLevel level, BlockPos pos) {
+        BlockState s = level.getBlockState(pos);
+        return !s.isSolid() || s.is(net.minecraft.tags.BlockTags.DOORS);
     }
 
     private PartsCommand() {}
