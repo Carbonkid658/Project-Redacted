@@ -2,8 +2,8 @@
   "cassie.chime": {
     "sounds": [
       {
-        "name": "minecraft:block/bell/bell_use",
-        "type": "file"
+        "name": "minecraft:block.bell.use",
+        "type": "event"
       }
     ],
     "subtitle": "subtitles.projectredacted.cassie"
@@ -11,8 +11,9 @@
   "cassie.announce": {
     "sounds": [
       {
-        "name": "minecraft:note/pling",
-        "pitch": 0.7
+        "name": "minecraft:block.note_block.pling",
+        "pitch": 0.7,
+        "type": "event"
       }
     ],
     "subtitle": "subtitles.projectredacted.cassie"
@@ -20,8 +21,9 @@
   "site.alarm": {
     "sounds": [
       {
-        "name": "minecraft:mob/guardian/curse",
-        "pitch": 0.6
+        "name": "minecraft:entity.elder_guardian.curse",
+        "pitch": 0.6,
+        "type": "event"
       }
     ],
     "subtitle": "subtitles.projectredacted.alarm"
@@ -29,8 +31,9 @@
   "site.warhead": {
     "sounds": [
       {
-        "name": "minecraft:block/bell/bell_use",
-        "pitch": 0.5
+        "name": "minecraft:block.bell.use",
+        "pitch": 0.5,
+        "type": "event"
       }
     ],
     "subtitle": "subtitles.projectredacted.warhead"

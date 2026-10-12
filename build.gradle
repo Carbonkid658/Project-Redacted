@@ -19,6 +19,8 @@ loom {
             client()
             name = "Minecraft Client"
             ideConfigGenerated = true
+            // If the game crashes natively, the JVM crash report lands next to the logs.
+            vmArg "-XX:ErrorFile=logs/hs_err_pid%p.log"
             runDir = "run"
         }
         server {
