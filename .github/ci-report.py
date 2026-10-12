@@ -49,6 +49,19 @@ elif mode == 'parts':
             keep.append(l)
             trace -= 1
     emit('Parts', '\n'.join(keep[:400]) or '(no parts output)')
+elif mode == 'client':
+    # The client world creation test: its own lines, errors, and a thread dump if it hung.
+    lines = open('client.log', errors='replace').read().splitlines()
+    keep = []
+    trace = 0
+    for l in lines:
+        if '[clienttest]' in l or 'Exception' in l or '/ERROR]' in l or '/WARN]' in l or l.lstrip().startswith('Caused by'):
+            keep.append(l)
+            trace = 25 if ('Exception' in l or 'Caused by' in l) else trace
+        elif trace > 0 and l.lstrip().startswith(('at ', '...')):
+            keep.append(l)
+            trace -= 1
+    emit('Client', '\n'.join(keep[:1500] + ['', '--- log tail ---'] + lines[-60:]))
 elif mode == 'probe':
     # Looks up method signatures of the classes listed in .github/probe.txt, to check API names after
     # Minecraft or Fabric renames. Lines: find:<regex> (class names) or class:<fqcn>[:<line regex>].

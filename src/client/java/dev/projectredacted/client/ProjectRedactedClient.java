@@ -16,5 +16,6 @@ public class ProjectRedactedClient implements ClientModInitializer {
         EntityRendererRegistry.register(ModEntities.ARMED_NPC, ctx -> new NpcRenderer<ArmedNpcEntity>(ctx, "faction", ArmedNpcEntity::skinId));
         EntityRendererRegistry.register(ModEntities.TRADER, ctx -> new NpcRenderer<TraderEntity>(ctx, "trader", TraderEntity::skinId));
         ClientGui.init();
+        ClientTest.init();
     }
 }
