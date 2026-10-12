@@ -1,5 +1,6 @@
 package dev.projectredacted.room;
 
+import dev.projectredacted.ProjectRedacted;
 import dev.projectredacted.block.FacingBlock;
 import dev.projectredacted.block.KeycardReaderBlock;
 import dev.projectredacted.registry.ModBlocks;
@@ -42,13 +43,30 @@ public final class RoomBuilder {
                     Blocks.CONCRETE.gray().defaultBlockState(), ModBlocks.FACILITY_WALL.defaultBlockState(), ModBlocks.CEILING_LIGHT.defaultBlockState()),
     };
 
+    /** Rooms with less than this much floor inside the walls (on either axis) get a bare shell, no furniture. */
+    private static final int MIN_FURNISHED_INTERIOR = 3;
+
     public static Plan plan(Room room, RoomType type) {
         Ctx c = new Ctx(room, type);
         c.shell();
+        if (room.x2 - room.x1 - 1 < MIN_FURNISHED_INTERIOR || room.z2 - room.z1 - 1 < MIN_FURNISHED_INTERIOR) return c.plan;
+        try {
+            furnish(c, type);
+        } catch (RuntimeException e) {
+            // A layout that doesn't fit must never take the server down; fall back to the empty shell.
+            ProjectRedacted.LOG.warn("Couldn't furnish {} room at {}, {}, {}", type.id, room.x1, room.y1, room.z1, e);
+            Ctx bare = new Ctx(room, type);
+            bare.shell();
+            return bare.plan;
+        }
+        return c.plan;
+    }
+
+    private static void furnish(Ctx c, RoomType type) {
         switch (type.style) {
             case "entrance" -> c.entrance();
             case "directors_office" -> c.directorsOffice();
-            case "office" -> c.office(room.type.endsWith("researcher_office"));
+            case "office" -> c.office(c.r.type.endsWith("researcher_office"));
             case "water_pump" -> c.waterPump();
             case "generator" -> c.generator();
             case "circuit_breaker" -> c.circuitBreaker();
@@ -70,7 +88,6 @@ public final class RoomBuilder {
             case "single_bedroom" -> c.singleBedroom();
             default -> {}
         }
-        return c.plan;
     }
 
     /** Building context: the box, the palette and helpers for placing furniture away from doors. */
