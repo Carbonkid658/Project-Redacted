@@ -84,6 +84,16 @@ public final class SiteGen {
             if (p.removed) continue;
             Box b = p.box();
             if (b != null) in.occupied.add(b);
+            SitePart part = p.part();
+            if (part == null) continue;
+            // Keep the ground in front of the Entrance clear so it stays a way in.
+            for (int i = 0; i < part.connectors.size(); i++) {
+                SitePart.Connector c = part.worldConnector(i, p.origin, p.rot);
+                if (!c.type().equals(SitePart.SURFACE_EXIT)) continue;
+                Direction along = c.facing().getClockWise();
+                in.occupied.add(Box.of(c.pos().relative(c.facing()).relative(along, -2).below(),
+                        c.pos().relative(c.facing(), 6).relative(along, 2).above(SitePart.STOREY - 2)));
+            }
         }
         List<Doorway> sources = new ArrayList<>();
         for (Room r : site.rooms) {
