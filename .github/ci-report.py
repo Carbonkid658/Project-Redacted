@@ -54,7 +54,11 @@ elif mode == 'probe':
         if kind == 'find':
             hits = sorted(c for c in index if re.search(arg, c))
             out.append(f'## find {arg}\n' + '\n'.join(hits[:200]))
-        elif kind == 'class':
-            r = subprocess.run(['javap', '-public', '-cp', cp, arg], capture_output=True, text=True)
-            out.append(f'## {arg}\n' + (r.stdout or r.stderr))
+        elif kind in ('class', 'grep'):
+            name, _, pattern = arg.partition(':')
+            r = subprocess.run(['javap', '-public', '-cp', cp, name], capture_output=True, text=True)
+            text = r.stdout or r.stderr
+            if pattern:
+                text = '\n'.join(l for l in text.splitlines() if re.search(pattern, l))
+            out.append(f'## {name}\n' + text)
     emit('Probe', '\n\n'.join(out))
