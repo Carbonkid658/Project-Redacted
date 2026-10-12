@@ -40,9 +40,14 @@ elif mode == 'parts':
     # The /site parts test output from the smoke test, plus any errors around it.
     lines = open('smoke.log', errors='replace').read().splitlines()
     keep = []
+    trace = 0
     for i, l in enumerate(lines):
-        if '[parts]' in l or '[autotest]' in l or 'Exception' in l or '/ERROR]' in l or l.lstrip().startswith(('at dev.', 'Caused by')):
+        if '[parts]' in l or '[autotest]' in l or 'Exception' in l or '/ERROR]' in l or l.lstrip().startswith('Caused by'):
             keep.append(l)
+            trace = 25 if ('Exception' in l or 'Caused by' in l) else trace
+        elif trace > 0 and l.lstrip().startswith(('at ', '...')):
+            keep.append(l)
+            trace -= 1
     emit('Parts', '\n'.join(keep[:400]) or '(no parts output)')
 elif mode == 'probe':
     # Looks up method signatures of the classes listed in .github/probe.txt, to check API names after

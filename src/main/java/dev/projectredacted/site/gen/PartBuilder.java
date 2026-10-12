@@ -215,7 +215,7 @@ public final class PartBuilder {
             r.built = true;
             r.buildProgress = 0;
             RoomType type = r.typeDef();
-            if (type != null && part != null && part.procedural()) Construction.placeStructure(level, r, type);
+            if (type != null && type.structure != null && !type.structure.isEmpty() && part != null && part.procedural()) Construction.placeStructure(level, r, type);
         }
         if (part != null) markers(site, pp, part);
         if (pp.fast && job.mainframeSpot != null) moveCore(level, site, job);
