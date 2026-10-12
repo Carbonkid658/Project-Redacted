@@ -60,7 +60,7 @@ elif mode == 'probe':
             out.append(f'## find {arg}\n' + '\n'.join(sorted(c for c in index if re.search(arg, c))[:300]))
         elif kind == 'class':
             name, _, pattern = arg.partition(':')
-            r = subprocess.run(['javap', '-public', '-cp', cp, name], capture_output=True, text=True)
+            r = subprocess.run(['javap', '-protected', '-cp', cp, name], capture_output=True, text=True)
             text = r.stdout or r.stderr
             if pattern:
                 text = '\n'.join(l for l in text.splitlines() if re.search(pattern, l))
