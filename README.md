@@ -51,7 +51,10 @@ The code compiles, but it has not been play-tested in a running game yet.
 - **Factions to trade with**: GOC outposts, Dr. Wondertainment stalls (restock daily), roaming MC&D contacts (sell SCPs as delivery flares),
   Ways to the Wanderers' Library (trade SCPs for Library Tomes and dollars). Coins craft into Dollars.
 - **Keycards and keycard doors**, Reinforced Doors/Glass, Containment Concrete, the **Alpha Warhead**, lore documents in ruins and bunkers.
-- **UI**: everything uses chest-style menus, so there's no client networking: terminal, facility map, breaker, clipboard, room designer, shops.
+- **UI**: Foundation-themed button screens for everything (terminal with map, rooms, staff, upgrades, personnel, security and log tabs; staff cards,
+  recruiting and the clipboard roster; shops and the Librarian; room picker and preview with R/G rotate and reroll keys; circuit breaker;
+  Mainframe, C.A.S.S.I.E., warhead and keycard reader panels; documents). The server builds each view and the client draws it
+  (`gui/` and `client/screen/`), so the mod is needed on both sides. Keycard swipes, delivery flares and repair kits stay instant.
 
 ### Adding an SCP
 
