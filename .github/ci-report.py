@@ -54,6 +54,26 @@ elif mode == 'probe':
         if kind == 'find':
             hits = sorted(c for c in index if re.search(arg, c))
             out.append(f'## find {arg}\n' + '\n'.join(hits[:200]))
+        elif kind == 'res':
+            hits = set()
+            for j in jars:
+                try:
+                    with zipfile.ZipFile(j) as z:
+                        hits.update(n for n in z.namelist() if re.search(arg, n))
+                except Exception:
+                    pass
+            out.append(f'## res {arg}\n' + '\n'.join(sorted(hits)[:300]))
+        elif kind == 'cat':
+            text = '(not found)'
+            for j in jars:
+                try:
+                    with zipfile.ZipFile(j) as z:
+                        if arg in z.namelist():
+                            text = z.read(arg).decode(errors='replace')
+                            break
+                except Exception:
+                    pass
+            out.append(f'## cat {arg}\n' + text[:20000])
         elif kind in ('class', 'grep'):
             name, _, pattern = arg.partition(':')
             r = subprocess.run(['javap', '-public', '-cp', cp, name], capture_output=True, text=True)
