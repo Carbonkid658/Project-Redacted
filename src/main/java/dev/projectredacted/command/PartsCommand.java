@@ -52,6 +52,7 @@ import java.util.stream.Stream;
 public final class PartsCommand {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final Random RANDOM = new Random();
+    private static int consoleRuns;
 
     public static LiteralArgumentBuilder<CommandSourceStack> node() {
         return Commands.literal("parts").requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
@@ -317,7 +318,7 @@ public final class PartsCommand {
                 return 0;
             }
             if (src.getEntity() != null) at = at.relative(src.getEntity().getDirection(), 24);
-            else at = at.offset(200 * (type.ordinal() + 1), 0, 0); // console: keep test sites apart
+            else at = at.offset(200 * (type.ordinal() + 1), 0, 300 * consoleRuns++); // console: keep test sites apart
             Site site = fakeSite(at, type);
             SiteGen.Survey survey = SiteGen.survey(level, site, RANDOM.nextLong());
             survey.input().kit = kit;
