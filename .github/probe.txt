@@ -1,4 +1,6 @@
 # API lookups for CI (find:<regex> or class:<fully.qualified.Name>); empty means skip.
-find:NoneFeatureConfiguration|FeaturePlaceContext|\.Feature$
-find:ClickType|ContainerInput
-find:fabric.*[Ii]tem[Gg]roup|CreativeModeTab
+find:levelgen\.feature\.[A-Za-z]+$
+find:ConfiguredFeature|PlacedFeature|BiomeModification|GenerationStep
+class:net.minecraft.world.level.levelgen.feature.Feature
+class:net.minecraft.world.inventory.ContainerInput
+class:net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTab
