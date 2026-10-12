@@ -12,7 +12,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
 /** Small helpers for building structures during world generation. */
-final class GenUtil {
+public final class GenUtil {
     static void set(WorldGenLevel level, int x, int y, int z, BlockState state) {
         level.setBlock(new BlockPos(x, y, z), state, 2);
     }
@@ -27,7 +27,7 @@ final class GenUtil {
     }
 
     /** A chest of supplies, with coins and sometimes a lore document. */
-    static void lootChest(WorldGenLevel level, BlockPos pos, RandomSource random, boolean ruin) {
+    public static void lootChest(WorldGenLevel level, BlockPos pos, RandomSource random, boolean ruin) {
         level.setBlock(pos, Blocks.CHEST.defaultBlockState(), 2);
         if (!(level.getBlockEntity(pos) instanceof Container chest)) return;
         int slot = 0;

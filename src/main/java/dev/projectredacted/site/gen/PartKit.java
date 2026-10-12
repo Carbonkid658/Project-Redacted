@@ -67,7 +67,7 @@ public class PartKit {
         if (!out.isEmpty()) return out;
         RoomType t = RoomTypes.get(roomType);
         if (t == null) return out;
-        for (SitePart p : ProceduralParts.roomSizes(t)) out.add(PLACEHOLDERS.computeIfAbsent(p.id, k -> p));
+        for (SitePart p : ProceduralParts.roomSizes(t)) out.add(intern(p));
         return out;
     }
 
@@ -83,7 +83,11 @@ public class PartKit {
         return placeholder(id);
     }
 
-    public static SitePart placeholder(String id) {
+    private static synchronized SitePart intern(SitePart p) {
+        return PLACEHOLDERS.computeIfAbsent(p.id, k -> p);
+    }
+
+    public static synchronized SitePart placeholder(String id) {
         placeholders();
         SitePart p = PLACEHOLDERS.get(id);
         if (p != null) return p;
@@ -96,7 +100,8 @@ public class PartKit {
         return null;
     }
 
-    private static Collection<SitePart> placeholders() {
+    /** Synchronized: ruins are planned on world generation threads. */
+    private static synchronized Collection<SitePart> placeholders() {
         if (PLACEHOLDERS.isEmpty()) for (SitePart p : ProceduralParts.level0Kit()) PLACEHOLDERS.put(p.id, p);
         List<SitePart> base = new ArrayList<>();
         for (SitePart p : PLACEHOLDERS.values()) if (p.kind != SitePart.Kind.ROOM || isLevel0Room(p)) base.add(p);

@@ -64,6 +64,8 @@ public final class PartsCommand {
                         .executes(ctx -> live(ctx.getSource(), StringArgumentType.getString(ctx, "type")))))
                 .then(Commands.literal("status").executes(ctx -> status(ctx.getSource())))
                 .then(Commands.literal("expandtest").executes(ctx -> expandTest(ctx.getSource())))
+                .then(Commands.literal("ruintest").executes(ctx -> ruinTest(ctx.getSource())))
+                .then(Commands.literal("ruinstatus").executes(ctx -> ruinStatus(ctx.getSource())))
                 .then(Commands.literal("test")
                         .executes(ctx -> test(ctx.getSource(), null, null))
                         .then(Commands.argument("kit", StringArgumentType.word())
@@ -455,6 +457,44 @@ public final class PartsCommand {
     }
 
     /** CI: gives each live test site a stocked Storage Room and switches auto-expand on. */
+    private static BlockPos ruinTarget;
+
+    /** CI: finds the nearest ruined site and generates the chunks around it. */
+    private static int ruinTest(CommandSourceStack src) {
+        ServerLevel level = src.getLevel();
+        var key = net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.STRUCTURE, ProjectRedacted.id("ruined_site"));
+        var holder = level.registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.STRUCTURE).getOrThrow(key);
+        BlockPos from = BlockPos.containing(src.getPosition());
+        var found = level.getChunkSource().getGenerator().findNearestMapStructure(level, net.minecraft.core.HolderSet.direct(holder), from, 100, false);
+        if (found == null) {
+            say(src, "No ruined site found within 100 chunks.", ChatFormatting.RED);
+            return 0;
+        }
+        ruinTarget = found.getFirst();
+        say(src, "Nearest ruined site starts at " + ruinTarget.toShortString() + " (" + (int) Math.sqrt(ruinTarget.distSqr(from)) + " blocks away). Generating it.", ChatFormatting.GREEN);
+        int cx = ruinTarget.getX() >> 4, cz = ruinTarget.getZ() >> 4;
+        for (int x = -4; x <= 4; x++) for (int z = -4; z <= 4; z++) level.getChunk(cx + x, cz + z);
+        return 1;
+    }
+
+    /** CI: whether the generated ruin registered its Mainframe, and what is there now. */
+    private static int ruinStatus(CommandSourceStack src) {
+        ServerLevel level = src.getLevel();
+        if (ruinTarget == null) return 0;
+        boolean any = false;
+        for (dev.projectredacted.site.SiteManager.RuinRecord r : dev.projectredacted.site.SiteManager.ruins()) {
+            if (r.mainframe == null || r.mainframe.distSqr(ruinTarget) > 64 * 64) continue;
+            any = true;
+            String block = BuiltInRegistries.BLOCK.getKey(level.getBlockState(r.mainframe).getBlock()).getPath();
+            List<String> types = new ArrayList<>();
+            for (dev.projectredacted.room.Room room : r.rooms) types.add(room.type.replace("projectredacted:", ""));
+            say(src, "Ruined site: Mainframe at " + r.mainframe.toShortString() + " is " + block + ", rooms: " + String.join(", ", types),
+                    block.equals("ruined_mainframe") ? ChatFormatting.GREEN : ChatFormatting.RED);
+        }
+        if (!any) say(src, "The ruined site near " + ruinTarget.toShortString() + " didn't register a Mainframe.", ChatFormatting.RED);
+        return any ? 1 : 0;
+    }
+
     private static int expandTest(CommandSourceStack src) {
         ServerLevel level = src.getLevel();
         for (Site site : dev.projectredacted.site.SiteManager.sites()) {

@@ -290,21 +290,26 @@ public final class SiteGen {
         }
     }
 
-    private static void addRooms(Site site, SitePlan.PlanPart pp, PlacedPart placed, int index) {
-        SitePart part = pp.part;
+    /** The rooms a part holds where it's placed (numbers not assigned yet). */
+    public static List<Room> roomsOf(SitePart part, BlockPos origin, int rot, int used, long seed) {
         List<Room> made = new ArrayList<>();
         if (part.procedural()) {
-            if ("room".equals(part.shape.style())) made.add(ProceduralParts.roomFor(part, pp.origin, pp.rot, pp.used, placed.seed));
+            if ("room".equals(part.shape.style())) made.add(ProceduralParts.roomFor(part, origin, rot, used, seed));
         } else {
             for (SitePart.PartRoom pr : part.rooms) {
-                BlockPos a = pp.origin.offset(SitePart.rotate(new BlockPos(pr.x1(), pr.y1(), pr.z1()), pp.rot));
-                BlockPos b = pp.origin.offset(SitePart.rotate(new BlockPos(pr.x2(), pr.y2(), pr.z2()), pp.rot));
-                int side = SitePart.side(SitePart.rotate(SitePart.sideDir(pr.doorSide()), pp.rot));
-                Room r = new Room(0, pr.type(), a, b, side, placed.seed);
+                BlockPos a = origin.offset(SitePart.rotate(new BlockPos(pr.x1(), pr.y1(), pr.z1()), rot));
+                BlockPos b = origin.offset(SitePart.rotate(new BlockPos(pr.x2(), pr.y2(), pr.z2()), rot));
+                int side = SitePart.side(SitePart.rotate(SitePart.sideDir(pr.doorSide()), rot));
+                Room r = new Room(0, pr.type(), a, b, side, seed);
                 r.freeform = true; // hand-built: registered, never rebuilt by the room builder
                 made.add(r);
             }
         }
+        return made;
+    }
+
+    private static void addRooms(Site site, SitePlan.PlanPart pp, PlacedPart placed, int index) {
+        List<Room> made = roomsOf(pp.part, pp.origin, pp.rot, pp.used, placed.seed);
         for (Room r : made) {
             RoomType type = RoomTypes.get(r.type);
             if (type == null) continue;

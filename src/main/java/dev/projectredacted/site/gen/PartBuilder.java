@@ -64,6 +64,13 @@ public final class PartBuilder {
             SitePart.Connector c = part.worldConnector(i, pp.origin, pp.rot);
             if (c.type().equals(SitePart.SURFACE_EXIT)) exitPath(level, c, others, job.placements);
         }
+        body(part, pp, job);
+        for (Doorway d : pp.reopen) reopen(d, job.placements);
+        return job;
+    }
+
+    /** Just the part's own blocks, without terrain work (also used for ruins during world generation). */
+    public static void body(SitePart part, PlacedPart pp, Job job) {
         if (part.procedural()) {
             RoomBuilder.Plan plan = ProceduralParts.build(part, pp.origin, pp.rot, pp.used, pp.seed);
             job.body = plan;
@@ -74,8 +81,6 @@ public final class PartBuilder {
         } else {
             template(part, pp, job);
         }
-        for (Doorway d : pp.reopen) reopen(d, job.placements);
-        return job;
     }
 
     // ---------------------------------------------------------------- terrain (§6 step 3)
@@ -199,7 +204,7 @@ public final class PartBuilder {
         for (BlockPos r : part.readers) job.readers.add(world(pp, r));
     }
 
-    static BlockPos world(PlacedPart pp, BlockPos local) {
+    public static BlockPos world(PlacedPart pp, BlockPos local) {
         return pp.origin.offset(SitePart.rotate(local, pp.rot));
     }
 

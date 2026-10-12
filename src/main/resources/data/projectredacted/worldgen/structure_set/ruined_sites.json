@@ -1,0 +1,11 @@
+{
+  "structures": [
+    { "structure": "projectredacted:ruined_site", "weight": 1 }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 32,
+    "separation": 12,
+    "salt": 50419381
+  }
+}
