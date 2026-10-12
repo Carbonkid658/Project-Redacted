@@ -5,14 +5,33 @@ jobs:
   build:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '25'
-      - uses: gradle/actions/setup-gradle@v4
-      - run: chmod +x ./gradlew && ./gradlew build --stacktrace
-      - uses: actions/upload-artifact@v4
+      - uses: gradle/actions/setup-gradle@v5
+      - name: Build
+        run: |
+          chmod +x ./gradlew
+          set -o pipefail
+          ./gradlew build --stacktrace 2>&1 | tee build.log
+      - name: Summarize build errors
+        if: failure()
+        run: |
+          python3 - <<'PY'
+          import re
+          lines = open('build.log', errors='replace').read().splitlines()
+          keep = []
+          for i, l in enumerate(lines):
+              if re.search(r'error:|What went wrong|Could not|Caused by|FAILURE|> ', l):
+                  keep.extend(lines[i:i + 4])
+          text = '\n'.join(dict.fromkeys(keep)) or '\n'.join(lines[-150:])
+          text = text[:60000]
+          enc = text.replace('%', '%25').replace('\r', '%0D').replace('\n', '%0A')
+          print('::error title=Build log::' + enc)
+          PY
+      - uses: actions/upload-artifact@v5
         with:
           name: project-redacted-jar
           path: build/libs/*.jar
