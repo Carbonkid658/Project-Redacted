@@ -59,6 +59,8 @@ public final class Assembler {
     private final List<Open> open = new ArrayList<>();
     private final Set<Integer> usedDoorways = new HashSet<>();
     private int budget;
+    /** Why the last part didn't fit, for error messages. */
+    private String reject = "no Director's Office part";
 
     private Assembler(Input in, long seed) {
         this.in = in;
@@ -77,13 +79,16 @@ public final class Assembler {
         for (int attempt = 0; attempt < 8 && successes < 3; attempt++) {
             long seed = in.seed + attempt * 0x9E3779B97F4A7C15L;
             Assembler a = new Assembler(in, seed);
-            if (!a.start(mainframe, officeFloor)) continue;
+            if (!a.start(mainframe, officeFloor)) {
+                error = "No room in the claim for the Director's Office (" + a.reject + ").";
+                continue;
+            }
             if (!a.attach(new Goal(RoomTypes.BARRACKS, false, 0, null), 3)) {
                 error = "No room left in the claim for a Barracks. Upgrade the facility level for more space.";
                 continue;
             }
             int surface = SiteTypeRules.surfaceStorey(in.type);
-            if (!a.attach(new Goal(null, true, surface, null), surface + 3)) {
+            if (!a.attach(new Goal(null, true, surface, null), surface + 4)) {
                 error = in.type == SiteType.UNDERGROUND ? "Couldn't reach the surface for the Entrance from here." : "No room left in the claim for the Entrance.";
                 continue;
             }
@@ -238,14 +243,29 @@ public final class Assembler {
     private Integer fits(SitePart p, BlockPos origin, int rot, int forcedStorey) {
         Box box = p.box(origin, rot);
         Box b = in.bounds;
-        if (box.x1() < b.x1() || box.x2() > b.x2() || box.z1() < b.z1() || box.z2() > b.z2() || box.y1() < b.y1() || box.y2() > b.y2()) return null;
+        if (box.x1() < b.x1() || box.x2() > b.x2() || box.z1() < b.z1() || box.z2() > b.z2() || box.y1() < b.y1() || box.y2() > b.y2()) {
+            reject = "outside the claim: " + box + " vs " + b;
+            return null;
+        }
         int storey = forcedStorey >= 0 ? forcedStorey : Math.floorDiv(box.y1() - in.baseFloor + SitePart.STOREY / 2, SitePart.STOREY);
-        if (!SiteTypeRules.allowed(in.type, p, storey, p.storeys())) return null;
-        for (Box o : in.occupied) if (o.intersects(box)) return null;
-        for (SitePlan.PlanPart o : placed) if (o.box.intersects(box)) return null;
+        if (!SiteTypeRules.allowed(in.type, p, storey, p.storeys())) {
+            reject = "storey " + storey + " not allowed";
+            return null;
+        }
+        for (Box o : in.occupied) if (o.intersects(box)) {
+            reject = "overlaps " + o;
+            return null;
+        }
+        for (SitePlan.PlanPart o : placed) if (o.box.intersects(box)) {
+            reject = "overlaps " + o.part.id;
+            return null;
+        }
         for (int i = 0; i < p.connectors.size(); i++) {
             SitePart.Connector c = p.worldConnector(i, origin, rot);
-            if (c.type().equals(SitePart.SURFACE_EXIT) && !in.exitOk.test(c.pos(), c.facing())) return null;
+            if (c.type().equals(SitePart.SURFACE_EXIT) && !in.exitOk.test(c.pos(), c.facing())) {
+                reject = "entrance would face a wall";
+                return null;
+            }
         }
         return storey;
     }
