@@ -39,7 +39,7 @@ public final class LibraryGui {
             });
         }
         // Entity SCPs the player brought along.
-        for (Entity e : player.level().getEntitiesOfClass(Entity.class, player.getBoundingBox().inflate(8), x -> x.getType().is(ModTags.SCP_ENTITIES))) {
+        for (Entity e : player.level().getEntitiesOfClass(Entity.class, player.getBoundingBox().inflate(8), x -> x.getType().builtInRegistryHolder().is(ModTags.SCP_ENTITIES))) {
             if (slot >= 18) break;
             ScpDefinition def = ScpApi.forEntity(e.getType());
             int weight = Math.max(1, ScpApi.raidWeight(def)) * 2;

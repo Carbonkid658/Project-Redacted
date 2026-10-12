@@ -87,7 +87,7 @@ public final class Cost {
     }
 
     public static void give(Player player, ItemStack stack) {
-        if (!player.getInventory().add(stack)) player.drop(stack, false);
+        if (!player.getInventory().add(stack)) player.level().addFreshEntity(new net.minecraft.world.entity.item.ItemEntity(player.level(), player.getX(), player.getY(), player.getZ(), stack));
     }
 
     public List<String> describe() {

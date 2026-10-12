@@ -9,11 +9,11 @@ public final class ConfirmGui {
     public static void open(ServerPlayer player, String title, String question, Runnable yes, Runnable no) {
         ChestGui gui = new ChestGui(title, 3);
         gui.set(13, ChestGui.icon(Items.PAPER, title, ChatFormatting.GOLD, wrap(question)));
-        gui.button(11, ChestGui.icon(Items.LIME_CONCRETE, "Yes", ChatFormatting.GREEN), (p, r) -> {
+        gui.button(11, ChestGui.icon(Items.CONCRETE.lime(), "Yes", ChatFormatting.GREEN), (p, r) -> {
             p.closeContainer();
             yes.run();
         });
-        gui.button(15, ChestGui.icon(Items.RED_CONCRETE, "No", ChatFormatting.RED), (p, r) -> {
+        gui.button(15, ChestGui.icon(Items.CONCRETE.red(), "No", ChatFormatting.RED), (p, r) -> {
             p.closeContainer();
             if (no != null) no.run();
         });

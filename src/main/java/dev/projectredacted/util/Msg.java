@@ -10,7 +10,7 @@ public final class Msg {
     }
 
     public static void actionBar(Player player, String text, ChatFormatting color) {
-        player.displayClientMessage(Component.literal(text).withStyle(color), true);
+        player.sendOverlayMessage(Component.literal(text).withStyle(color));
     }
 
     private Msg() {}

@@ -43,7 +43,7 @@ public final class PowerGui {
                 ChestGui.later(() -> open(p, site, 0));
             });
         }
-        gui.set(49, ChestGui.icon(Items.LIGHTNING_ROD, "Power: " + site.powerDemand + " / " + site.powerSupply, ChatFormatting.YELLOW,
+        gui.set(49, ChestGui.icon(Items.LIGHTNING_ROD.asList().get(0), "Power: " + site.powerDemand + " / " + site.powerSupply, ChatFormatting.YELLOW,
                 "Generators supply " + site.powerSupply + " power.",
                 "Breaker slots used: " + connected + " / " + site.connectCapacity,
                 "Water: " + site.waterDemand + " / " + site.waterSupply,

@@ -13,8 +13,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BedPart;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
-import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
+import com.mojang.serialization.MapCodec;
+import net.minecraft.world.level.chunk.ChunkGenerator;
 
 import java.util.Random;
 
@@ -22,19 +22,19 @@ import java.util.Random;
  * A Foundation Bunker: a buried shelter behind a Level 4 keycard door, with 1 to 4 survivors who can be
  * recruited. Bunkers spawn randomly and are relatively safe.
  */
-public class BunkerFeature extends Feature<NoneFeatureConfiguration> {
-    public BunkerFeature() {
-        super(NoneFeatureConfiguration.CODEC);
+public class BunkerFeature implements Feature {
+    public static final MapCodec<BunkerFeature> CODEC = MapCodec.unit(BunkerFeature::new);
+
+    @Override
+    public MapCodec<BunkerFeature> codec() {
+        return CODEC;
     }
 
     @Override
-    public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> ctx) {
-        WorldGenLevel level = ctx.level();
-        RandomSource random = ctx.random();
-        BlockPos o = ctx.origin();
+    public boolean place(WorldGenLevel level, ChunkGenerator generator, RandomSource random, BlockPos o) {
         int ox = o.getX(), oz = o.getZ(), sy = o.getY();
         if (sy <= level.getMinY() + 12) return false;
-        BlockState concrete = Blocks.GRAY_CONCRETE.defaultBlockState();
+        BlockState concrete = Blocks.CONCRETE.gray().defaultBlockState();
         BlockState air = Blocks.AIR.defaultBlockState();
         int floor = sy - 7;
 
@@ -57,7 +57,7 @@ public class BunkerFeature extends Feature<NoneFeatureConfiguration> {
         }
 
         // Beds, supplies and light.
-        BlockState bed = Blocks.GREEN_BED.defaultBlockState().setValue(BedBlock.FACING, Direction.WEST);
+        BlockState bed = Blocks.BED.green().defaultBlockState().setValue(BedBlock.FACING, Direction.WEST);
         for (int i = 0; i < 4; i++) {
             int z = oz - 3 + i * 2;
             level.setBlock(new BlockPos(ox - 3, floor + 1, z), bed.setValue(BedBlock.PART, BedPart.HEAD), 18);

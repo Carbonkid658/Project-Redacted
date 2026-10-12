@@ -66,7 +66,7 @@ public class TraderEntity extends PathfinderMob {
         setCustomName(Component.literal(kind.displayName));
         if (kind == TraderKind.LIBRARY_ENTRANCE) {
             setNoGravity(true);
-            setInvulnerable(true);
+            setPermanentlyInvulnerable(true);
         }
     }
 

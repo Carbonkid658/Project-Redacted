@@ -10,35 +10,39 @@ import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
-import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
+import com.mojang.serialization.MapCodec;
+import net.minecraft.world.level.chunk.ChunkGenerator;
 
 /** A GOC outpost or a Dr. Wondertainment stall: a small fixed spot with a trader who stays there. */
-public class ContactPostFeature extends Feature<NoneFeatureConfiguration> {
+public class ContactPostFeature implements Feature {
     private final TraderKind kind;
 
+    public static final MapCodec<ContactPostFeature> GOC_CODEC = MapCodec.unit(() -> new ContactPostFeature(TraderKind.GOC_QUARTERMASTER));
+    public static final MapCodec<ContactPostFeature> WONDERTAINMENT_CODEC = MapCodec.unit(() -> new ContactPostFeature(TraderKind.WONDERTAINMENT_REP));
+
     public ContactPostFeature(TraderKind kind) {
-        super(NoneFeatureConfiguration.CODEC);
         this.kind = kind;
     }
 
     @Override
-    public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> ctx) {
-        WorldGenLevel level = ctx.level();
-        RandomSource random = ctx.random();
-        BlockPos o = ctx.origin();
+    public MapCodec<ContactPostFeature> codec() {
+        return kind == TraderKind.GOC_QUARTERMASTER ? GOC_CODEC : WONDERTAINMENT_CODEC;
+    }
+
+    @Override
+    public boolean place(WorldGenLevel level, ChunkGenerator generator, RandomSource random, BlockPos o) {
         int ox = o.getX(), oz = o.getZ(), y = o.getY();
         boolean goc = kind == TraderKind.GOC_QUARTERMASTER;
-        BlockState floor = goc ? Blocks.STONE_BRICKS.defaultBlockState() : Blocks.PINK_CONCRETE.defaultBlockState();
-        BlockState post = goc ? Blocks.IRON_BARS.defaultBlockState() : Blocks.WHITE_WOOL.defaultBlockState();
-        BlockState roof = goc ? Blocks.GREEN_WOOL.defaultBlockState() : Blocks.YELLOW_WOOL.defaultBlockState();
+        BlockState floor = goc ? Blocks.STONE_BRICKS.defaultBlockState() : Blocks.CONCRETE.pink().defaultBlockState();
+        BlockState post = goc ? Blocks.IRON_BARS.defaultBlockState() : Blocks.WOOL.white().defaultBlockState();
+        BlockState roof = goc ? Blocks.WOOL.green().defaultBlockState() : Blocks.WOOL.yellow().defaultBlockState();
         for (int x = -3; x <= 3; x++) {
             for (int z = -3; z <= 3; z++) {
                 GenUtil.set(level, ox + x, y - 1, oz + z, floor);
                 for (int h = 0; h < 3; h++) GenUtil.set(level, ox + x, y + h, oz + z, Blocks.AIR.defaultBlockState());
                 boolean corner = Math.abs(x) == 3 && Math.abs(z) == 3;
                 if (corner) for (int h = 0; h < 3; h++) GenUtil.set(level, ox + x, y + h, oz + z, post);
-                BlockState top = goc ? roof : ((x + z) % 2 == 0 ? Blocks.RED_WOOL.defaultBlockState() : roof);
+                BlockState top = goc ? roof : ((x + z) % 2 == 0 ? Blocks.WOOL.red().defaultBlockState() : roof);
                 GenUtil.set(level, ox + x, y + 3, oz + z, top);
             }
         }

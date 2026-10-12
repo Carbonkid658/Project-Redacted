@@ -1,6 +1,5 @@
 package dev.projectredacted.block;
 
-import com.mojang.serialization.MapCodec;
 import dev.projectredacted.registry.ModItems;
 import dev.projectredacted.site.Site;
 import dev.projectredacted.site.SiteManager;
@@ -23,15 +22,9 @@ import net.minecraft.world.phys.BlockHitResult;
  * which is why the design calls it the safeguard. Raiders can hack it; Repair Kits restore it.
  */
 public class CassieBlock extends FacingBlock {
-    public static final MapCodec<CassieBlock> CODEC = simpleCodec(CassieBlock::new);
 
     public CassieBlock(Properties properties) {
         super(properties);
-    }
-
-    @Override
-    protected MapCodec<? extends Block> codec() {
-        return CODEC;
     }
 
     @Override

@@ -81,7 +81,6 @@ public class RaidObjectiveGoal extends Goal {
             return;
         }
         breakProgress++;
-        mob.swing(net.minecraft.world.InteractionHand.MAIN_HAND);
         level.destroyBlockProgress(mob.getId(), breaking, Math.min(9, breakProgress * 10 / breakNeeded));
         if (breakProgress >= breakNeeded) {
             level.destroyBlock(breaking, false, mob);

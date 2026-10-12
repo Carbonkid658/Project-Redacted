@@ -1,6 +1,5 @@
 package dev.projectredacted.block;
 
-import com.mojang.serialization.MapCodec;
 import dev.projectredacted.gui.TerminalGui;
 import dev.projectredacted.site.Site;
 import dev.projectredacted.site.SiteManager;
@@ -19,15 +18,9 @@ import net.minecraft.world.phys.BlockHitResult;
 
 /** The Site Director's Computer: the Mainframe Terminal, the site's main interface. */
 public class TerminalBlock extends FacingBlock {
-    public static final MapCodec<TerminalBlock> CODEC = simpleCodec(TerminalBlock::new);
 
     public TerminalBlock(Properties properties) {
         super(properties);
-    }
-
-    @Override
-    protected MapCodec<? extends Block> codec() {
-        return CODEC;
     }
 
     @Override

@@ -40,7 +40,7 @@ public final class DesignatorGui {
             lore.add("Power " + t.powerDraw + (t.waterDraw > 0 ? ", water " + t.waterDraw : ""));
             lore.add("Base cost: " + String.join(", ", t.cost().describe()));
             if (locked != null) lore.add("LOCKED: " + locked);
-            gui.button(slot++, ChestGui.icon(locked == null ? t.iconItem() : Items.GRAY_DYE, t.name, locked == null ? ChatFormatting.GREEN : ChatFormatting.DARK_GRAY, lore),
+            gui.button(slot++, ChestGui.icon(locked == null ? t.iconItem() : Items.DYE.gray(), t.name, locked == null ? ChatFormatting.GREEN : ChatFormatting.DARK_GRAY, lore),
                     (p, r) -> {
                         if (locked != null) {
                             p.sendSystemMessage(Component.literal(t.name + ": " + locked).withStyle(ChatFormatting.RED));
@@ -83,7 +83,7 @@ public final class DesignatorGui {
             s.reroll();
             ChestGui.later(() -> openPreview(p, site, s));
         });
-        gui.button(14, ChestGui.icon(problem == null ? Items.LIME_CONCRETE : Items.RED_CONCRETE, "Build", problem == null ? ChatFormatting.GREEN : ChatFormatting.RED,
+        gui.button(14, ChestGui.icon(problem == null ? Items.CONCRETE.lime() : Items.CONCRETE.red(), "Build", problem == null ? ChatFormatting.GREEN : ChatFormatting.RED,
                 "Pays the cost and starts construction.", "Rooms stay dormant until added to the Circuit Breaker."), (p, r) -> {
             p.closeContainer();
             RoomPlanner.commit(site, p, s, false);

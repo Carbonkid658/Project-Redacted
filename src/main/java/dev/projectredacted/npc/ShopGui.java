@@ -45,7 +45,7 @@ public final class ShopGui {
                 list.add(new Offer(new ItemStack(Items.FIREWORK_ROCKET, 8), 2, 4));
                 list.add(new Offer(new ItemStack(Items.COOKIE, 8), 1, 6));
                 list.add(new Offer(new ItemStack(Items.MUSIC_DISC_CAT), 6, 1));
-                list.add(new Offer(new ItemStack(Items.PINK_WOOL, 16), 1, 4));
+                list.add(new Offer(new ItemStack(Items.WOOL.pink(), 16), 1, 4));
                 list.add(new Offer(new ItemStack(Items.TOTEM_OF_UNDYING), 30, 1));
                 // A chance of other item-type SCPs, from the wondertainment_scps item tag.
                 List<Item> scps = new ArrayList<>();

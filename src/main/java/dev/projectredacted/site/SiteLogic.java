@@ -114,7 +114,7 @@ public final class SiteLogic {
             cell.scpCount = 0;
             if (!level.isLoaded(cell.center())) continue;
             String label = "";
-            for (Entity e : level.getEntitiesOfClass(Entity.class, cell.box(), e -> e.getType().is(ModTags.SCP_ENTITIES))) {
+            for (Entity e : level.getEntitiesOfClass(Entity.class, cell.box(), e -> e.getType().builtInRegistryHolder().is(ModTags.SCP_ENTITIES))) {
                 ScpDefinition def = ScpApi.forEntity(e.getType());
                 cell.scpCount++;
                 weight += ScpApi.raidWeight(def);
@@ -150,7 +150,7 @@ public final class SiteLogic {
 
     /** True if an SCP (entity or item) is inside the room; such rooms can't be demolished. */
     public static boolean hasScp(ServerLevel level, Room room) {
-        if (!level.getEntitiesOfClass(Entity.class, room.box(), e -> e.getType().is(ModTags.SCP_ENTITIES)).isEmpty()) return true;
+        if (!level.getEntitiesOfClass(Entity.class, room.box(), e -> e.getType().builtInRegistryHolder().is(ModTags.SCP_ENTITIES)).isEmpty()) return true;
         for (ItemStack s : cellItems(level, room)) if (s.is(ModTags.SCP_ITEMS)) return true;
         return false;
     }
@@ -196,7 +196,7 @@ public final class SiteLogic {
         double mult = site.hasUpgrade(Upgrade.CONTAINMENT_PROTOCOLS) ? 0.5 : 1.0;
         for (Room cell : site.cells()) {
             if (!level.isLoaded(cell.center())) continue;
-            for (Entity e : level.getEntitiesOfClass(Entity.class, cell.box(), x -> x.getType().is(ModTags.SCP_ENTITIES))) {
+            for (Entity e : level.getEntitiesOfClass(Entity.class, cell.box(), x -> x.getType().builtInRegistryHolder().is(ModTags.SCP_ENTITIES))) {
                 ScpDefinition def = ScpApi.forEntity(e.getType());
                 if (def == null) continue;
                 var unmet = def.unmet(new ContainmentContext(level, site, cell, e));

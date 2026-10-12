@@ -1,16 +1,2 @@
 # API lookups for CI (find:, class:, grep:<fqcn>:<regex>, res:<regex>, cat:<path>); empty means skip.
-class:net.minecraft.world.level.block.ColorCollection
-class:net.minecraft.world.level.block.WeatheringCopperCollection
-class:net.minecraft.world.level.block.state.BlockBehaviour$StateArgumentPredicate
-class:net.minecraft.world.level.block.state.BlockBehaviour$StatePredicate
-class:net.minecraft.core.Holder
-res:data/minecraft/worldgen/[a-z_]+/(desert_well|monster_room|fossil_upper|disk_sand)\.json
-cat:data/minecraft/worldgen/placed_feature/desert_well.json
-cat:data/minecraft/worldgen/feature/desert_well.json
-cat:data/minecraft/worldgen/configured_feature/desert_well.json
-res:data/minecraft/dimension|dimension_type/overworld
-cat:data/minecraft/dimension_type/the_end.json
-grep:net.minecraft.world.level.Level:Clock|Time|isClientSide|dimension\(
-class:net.minecraft.world.clock.ClockManager
-class:net.minecraft.world.clock.ServerClockManager
-grep:net.minecraft.world.entity.Entity:Tag|getType|teleport|snapTo|level\(\)
+cat:data/minecraft/worldgen/world_preset/flat.json

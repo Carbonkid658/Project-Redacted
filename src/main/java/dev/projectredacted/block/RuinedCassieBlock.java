@@ -1,6 +1,5 @@
 package dev.projectredacted.block;
 
-import com.mojang.serialization.MapCodec;
 import dev.projectredacted.registry.ModBlocks;
 import dev.projectredacted.registry.ModItems;
 import dev.projectredacted.site.Site;
@@ -20,17 +19,11 @@ import net.minecraft.world.phys.BlockHitResult;
 
 /** A broken C.A.S.S.I.E. from an abandoned facility. Cheaper to repair than crafting a new one. */
 public class RuinedCassieBlock extends FacingBlock {
-    public static final MapCodec<RuinedCassieBlock> CODEC = simpleCodec(RuinedCassieBlock::new);
     /** Default repair cost (the real cost is still being decided). */
     public static final int REPAIR_KITS = 2;
 
     public RuinedCassieBlock(Properties properties) {
         super(properties);
-    }
-
-    @Override
-    protected MapCodec<? extends Block> codec() {
-        return CODEC;
     }
 
     @Override

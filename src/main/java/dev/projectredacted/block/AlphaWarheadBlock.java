@@ -1,6 +1,5 @@
 package dev.projectredacted.block;
 
-import com.mojang.serialization.MapCodec;
 import dev.projectredacted.site.Site;
 import dev.projectredacted.site.SiteManager;
 import dev.projectredacted.site.Upgrade;
@@ -17,15 +16,9 @@ import net.minecraft.world.phys.BlockHitResult;
 
 /** The site's nuke. Only the Director can arm it, and only after the Alpha Warhead upgrade. Sneak-use to abort. */
 public class AlphaWarheadBlock extends FacingBlock {
-    public static final MapCodec<AlphaWarheadBlock> CODEC = simpleCodec(AlphaWarheadBlock::new);
 
     public AlphaWarheadBlock(Properties properties) {
         super(properties);
-    }
-
-    @Override
-    protected MapCodec<? extends Block> codec() {
-        return CODEC;
     }
 
     @Override

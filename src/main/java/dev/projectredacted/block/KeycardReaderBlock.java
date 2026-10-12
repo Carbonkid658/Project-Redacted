@@ -1,6 +1,5 @@
 package dev.projectredacted.block;
 
-import com.mojang.serialization.MapCodec;
 import dev.projectredacted.item.KeycardItem;
 import dev.projectredacted.registry.ModItems;
 import dev.projectredacted.site.DoorControl;
@@ -28,17 +27,11 @@ import net.minecraft.world.phys.BlockHitResult;
  * are let through automatically. The Director changes the level by using a Clipboard on it.
  */
 public class KeycardReaderBlock extends FacingBlock {
-    public static final MapCodec<KeycardReaderBlock> CODEC = simpleCodec(KeycardReaderBlock::new);
     public static final IntegerProperty LEVEL = IntegerProperty.create("level", 1, 5);
 
     public KeycardReaderBlock(Properties properties) {
         super(properties);
         registerDefaultState(defaultBlockState().setValue(LEVEL, 1));
-    }
-
-    @Override
-    protected MapCodec<? extends Block> codec() {
-        return CODEC;
     }
 
     @Override

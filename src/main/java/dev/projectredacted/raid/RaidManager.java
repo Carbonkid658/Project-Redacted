@@ -300,7 +300,7 @@ public final class RaidManager {
                     raid.hitRooms.add(room.number);
                     DoorControl.setDoorsInBox(level, room.box(), true);
                     takeScpItems(level, room, npc);
-                    for (Entity e : level.getEntitiesOfClass(Entity.class, room.box().inflate(2), x -> x.getType().is(ModTags.SCP_ENTITIES))) {
+                    for (Entity e : level.getEntitiesOfClass(Entity.class, room.box().inflate(2), x -> x.getType().builtInRegistryHolder().is(ModTags.SCP_ENTITIES))) {
                         ScpDefinition def = ScpApi.forEntity(e.getType());
                         if (def != null && def.followsHand) {
                             e.discard();
@@ -317,7 +317,7 @@ public final class RaidManager {
     }
 
     private static void capture(ServerLevel level, Site site, RaidState raid, Room room, ArmedNpcEntity npc) {
-        for (Entity e : level.getEntitiesOfClass(Entity.class, room.box().inflate(2), x -> x.getType().is(ModTags.SCP_ENTITIES))) {
+        for (Entity e : level.getEntitiesOfClass(Entity.class, room.box().inflate(2), x -> x.getType().builtInRegistryHolder().is(ModTags.SCP_ENTITIES))) {
             ScpDefinition def = ScpApi.forEntity(e.getType());
             e.discard();
             raid.captured++;

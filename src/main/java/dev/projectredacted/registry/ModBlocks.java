@@ -40,7 +40,7 @@ public final class ModBlocks {
     public static final Block REINFORCED_GLASS = register("reinforced_glass", TransparentBlock::new,
             props().mapColor(MapColor.NONE).strength(8f, 600f).sound(SoundType.GLASS).noOcclusion()
                     .isValidSpawn((s, l, p, e) -> false).isRedstoneConductor((s, l, p) -> false)
-                    .isSuffocating((s, l, p) -> false).isViewBlocking((s, l, p) -> false));
+                    .isSuffocating((s, l, p) -> false).isViewBlocking((s, l, p, a) -> false));
     public static final Block REINFORCED_DOOR = registerDoor("reinforced_door",
             props().mapColor(MapColor.METAL).strength(15f, 600f).requiresCorrectToolForDrops().noOcclusion());
 

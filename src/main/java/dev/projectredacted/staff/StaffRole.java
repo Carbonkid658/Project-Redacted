@@ -42,7 +42,7 @@ public enum StaffRole {
             case JANITOR -> Items.BRUSH;
             case ADMINISTRATION -> Items.PAPER;
             case MEDICAL -> Items.GOLDEN_APPLE;
-            case DCLASS -> Items.ORANGE_DYE;
+            case DCLASS -> Items.DYE.orange();
         };
     }
 }

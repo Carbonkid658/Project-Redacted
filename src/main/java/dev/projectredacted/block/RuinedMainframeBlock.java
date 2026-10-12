@@ -1,6 +1,5 @@
 package dev.projectredacted.block;
 
-import com.mojang.serialization.MapCodec;
 import dev.projectredacted.registry.ModItems;
 import dev.projectredacted.site.SiteFounding;
 import dev.projectredacted.util.Msg;
@@ -19,16 +18,10 @@ import net.minecraft.world.phys.BlockHitResult;
 
 /** Found in old, ruined sites. Repair it with Repair Kits to found your site inside the old facility. */
 public class RuinedMainframeBlock extends FacingBlock {
-    public static final MapCodec<RuinedMainframeBlock> CODEC = simpleCodec(RuinedMainframeBlock::new);
     public static final int REPAIR_KITS = 3;
 
     public RuinedMainframeBlock(Properties properties) {
         super(properties);
-    }
-
-    @Override
-    protected MapCodec<? extends Block> codec() {
-        return CODEC;
     }
 
     @Override

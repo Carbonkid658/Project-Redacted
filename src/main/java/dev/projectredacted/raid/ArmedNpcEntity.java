@@ -106,7 +106,7 @@ public class ArmedNpcEntity extends PathfinderMob {
             if (other.faction() == f) return false;
             return f == Faction.MTF ? other.faction().raider : true;
         }
-        boolean scp = e.getType().is(ModTags.SCP_ENTITIES);
+        boolean scp = e.getType().builtInRegistryHolder().is(ModTags.SCP_ENTITIES);
         if (f == Faction.MTF) return e instanceof Enemy && !scp;
         if (f == Faction.GOC) return scp || e instanceof Enemy;
         if (scp) return false; // The Hand and the Insurgency want SCPs alive.

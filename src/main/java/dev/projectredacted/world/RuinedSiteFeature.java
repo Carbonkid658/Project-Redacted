@@ -13,24 +13,24 @@ import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
-import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
+import com.mojang.serialization.MapCodec;
+import net.minecraft.world.level.chunk.ChunkGenerator;
 
 /**
  * An old, ruined SCP site: a crumbling office with a dead Mainframe (and sometimes a broken C.A.S.S.I.E.),
  * a barracks, an entrance and an empty Light Cell. Players can repair the Mainframe and move in.
  * SCPs will spawn in these once SCP content exists.
  */
-public class RuinedSiteFeature extends Feature<NoneFeatureConfiguration> {
-    public RuinedSiteFeature() {
-        super(NoneFeatureConfiguration.CODEC);
+public class RuinedSiteFeature implements Feature {
+    public static final MapCodec<RuinedSiteFeature> CODEC = MapCodec.unit(RuinedSiteFeature::new);
+
+    @Override
+    public MapCodec<RuinedSiteFeature> codec() {
+        return CODEC;
     }
 
     @Override
-    public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> ctx) {
-        WorldGenLevel level = ctx.level();
-        RandomSource random = ctx.random();
-        BlockPos o = ctx.origin();
+    public boolean place(WorldGenLevel level, ChunkGenerator generator, RandomSource random, BlockPos o) {
         int ox = o.getX(), oz = o.getZ(), floor = o.getY() - 1;
         long seed = random.nextLong();
 

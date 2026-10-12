@@ -1,6 +1,5 @@
 package dev.projectredacted.block;
 
-import com.mojang.serialization.MapCodec;
 import dev.projectredacted.registry.ModItems;
 import dev.projectredacted.site.Site;
 import dev.projectredacted.site.SiteFounding;
@@ -22,15 +21,9 @@ import net.minecraft.world.phys.BlockHitResult;
 
 /** The heart of a site. Placing one founds the player's site; while it is offline the site stops running. */
 public class MainframeBlock extends FacingBlock {
-    public static final MapCodec<MainframeBlock> CODEC = simpleCodec(MainframeBlock::new);
 
     public MainframeBlock(Properties properties) {
         super(properties);
-    }
-
-    @Override
-    protected MapCodec<? extends Block> codec() {
-        return CODEC;
     }
 
     @Override

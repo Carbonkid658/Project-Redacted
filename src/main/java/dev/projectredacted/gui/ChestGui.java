@@ -10,7 +10,7 @@ import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ChestMenu;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -92,7 +92,7 @@ public class ChestGui {
     }
 
     public static ItemStack filler() {
-        return icon(Items.GRAY_STAINED_GLASS_PANE, " ", ChatFormatting.DARK_GRAY);
+        return icon(Items.STAINED_GLASS_PANE.gray(), " ", ChatFormatting.DARK_GRAY);
     }
 
     private static MenuType<ChestMenu> type(int rows) {
@@ -115,10 +115,10 @@ public class ChestGui {
         }
 
         @Override
-        public void clicked(int slot, int button, ClickType clickType, Player player) {
+        public void clicked(int slot, int button, ContainerInput clickType, Player player) {
             if (slot >= 0 && slot < gui.size() && player instanceof ServerPlayer sp) {
                 Action action = gui.actions.get(slot);
-                if (action != null && (clickType == ClickType.PICKUP || clickType == ClickType.QUICK_MOVE)) {
+                if (action != null && (clickType == ContainerInput.PICKUP || clickType == ContainerInput.QUICK_MOVE)) {
                     boolean right = button == 1;
                     Scheduler.next(() -> action.run(sp, right));
                 }

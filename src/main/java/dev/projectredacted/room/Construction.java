@@ -67,7 +67,7 @@ public final class Construction {
     private static void placeStructure(ServerLevel level, Room room, RoomType type) {
         Identifier id = Identifier.tryParse(type.structure);
         if (id == null) return;
-        Optional<StructureTemplate> template = level.getStructureManager().get(id);
+        Optional<StructureTemplate> template = level.getServer().getStructureTemplateManager().get(id);
         if (template.isEmpty()) {
             ProjectRedacted.LOG.warn("Room type {} points at missing structure {}", type.id, id);
             return;

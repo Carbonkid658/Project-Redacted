@@ -1,6 +1,5 @@
 package dev.projectredacted.block;
 
-import com.mojang.serialization.MapCodec;
 import dev.projectredacted.gui.PowerGui;
 import dev.projectredacted.site.Site;
 import dev.projectredacted.site.SiteManager;
@@ -17,15 +16,9 @@ import net.minecraft.world.phys.BlockHitResult;
 
 /** Rooms stay inert until they're added to the Circuit Breaker. */
 public class CircuitBreakerBlock extends FacingBlock {
-    public static final MapCodec<CircuitBreakerBlock> CODEC = simpleCodec(CircuitBreakerBlock::new);
 
     public CircuitBreakerBlock(Properties properties) {
         super(properties);
-    }
-
-    @Override
-    protected MapCodec<? extends Block> codec() {
-        return CODEC;
     }
 
     @Override

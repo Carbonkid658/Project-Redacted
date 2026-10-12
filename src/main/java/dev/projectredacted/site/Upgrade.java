@@ -25,9 +25,9 @@ public enum Upgrade {
     CASSIE_PROGRAM(Category.ENGINEERING, "C.A.S.S.I.E. Program", "Lets you place, craft or repair C.A.S.S.I.E.", 2400, 0,
             () -> Cost.of(Items.REDSTONE_BLOCK, 4, Items.NOTE_BLOCK, 4, ModItems.PLASTIC, 32, Items.DIAMOND, 4), s -> s.level < 1 ? "Requires Facility Level 1" : null),
     GENERATOR_EFFICIENCY(Category.ENGINEERING, "Generator Efficiency", "Generators produce 25% more power.", 2400, 0,
-            () -> Cost.of(Items.COPPER_BLOCK, 8, Items.REDSTONE_BLOCK, 4), s -> null),
+            () -> Cost.of(Items.COPPER_BLOCK.asList().get(0), 8, Items.REDSTONE_BLOCK, 4), s -> null),
     WATER_RECYCLING(Category.ENGINEERING, "Water Recycling", "Water Pumps supply 25% more water.", 2400, 0,
-            () -> Cost.of(Items.COPPER_BLOCK, 8, Items.CAULDRON, 4), s -> null),
+            () -> Cost.of(Items.COPPER_BLOCK.asList().get(0), 8, Items.CAULDRON, 4), s -> null),
 
     ADVANCED_INSTRUMENTS(Category.RESEARCH, "Advanced Instruments", "Researchers work 25% faster.", 3600, 0,
             () -> Cost.of(Items.AMETHYST_SHARD, 16, Items.GLASS, 32, Items.GOLD_INGOT, 8), s -> s.countStaff(StaffRole.RESEARCHER) < 1 ? "Requires a Researcher" : null),

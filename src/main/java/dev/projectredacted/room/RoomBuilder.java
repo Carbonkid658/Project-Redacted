@@ -33,13 +33,13 @@ public final class RoomBuilder {
     private static final Palette[] PALETTES = {
             // Modern clinical
             new Palette(ModBlocks.FACILITY_WALL.defaultBlockState(), ModBlocks.FACILITY_FLOOR.defaultBlockState(),
-                    Blocks.LIGHT_GRAY_CONCRETE.defaultBlockState(), ModBlocks.FACILITY_WALL.defaultBlockState(), ModBlocks.CEILING_LIGHT.defaultBlockState()),
+                    Blocks.CONCRETE.lightGray().defaultBlockState(), ModBlocks.FACILITY_WALL.defaultBlockState(), ModBlocks.CEILING_LIGHT.defaultBlockState()),
             // Retro office
-            new Palette(Blocks.WHITE_TERRACOTTA.defaultBlockState(), Blocks.GRAY_WOOL.defaultBlockState(),
+            new Palette(Blocks.DYED_TERRACOTTA.white().defaultBlockState(), Blocks.WOOL.gray().defaultBlockState(),
                     Blocks.STRIPPED_SPRUCE_WOOD.defaultBlockState(), Blocks.SMOOTH_STONE.defaultBlockState(), ModBlocks.CEILING_LIGHT.defaultBlockState()),
             // Mixed
             new Palette(Blocks.SMOOTH_QUARTZ.defaultBlockState(), Blocks.POLISHED_ANDESITE.defaultBlockState(),
-                    Blocks.GRAY_CONCRETE.defaultBlockState(), ModBlocks.FACILITY_WALL.defaultBlockState(), ModBlocks.CEILING_LIGHT.defaultBlockState()),
+                    Blocks.CONCRETE.gray().defaultBlockState(), ModBlocks.FACILITY_WALL.defaultBlockState(), ModBlocks.CEILING_LIGHT.defaultBlockState()),
     };
 
     public static Plan plan(Room room, RoomType type) {
@@ -111,7 +111,7 @@ public final class RoomBuilder {
                 case "medium_cell" -> Blocks.POLISHED_TUFF.defaultBlockState();
                 case "heavy_cell" -> ModBlocks.CONTAINMENT_CONCRETE.defaultBlockState();
                 case "generator", "water_pump", "circuit_breaker" -> Blocks.IRON_BLOCK.defaultBlockState();
-                case "medbay", "checkup", "lab", "bathroom", "kitchen" -> Blocks.WHITE_CONCRETE.defaultBlockState();
+                case "medbay", "checkup", "lab", "bathroom", "kitchen" -> Blocks.CONCRETE.white().defaultBlockState();
                 default -> pal.floor;
             };
         }
@@ -367,7 +367,7 @@ public final class RoomBuilder {
             put(chair[0] - in.getStepX(), chair[1] - in.getStepZ(), stairs(Blocks.DARK_OAK_STAIRS, in.getOpposite()));
             int[] right = back.get(back.size() - 1);
             put(right[0], right[1], Blocks.CHEST.defaultBlockState());
-            carpet(Blocks.RED_CARPET, 2);
+            carpet(Blocks.CARPET.red(), 2);
             corners(Blocks.POTTED_FERN.defaultBlockState());
         }
 
@@ -380,7 +380,7 @@ public final class RoomBuilder {
                     put(x, z, topSlab(Blocks.SPRUCE_SLAB));
                     int cx = x - in.getStepX(), cz = z - in.getStepZ();
                     put(cx, cz, stairs(Blocks.SPRUCE_STAIRS, in.getOpposite()));
-                    if (!research && i++ % 2 == 0) put(x + in.getStepZ(), z + in.getStepX(), Blocks.LIGHT_GRAY_STAINED_GLASS_PANE.defaultBlockState());
+                    if (!research && i++ % 2 == 0) put(x + in.getStepZ(), z + in.getStepX(), Blocks.STAINED_GLASS_PANE.lightGray().defaultBlockState());
                 }
             }
             for (int[] p : backWall()) put(p[0], p[1], research ? Blocks.BOOKSHELF.defaultBlockState() : Blocks.BARREL.defaultBlockState());
@@ -390,9 +390,9 @@ public final class RoomBuilder {
         void waterPump() {
             int cx = (r.x1 + r.x2) / 2, cz = (r.z1 + r.z2) / 2;
             put(cx, cz, ModBlocks.WATER_PUMP.defaultBlockState());
-            put(cx, fy + 1, cz, Blocks.LIGHTNING_ROD.defaultBlockState());
+            put(cx, fy + 1, cz, Blocks.LIGHTNING_ROD.asList().get(0).defaultBlockState());
             alongWalls(Blocks.WATER_CAULDRON.defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, 3), 2);
-            corners(Blocks.WAXED_COPPER_BLOCK.defaultBlockState());
+            corners(Blocks.COPPER_BLOCK.asList().get(4).defaultBlockState());
         }
 
         void generator() {
@@ -417,14 +417,14 @@ public final class RoomBuilder {
         }
 
         void medbay() {
-            bedRows(Blocks.WHITE_BED, 8);
+            bedRows(Blocks.BED.white(), 8);
             for (int[] p : backWall()) {
-                put(p[0], p[1], rand.nextBoolean() ? Blocks.BREWING_STAND.defaultBlockState() : Blocks.WHITE_CONCRETE.defaultBlockState());
+                put(p[0], p[1], rand.nextBoolean() ? Blocks.BREWING_STAND.defaultBlockState() : Blocks.CONCRETE.white().defaultBlockState());
             }
         }
 
         void checkup() {
-            bedRows(Blocks.WHITE_BED, 1);
+            bedRows(Blocks.BED.white(), 1);
             List<int[]> back = backWall();
             int[] p = back.get(back.size() - 1);
             put(p[0], p[1], Blocks.BREWING_STAND.defaultBlockState());
@@ -476,7 +476,7 @@ public final class RoomBuilder {
         }
 
         void lounge() {
-            carpet(rand.nextBoolean() ? Blocks.ORANGE_CARPET : Blocks.BROWN_CARPET, 1);
+            carpet(rand.nextBoolean() ? Blocks.CARPET.orange() : Blocks.CARPET.brown(), 1);
             List<int[]> back = backWall();
             put(back.get(0)[0], back.get(0)[1], Blocks.JUKEBOX.defaultBlockState());
             put(back.get(back.size() - 1)[0], back.get(back.size() - 1)[1], Blocks.NOTE_BLOCK.defaultBlockState());
@@ -495,7 +495,7 @@ public final class RoomBuilder {
             for (int[] p : backWall()) {
                 BlockState s = switch (i++ % 4) {
                     case 0 -> Blocks.BREWING_STAND.defaultBlockState();
-                    case 1 -> Blocks.WHITE_CONCRETE.defaultBlockState();
+                    case 1 -> Blocks.CONCRETE.white().defaultBlockState();
                     case 2 -> Blocks.CAULDRON.defaultBlockState();
                     default -> Blocks.CRAFTING_TABLE.defaultBlockState();
                 };
@@ -503,7 +503,7 @@ public final class RoomBuilder {
             }
             // The first barrel is where finished Research Documents go.
             put(r.x1 + 1, r.z1 + 1, Blocks.BARREL.defaultBlockState());
-            alongWalls(Blocks.WHITE_CONCRETE.defaultBlockState(), 4);
+            alongWalls(Blocks.CONCRETE.white().defaultBlockState(), 4);
         }
 
         void observation() {
@@ -567,7 +567,7 @@ public final class RoomBuilder {
             List<int[]> back = backWall();
             for (int i = 0; i + 2 < back.size(); i += 3) {
                 int[] a = back.get(i), b = back.get(i + 1), c2 = back.get(i + 2);
-                bed(b[0], b[1], in, Blocks.WHITE_BED);
+                bed(b[0], b[1], in, Blocks.BED.white());
                 for (int[] q : new int[][]{a, b, c2}) {
                     int fx = q[0] - in.getStepX() * 2, fz = q[1] - in.getStepZ() * 2;
                     put(fx, fz, Blocks.IRON_BARS.defaultBlockState());
@@ -579,7 +579,7 @@ public final class RoomBuilder {
         }
 
         void barracks() {
-            int beds = bedRows(Blocks.RED_BED, Math.min(12, Math.max(2, r.floorArea() / 8)));
+            int beds = bedRows(Blocks.BED.red(), Math.min(12, Math.max(2, r.floorArea() / 8)));
             if (beds > 0) {
                 List<int[]> back = backWall();
                 put(back.get(back.size() / 2)[0], back.get(back.size() / 2)[1], Blocks.CHEST.defaultBlockState());
@@ -587,7 +587,7 @@ public final class RoomBuilder {
         }
 
         void singleBedroom() {
-            bedRows(Blocks.BLUE_BED, 1);
+            bedRows(Blocks.BED.blue(), 1);
             List<int[]> back = backWall();
             put(back.get(back.size() - 1)[0], back.get(back.size() - 1)[1], Blocks.CHEST.defaultBlockState());
             put(r.x2 - 1, r.z1 + 1, Blocks.LANTERN.defaultBlockState());

@@ -1,7 +1,6 @@
 package dev.projectredacted.registry;
 
 import dev.projectredacted.ProjectRedacted;
-import dev.projectredacted.npc.TraderKind;
 import dev.projectredacted.world.BunkerFeature;
 import dev.projectredacted.world.ContactPostFeature;
 import dev.projectredacted.world.RuinedSiteFeature;
@@ -13,17 +12,22 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
+import com.mojang.serialization.MapCodec;
 
-/** World structures: bunkers, ruined sites and faction contacts. Rarity is set in data/projectredacted/worldgen/placed_feature. */
+/**
+ * World structures: bunkers, ruined sites and faction contacts. Each feature type is registered as a codec here;
+ * the feature instances and their rarity live in data/projectredacted/worldgen/feature and placed_feature.
+ */
 public final class ModWorldgen {
-    public static final Feature<NoneFeatureConfiguration> FOUNDATION_BUNKER = register("foundation_bunker", new BunkerFeature());
-    public static final Feature<NoneFeatureConfiguration> RUINED_SITE = register("ruined_site", new RuinedSiteFeature());
-    public static final Feature<NoneFeatureConfiguration> GOC_OUTPOST = register("goc_outpost", new ContactPostFeature(TraderKind.GOC_QUARTERMASTER));
-    public static final Feature<NoneFeatureConfiguration> WONDERTAINMENT_STALL = register("wondertainment_stall", new ContactPostFeature(TraderKind.WONDERTAINMENT_REP));
+    static {
+        register("foundation_bunker", BunkerFeature.CODEC);
+        register("ruined_site", RuinedSiteFeature.CODEC);
+        register("goc_outpost", ContactPostFeature.GOC_CODEC);
+        register("wondertainment_stall", ContactPostFeature.WONDERTAINMENT_CODEC);
+    }
 
-    private static Feature<NoneFeatureConfiguration> register(String name, Feature<NoneFeatureConfiguration> feature) {
-        return Registry.register(BuiltInRegistries.FEATURE, ProjectRedacted.id(name), feature);
+    private static void register(String name, MapCodec<? extends Feature> codec) {
+        Registry.register(BuiltInRegistries.FEATURE_TYPE, ProjectRedacted.id(name), codec);
     }
 
     public static void init() {

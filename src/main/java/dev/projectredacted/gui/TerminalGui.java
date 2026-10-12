@@ -97,7 +97,7 @@ public final class TerminalGui {
                 lore.add("Chunk " + (minCX + col) + ", " + (minCZ + cz));
                 for (Room r : here) lore.add((r.poweredNow ? "⚡ " : "  ") + r.displayName() + (r.built ? "" : " (building)"));
                 ItemStack icon;
-                if (here.isEmpty()) icon = ChestGui.icon(core ? ModBlocks.MAINFRAME : Items.LIGHT_GRAY_STAINED_GLASS_PANE, core ? "Mainframe" : "Empty", ChatFormatting.DARK_GRAY, lore);
+                if (here.isEmpty()) icon = ChestGui.icon(core ? ModBlocks.MAINFRAME : Items.STAINED_GLASS_PANE.lightGray(), core ? "Mainframe" : "Empty", ChatFormatting.DARK_GRAY, lore);
                 else {
                     Room first = here.get(0);
                     for (Room r : here) if (r.typeDef() != null && r.typeDef().isContainment()) first = r;
@@ -276,7 +276,7 @@ public final class TerminalGui {
             if (u.category == Upgrade.Category.RESEARCH) lore.add("Research Documents you carry speed it up.");
             lore.add("A Library Tome you carry cuts materials by 25%.");
             ChatFormatting color = site.hasUpgrade(u) ? ChatFormatting.GREEN : blocker == null ? ChatFormatting.AQUA : ChatFormatting.DARK_GRAY;
-            gui.button(slot++, ChestGui.icon(site.hasUpgrade(u) ? Items.LIME_DYE : u.icon(), u.displayName, color, lore), (p, r) -> {
+            gui.button(slot++, ChestGui.icon(site.hasUpgrade(u) ? Items.DYE.lime() : u.icon(), u.displayName, color, lore), (p, r) -> {
                 if (!site.isDirector(p)) {
                     p.sendSystemMessage(Component.literal("Only the Site Director can buy upgrades.").withStyle(ChatFormatting.RED));
                     return;
