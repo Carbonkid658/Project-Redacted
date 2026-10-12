@@ -33,3 +33,6 @@ if mode == 'errors':
                 if nxt.strip().startswith(('symbol', 'location', '>', 'required', 'found', 'reason')):
                     keep.append('    ' + nxt.strip())
     emit('Errors', '\n'.join(keep + ['', '--- log tail ---'] + lines[-80:]), 'error')
+elif mode == 'smoke':
+    log = open('smoke.log', errors='replace').read()
+    emit('Smoke', log[-120000:])

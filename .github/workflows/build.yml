@@ -25,6 +25,14 @@ jobs:
         run: python3 .github/ci-report.py errors
         env:
           GITHUB_TOKEN: ${{ github.token }}
+      - name: Smoke test (temporary)
+        if: always()
+        run: |
+          mkdir -p run/server && echo "eula=true" > run/server/eula.txt
+          timeout 240 ./gradlew runServer --args=nogui > smoke.log 2>&1 || true
+          python3 .github/ci-report.py smoke
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
       - uses: actions/upload-artifact@v5
         with:
           name: project-redacted-jar
