@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import dev.projectredacted.net.ActionPayload;
+import com.mojang.blaze3d.platform.InputConstants;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -523,7 +524,7 @@ public class FoundationScreen extends Screen implements Ctx {
 
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
-        if (event.button() != 0) return false;
+        if (event.button() != InputConstants.MOUSE_BUTTON_LEFT) return super.mouseClicked(event, doubleClick);
         double x = event.x(), y = event.y();
         boolean shift = event.hasShiftDown();
         if (modalButton != null || modalInfo != null) {
@@ -614,7 +615,7 @@ public class FoundationScreen extends Screen implements Ctx {
         if (modalButton != null || modalInfo != null) {
             if (event.isEscape()) closeModal();
             else if (event.isConfirmation()) confirmModal();
-            else if (key == 259 && modalTyped != null && !modalTyped.isEmpty()) {
+            else if (key == InputConstants.KEY_BACKSPACE && modalTyped != null && !modalTyped.isEmpty()) {
                 modalTyped = modalTyped.substring(0, modalTyped.length() - 1);
                 state.put("modal", modalTyped);
             }
@@ -626,7 +627,7 @@ public class FoundationScreen extends Screen implements Ctx {
                 focus = null;
                 return true;
             }
-            if (key == 259) { // backspace
+            if (key == InputConstants.KEY_BACKSPACE) {
                 if (!text.isEmpty()) state.put(focus, text.substring(0, text.length() - 1));
                 return true;
             }
@@ -635,7 +636,7 @@ public class FoundationScreen extends Screen implements Ctx {
                 if (input != null) input.submit(this, event.hasShiftDown());
                 return true;
             }
-            if (key == 258 && focus.startsWith("input:")) { // tab completes the suggestion
+            if (key == InputConstants.KEY_TAB && focus.startsWith("input:")) { // tab completes the suggestion
                 Nodes.Input input = findInput(body, focus);
                 String s = input == null ? null : input.suggestion(this);
                 if (s != null) state.put(focus, s);

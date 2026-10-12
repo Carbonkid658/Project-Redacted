@@ -33,7 +33,7 @@ public final class Gui {
             Msg.send(player, "This needs Project [REDACTED] installed on your game too.", ChatFormatting.RED);
             return;
         }
-        player.closeContainer();
+        if (player.containerMenu != player.inventoryMenu) player.closeContainer();
         screen.serial = nextSerial++;
         OPEN.put(player.getUUID(), screen);
         send(player, screen);

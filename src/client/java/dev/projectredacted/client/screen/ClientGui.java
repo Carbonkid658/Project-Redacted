@@ -44,7 +44,7 @@ public final class ClientGui {
         if (payload.serial() == FoundationScreen.lastClosed) return;
         FoundationScreen screen = new FoundationScreen(payload.serial(), payload.screen(), view);
         FoundationScreen.current = screen;
-        client.setScreenAndShow(screen);
+        client.gui.setScreen(screen);
     }
 
     private static void tick(Minecraft client) {
