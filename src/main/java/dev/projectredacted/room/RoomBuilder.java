@@ -248,6 +248,11 @@ public final class RoomBuilder {
             placed.put(p.asLong(), s);
         }
 
+        boolean isDoor(int x, int z) {
+            BlockState s = placed.get(BlockPos.asLong(x, fy, z));
+            return s != null && s.getBlock() instanceof DoorBlock;
+        }
+
         boolean free(int x, int z) {
             if (x <= r.x1 || x >= r.x2 || z <= r.z1 || z >= r.z2) return false;
             if (keepClear.contains(key(x, z))) return false;
@@ -533,6 +538,7 @@ public final class RoomBuilder {
             Direction in = inward();
             for (int[] p : backWall()) {
                 int wx = p[0] + in.getStepX(), wz = p[1] + in.getStepZ();
+                if (isDoor(wx, wz)) continue; // a doorway in the back wall (rooms joined on several sides)
                 for (int y = r.y1 + 2; y < r.y2 - 1; y++) add(wx, y, wz, ModBlocks.REINFORCED_GLASS.defaultBlockState(), false, true);
                 put(p[0], p[1], topSlab(Blocks.SMOOTH_STONE_SLAB));
             }
@@ -558,7 +564,7 @@ public final class RoomBuilder {
                     default -> new BlockPos(r.x1, fy, cz);
                 };
                 BlockPos w = base.relative(along, -2);
-                for (int y = 0; y < 2; y++) add(w.getX(), fy + y, w.getZ(), ModBlocks.REINFORCED_GLASS.defaultBlockState(), false, true);
+                if (!isDoor(w.getX(), w.getZ())) for (int y = 0; y < 2; y++) add(w.getX(), fy + y, w.getZ(), ModBlocks.REINFORCED_GLASS.defaultBlockState(), false, true);
             }
         }
 
