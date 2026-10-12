@@ -25,11 +25,6 @@ jobs:
         run: python3 .github/ci-report.py errors
         env:
           GITHUB_TOKEN: ${{ github.token }}
-      - name: Probe APIs
-        if: always()
-        run: python3 .github/ci-report.py probe
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
       - uses: actions/upload-artifact@v5
         with:
           name: project-redacted-jar

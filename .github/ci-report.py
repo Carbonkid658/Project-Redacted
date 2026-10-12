@@ -1,6 +1,6 @@
-"""Turns CI output into check-run annotations so build errors and API lookups can be read
-through the GitHub API (the raw log download is not always reachable)."""
-import glob, json, os, re, subprocess, sys, urllib.request, zipfile
+"""Publishes compiler errors from a failed build as a check run on the commit, so they can be read
+through the GitHub API without downloading the raw log."""
+import json, os, re, sys, urllib.request
 
 def emit(title, text, level='notice'):
     """Publishes text as extra check runs on the commit (annotations are capped at 4 KB)."""
@@ -31,54 +31,3 @@ if mode == 'errors':
                 if nxt.strip().startswith(('symbol', 'location', '>', 'required', 'found', 'reason')):
                     keep.append('    ' + nxt.strip())
     emit('Errors', '\n'.join(keep) or '\n'.join(lines[-150:]), 'error')
-elif mode == 'probe':
-    queries = [q.strip() for q in open('.github/probe.txt') if q.strip() and not q.startswith('#')]
-    if not queries:
-        sys.exit(0)
-    home = os.path.expanduser('~/.gradle/caches')
-    jars = [j for j in glob.glob(home + '/**/*.jar', recursive=True)
-            if re.search(r'minecraft|fabric', j) and 'sources' not in j]
-    index = {}
-    for j in jars:
-        try:
-            with zipfile.ZipFile(j) as z:
-                for n in z.namelist():
-                    if n.endswith('.class') and '$' not in n:
-                        index.setdefault(n[:-6].replace('/', '.'), j)
-        except Exception:
-            pass
-    cp = ':'.join(sorted(set(jars)))
-    out = []
-    for q in queries:
-        kind, _, arg = q.partition(':')
-        if kind == 'find':
-            hits = sorted(c for c in index if re.search(arg, c))
-            out.append(f'## find {arg}\n' + '\n'.join(hits[:200]))
-        elif kind == 'res':
-            hits = set()
-            for j in jars:
-                try:
-                    with zipfile.ZipFile(j) as z:
-                        hits.update(n for n in z.namelist() if re.search(arg, n))
-                except Exception:
-                    pass
-            out.append(f'## res {arg}\n' + '\n'.join(sorted(hits)[:300]))
-        elif kind == 'cat':
-            text = '(not found)'
-            for j in jars:
-                try:
-                    with zipfile.ZipFile(j) as z:
-                        if arg in z.namelist():
-                            text = z.read(arg).decode(errors='replace')
-                            break
-                except Exception:
-                    pass
-            out.append(f'## cat {arg}\n' + text[:20000])
-        elif kind in ('class', 'grep'):
-            name, _, pattern = arg.partition(':')
-            r = subprocess.run(['javap', '-public', '-cp', cp, name], capture_output=True, text=True)
-            text = r.stdout or r.stderr
-            if pattern:
-                text = '\n'.join(l for l in text.splitlines() if re.search(pattern, l))
-            out.append(f'## {name}\n' + text)
-    emit('Probe', '\n\n'.join(out))

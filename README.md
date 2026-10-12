@@ -12,13 +12,11 @@ Needs JDK 25.
 ./gradlew build
 ```
 
-The jar lands in `build/libs/`. The versions in `gradle.properties` are best guesses for 26.3. Check
-https://fabricmc.net/develop/ and update `minecraft_version`, `loader_version`, `loom_version` and `fabric_api_version` if the build can't resolve them.
-`.github/workflows/build.yml` builds the jar on every push once this is in a GitHub repo.
+The jar lands in `build/libs/`. It builds against Minecraft 26.3, Fabric Loader 0.19.5, Loom 1.15.5 and Fabric API 0.162.0+26.3.
+`.github/workflows/build.yml` builds the jar on every push and attaches it to the run as `project-redacted-jar`.
+If the build fails, the compiler errors are also published as a "report: Errors" check on the commit.
 
-**This code has not been compiled yet.** The cloud workspace it was written in can't reach Fabric's or Mojang's servers.
-All 89 Java files pass a syntax check, but expect a round of fixes against the real 26.3 names. The parts most likely to need
-tweaks are listed under "Version-sensitive spots" below.
+The code compiles, but it has not been play-tested in a running game yet.
 
 ## How to play
 
@@ -82,14 +80,14 @@ The creative-only **Unclassified Anomaly** item is a stand-in for testing: put i
 | SCP classes for the Hand's hack | Light cells open at stage 2 (Safe), Heavy cells at stage 3 (Keter), all cells at stage 4. |
 | Testing rewards and risks | Not implemented yet (on hold in the design). Researchers assigned to an occupied cell research faster. |
 
-## Version-sensitive spots
+## Notes for 26.3
 
-These are where 26.3 names could differ from what was written:
-- `ValueInput` / `ValueOutput` entity saving in `StaffEntity` and `TraderEntity`.
-- `ChestMenu.clicked(..., ClickType, ...)` in `gui/ChestGui`.
-- `BlockRenderLayerMap.putBlock(..., ChunkSectionLayer.CUTOUT)` and `HumanoidMobRenderer` in the client classes.
-- `Level#getDayTime` (wrapped in `util/Time`), `TeleportTransition` in `npc/Library`.
-- `data/projectredacted/dimension/library.json` (flat generator JSON format).
+- World features are data-driven: each feature type is a codec registered in `registry/ModWorldgen`, and the feature
+  instances live in `data/projectredacted/worldgen/feature` (there is no `configured_feature` folder any more).
+- Dyed and copper blocks are collections in 26.3 (`Blocks.CONCRETE.white()`, `Blocks.COPPER_BLOCK.asList()`).
+- Day time comes from `Level#getOverworldClockTime` (wrapped in `util/Time`).
+- 26.3 has no per-block render layer map. Reinforced Glass and the Reinforced Door rely on texture transparency.
+  If they render opaque in game, that is the first thing to look at.
 
 ## Placeholder art
 
