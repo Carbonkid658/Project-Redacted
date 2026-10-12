@@ -470,6 +470,24 @@ public final class PartsCommand {
                 for (int z = r.z1 + 1; z < r.z2 && !reached; z++) reached = seen.contains(BlockPos.asLong(x, r.y1 + 1, z));
             if (!reached) out.add(r.displayName());
         }
+        if (!out.isEmpty()) {
+            StringBuilder sb = new StringBuilder("(walked " + seen.size() + " blocks from " + start.toShortString() + ":");
+            for (int d = -1; d <= 3; d++) sb.append(" ").append(BuiltInRegistries.BLOCK.getKey(level.getBlockState(start.above(d)).getBlock()).getPath());
+            BlockPos e = null;
+            for (PlacedPart p : site.parts) {
+                SitePart part = p.part();
+                if (part == null) continue;
+                for (int i = 0; i < part.connectors.size(); i++) {
+                    SitePart.Connector c = part.worldConnector(i, p.origin, p.rot);
+                    if (c.type().equals(SitePart.SURFACE_EXIT)) e = c.pos();
+                }
+            }
+            if (e != null) {
+                sb.append(" | exit ").append(e.toShortString()).append(":");
+                for (int k = 0; k <= 3; k++) sb.append(" ").append(BuiltInRegistries.BLOCK.getKey(level.getBlockState(e.above(k - 1)).getBlock()).getPath());
+            }
+            out.add(sb + ")");
+        }
         return out;
     }
 
