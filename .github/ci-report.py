@@ -27,7 +27,9 @@ if mode == 'errors':
     for i, l in enumerate(lines):
         if re.search(r': error:|: warning: \[removal\]|What went wrong|Could not |FAILURE', l):
             keep.append(l.replace(os.getcwd() + '/', ''))
+            if 'What went wrong' in l:
+                keep.extend('    ' + x for x in lines[i + 1:i + 15])
             for nxt in lines[i + 1:i + 4]:
                 if nxt.strip().startswith(('symbol', 'location', '>', 'required', 'found', 'reason')):
                     keep.append('    ' + nxt.strip())
-    emit('Errors', '\n'.join(keep) or '\n'.join(lines[-150:]), 'error')
+    emit('Errors', '\n'.join(keep + ['', '--- log tail ---'] + lines[-80:]), 'error')
