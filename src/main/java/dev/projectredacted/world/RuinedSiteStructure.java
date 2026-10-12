@@ -39,7 +39,7 @@ public class RuinedSiteStructure extends Structure {
         int floor = ctx.chunkGenerator().getFirstOccupiedHeight(x, z, Heightmap.Types.WORLD_SURFACE_WG, ctx.heightAccessor(), ctx.randomState());
         if (floor < ctx.chunkGenerator().getSeaLevel()) return Optional.empty();
         BlockPos center = new BlockPos(x, floor, z);
-        long seed = ctx.seed() ^ ctx.chunkPos().toLong() * 0x9E3779B97F4A7C15L;
+        long seed = ctx.seed() ^ (((long) x << 32) ^ (z & 0xFFFFFFFFL)) * 0x9E3779B97F4A7C15L;
         SitePlan plan = plan(center, seed);
         if (!plan.ok()) return Optional.empty();
         return Optional.of(new GenerationStub(center, builder -> addPieces(builder, plan, seed)));
