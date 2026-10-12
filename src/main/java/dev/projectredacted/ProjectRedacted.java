@@ -10,6 +10,8 @@ import dev.projectredacted.room.RoomTypes;
 import dev.projectredacted.site.ClaimProtection;
 import dev.projectredacted.site.SiteEvents;
 import dev.projectredacted.site.SiteManager;
+import dev.projectredacted.site.gen.PartKit;
+import dev.projectredacted.site.gen.SiteTypeRules;
 import dev.projectredacted.util.Scheduler;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -52,10 +54,16 @@ public class ProjectRedacted implements ModInitializer {
 
         ServerLifecycleEvents.SERVER_STARTED.register(server -> {
             RoomTypes.reload(server.getResourceManager());
+            SiteTypeRules.reload(server.getResourceManager());
+            PartKit.reload(server.getResourceManager());
             SiteManager.load(server);
         });
         ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, resourceManager, success) -> {
-            if (success) RoomTypes.reload(server.getResourceManager());
+            if (success) {
+                RoomTypes.reload(server.getResourceManager());
+                SiteTypeRules.reload(server.getResourceManager());
+                PartKit.reload(server.getResourceManager());
+            }
         });
         ServerLifecycleEvents.SERVER_STOPPING.register(server -> SiteManager.save());
         ServerLifecycleEvents.SERVER_STOPPED.register(server -> {

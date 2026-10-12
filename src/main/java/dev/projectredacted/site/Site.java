@@ -32,6 +32,22 @@ public class Site {
     public int cassieHack;
 
     public List<Room> rooms = new ArrayList<>();
+    /** Parts the facility is built from (site generation), in placement order. */
+    public List<dev.projectredacted.site.gen.PlacedPart> parts = new ArrayList<>();
+    /** Sealed doorways that growth can open up. */
+    public List<dev.projectredacted.site.gen.Doorway> doorways = new ArrayList<>();
+    /** Floor height of the Director's Office storey; storeys are 6 blocks from here. */
+    public Integer baseFloor;
+    public long genSeed;
+    /** Chunks kept loaded while Level 0 builds, released when it finishes. */
+    public List<Long> forcedChunks = new ArrayList<>();
+    /** From part markers: where raiders arrive and where security stands. */
+    public List<BlockPos> raiderEntries = new ArrayList<>();
+    public List<BlockPos> staffPosts = new ArrayList<>();
+    /** Auto-expand (Director only, off by default). */
+    public boolean autoExpand;
+    public List<String> expandPriority = new ArrayList<>();
+    public long nextExpandCheck;
     public int nextRoomNumber = 1;
     public Map<UUID, Member> members = new LinkedHashMap<>();
     public Map<UUID, StaffRecord> staff = new LinkedHashMap<>();

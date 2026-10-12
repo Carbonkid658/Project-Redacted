@@ -170,9 +170,14 @@ public final class RoomBuilder {
                 case "entrance" -> Blocks.DARK_OAK_DOOR;
                 default -> secured ? Blocks.IRON_DOOR : Blocks.OAK_DOOR;
             };
-            int mask = 1 << (r.rotation & 3);
-            mask |= remap(r.extraDoors);
-            if (t.isCheckpoint()) mask |= 1 << ((r.rotation + 2) & 3);
+            int mask;
+            if (r.doors >= 0) {
+                mask = r.doors & 15;
+            } else {
+                mask = 1 << (r.rotation & 3);
+                mask |= remap(r.extraDoors);
+                if (t.isCheckpoint()) mask |= 1 << ((r.rotation + 2) & 3);
+            }
             for (int side = 0; side < 4; side++) {
                 if ((mask & (1 << side)) == 0) continue;
                 Direction d = sideDir(side);

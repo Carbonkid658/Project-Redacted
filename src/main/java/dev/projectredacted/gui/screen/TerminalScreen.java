@@ -49,6 +49,9 @@ public class TerminalScreen extends GuiScreen {
     private int floor;
     private int cardLevel = 1;
     private String logFilter = "All";
+    /** The Level 0 plan waiting for the Director to build it or reroll (site generation §6). */
+    private dev.projectredacted.site.gen.SitePlan level0Plan;
+    private dev.projectredacted.site.gen.SiteGen.Survey level0Survey;
 
     public TerminalScreen(Site site, BlockPos at) {
         this.site = site;
@@ -592,9 +595,19 @@ public class TerminalScreen extends GuiScreen {
         }
         v.add(cards);
         if (!site.generated) {
-            v.add(El.button("Generate Level 0 Facility", "generate").style("confirm").disabled(director ? offline() ? "The Mainframe is offline." : null : "Only the Site Director can do this.")
-                    .confirm("Build the Level 0 " + site.type.displayName + " facility here? It builds an Entrance, a Barracks (4 beds) and the Director's Office, "
-                            + "then moves the Mainframe and Terminal into the office. Blocks in the way are replaced."));
+            String blocked = director ? offline() ? "The Mainframe is offline." : null : "Only the Site Director can do this.";
+            if (level0Plan == null) {
+                v.add(El.button("Plan Level 0 Facility", "generate").style("confirm").disabled(blocked));
+            } else {
+                var plan = level0Plan;
+                v.add(El.text("Level 0 plan: " + plan.parts.size() + " parts (" + plan.count(dev.projectredacted.site.gen.SitePart.Kind.HALLWAY) + " hallway, "
+                        + plan.count(dev.projectredacted.site.gen.SitePart.Kind.STAIRWELL) + " stairwell). The outline shows where it goes.", "white"));
+                if (plan.overwrites > 0) v.add(El.text(plan.overwrites + " blocks you built are in the way and would be replaced.", "red"));
+                var build = El.button("Build it", "generate_build").style("confirm").disabled(blocked);
+                if (plan.overwrites > 0) build.style("danger").confirm("Replace " + plan.overwrites + " player-built blocks to build the Level 0 facility? "
+                        + "Chests in the way drop their items.");
+                v.add(El.row(build, El.button("Reroll", "generate").disabled(blocked), El.button("Cancel", "generate_cancel")));
+            }
         } else {
             v.add(El.text("Changing type only affects how you plan to grow (down or up).", "gray"));
         }
@@ -725,9 +738,33 @@ public class TerminalScreen extends GuiScreen {
             }
             case "generate" -> {
                 if (!director || site.generated || offline()) return;
+                ServerLevel level = (ServerLevel) p.level();
+                long seed = level.getRandom().nextLong();
+                level0Survey = dev.projectredacted.site.gen.SiteGen.survey(level, site, seed);
+                level0Plan = dev.projectredacted.site.gen.SiteGen.planLevel0(level0Survey, site);
+                if (!level0Plan.ok()) {
+                    Gui.toast(p, level0Plan.error, true);
+                    level0Plan = null;
+                    level0Survey = null;
+                } else {
+                    dev.projectredacted.site.gen.PlanPreview.show(p, level0Plan);
+                }
+            }
+            case "generate_cancel" -> {
+                level0Plan = null;
+                level0Survey = null;
+                dev.projectredacted.site.gen.PlanPreview.clear(p);
+            }
+            case "generate_build" -> {
+                if (!director || site.generated || offline() || level0Plan == null) return;
                 Gui.close(p);
-                FacilityGenerator.generateLevel0((ServerLevel) p.level(), site);
-                Msg.send(p, "Facility generated. Now head out and recruit staff from Foundation Bunkers.", ChatFormatting.GOLD);
+                dev.projectredacted.site.gen.PlanPreview.clear(p);
+                dev.projectredacted.site.gen.SiteGen.commit((ServerLevel) p.level(), site, level0Plan, level0Survey, true);
+                site.generated = true;
+                site.log("Level 0 facility generation started (" + site.type.displayName + ", " + level0Plan.parts.size() + " parts).");
+                level0Plan = null;
+                level0Survey = null;
+                Msg.send(p, "The Level 0 facility is building itself. Then head out and recruit staff from Foundation Bunkers.", ChatFormatting.GOLD);
             }
             case "rename_site" -> {
                 String name = a.text();
@@ -787,6 +824,16 @@ public class TerminalScreen extends GuiScreen {
             }
         }
         for (StaffRecord s : site.staff.values()) if (s.assignment.room == r.number) s.assignment = new Assignment();
+        if (r.part >= 0 && r.part < site.parts.size()) {
+            // The part's space is free again once none of its rooms are left.
+            var part = site.parts.get(r.part);
+            part.rooms.remove((Integer) r.number);
+            if (part.rooms.isEmpty()) {
+                part.removed = true;
+                int index = r.part;
+                site.doorways.removeIf(d -> d.part == index);
+            }
+        }
         site.log(r.displayName() + " demolished.");
     }
 

@@ -85,6 +85,17 @@ public final class SiteManager {
         if (s.scpHomes == null) s.scpHomes = new HashMap<>();
         if (s.logLines == null) s.logLines = new ArrayList<>();
         if (s.type == null) s.type = SiteType.SURFACE_FLAT;
+        if (s.parts == null) s.parts = new ArrayList<>();
+        if (s.doorways == null) s.doorways = new ArrayList<>();
+        s.doorways.removeIf(d -> d == null || d.pos == null || d.facing == null || d.type == null);
+        if (s.forcedChunks == null) s.forcedChunks = new ArrayList<>();
+        if (s.raiderEntries == null) s.raiderEntries = new ArrayList<>();
+        if (s.staffPosts == null) s.staffPosts = new ArrayList<>();
+        if (s.expandPriority == null) s.expandPriority = new ArrayList<>();
+        for (var part : s.parts) {
+            if (part.rooms == null) part.rooms = new ArrayList<>();
+            if (part.reopen == null) part.reopen = new ArrayList<>();
+        }
         s.staff.values().removeIf(r -> r.role == null);
         for (var r : s.staff.values()) if (r.assignment == null) r.assignment = new dev.projectredacted.staff.Assignment();
     }
@@ -109,6 +120,7 @@ public final class SiteManager {
         file = null;
         data = new Data();
         DesignSession.clear();
+        dev.projectredacted.site.gen.PlanPreview.clearAll();
     }
 
     public static MinecraftServer server() {
@@ -133,6 +145,7 @@ public final class SiteManager {
         }
         if (tickCounter % 10 == 0) DoorControl.tick(level, data.readers);
         if (tickCounter % 10 == 0) DesignSession.tickPreviews(srv);
+        if (tickCounter % 10 == 5) dev.projectredacted.site.gen.PlanPreview.tick(srv);
         if (tickCounter % 6000 == 0) save();
     }
 

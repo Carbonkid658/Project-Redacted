@@ -13,6 +13,10 @@ public class Room {
     public int rotation;
     /** Extra door walls as a bitmask (1 north, 2 east, 4 south, 8 west), used by generated layouts. */
     public int extraDoors;
+    /** Exact door walls (same bits) for rooms built from site parts; -1 means the main door plus extraDoors. */
+    public int doors = -1;
+    /** Index of the site part this room belongs to, or -1 for rooms designated by hand. */
+    public int part = -1;
     public long seed;
     /** Added to the Circuit Breaker. */
     public boolean connected;
