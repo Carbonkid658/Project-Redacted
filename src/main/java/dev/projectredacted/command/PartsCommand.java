@@ -622,12 +622,12 @@ public final class PartsCommand {
                 sb.append(" | exit ").append(e.toShortString()).append(":");
                 for (int k = 0; k <= 3; k++) sb.append(" ").append(BuiltInRegistries.BLOCK.getKey(level.getBlockState(e.above(k - 1)).getBlock()).getPath());
                 // A line through the exit from outside to inside: floor/feet/head and whether the walk got there.
-                net.minecraft.core.Direction out = null;
-                for (net.minecraft.core.Direction d : net.minecraft.core.Direction.Plane.HORIZONTAL) if (start.equals(e.relative(d, 2))) out = d;
-                if (out != null) {
+                net.minecraft.core.Direction outward = null;
+                for (net.minecraft.core.Direction d : net.minecraft.core.Direction.Plane.HORIZONTAL) if (start.getX() == e.relative(d, 2).getX() && start.getZ() == e.relative(d, 2).getZ()) outward = d;
+                if (outward != null) {
                     sb.append(" | line:");
                     for (int k = 3; k >= -3; k--) {
-                        BlockPos q = e.relative(out, k);
+                        BlockPos q = e.relative(outward, k);
                         sb.append(" [").append(k).append(" ").append(name(level, q.below())).append("/").append(name(level, q)).append("/").append(name(level, q.above()))
                                 .append(seen.contains(q.asLong()) ? " seen" : "").append("]");
                     }
