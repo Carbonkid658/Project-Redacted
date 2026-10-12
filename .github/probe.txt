@@ -1,0 +1,8 @@
+# API lookups for CI (find:<regex>, class:<fqcn>[:<line regex>], code:<fqcn>:<regex>); empty means skip.
+code:net.minecraft.client.Minecraft:setScreenAndShow
+class:net.minecraft.client.gui.Gui:[Ss]creen
+code:net.minecraft.client.player.LocalPlayer:clientSideCloseContainer
+code:net.minecraft.client.multiplayer.ClientPacketListener:handleContainerClose
+code:net.minecraft.server.level.ServerPlayer:void closeContainer\(\)
+code:net.minecraft.client.MouseHandler:mouseClicked
+find:fabric.*networking.*(Addon|Receiver|Handler)

@@ -65,4 +65,16 @@ elif mode == 'probe':
             if pattern:
                 text = '\n'.join(l for l in text.splitlines() if re.search(pattern, l))
             out.append(f'## {name}\n' + text)
+        elif kind == 'code':
+            # code:<fqcn>:<regex> prints the bytecode of methods whose header or body matches
+            name, _, pattern = arg.partition(':')
+            r = subprocess.run(['javap', '-c', '-p', '-cp', cp, name], capture_output=True, text=True)
+            blocks, cur = [], []
+            for l in (r.stdout or r.stderr).splitlines():
+                if l.startswith('  ') and not l.startswith('   ') and cur:
+                    blocks.append(cur); cur = []
+                cur.append(l)
+            blocks.append(cur)
+            hits = ['\n'.join(b[:400]) for b in blocks if re.search(pattern, '\n'.join(b))]
+            out.append(f'## code {name} /{pattern}/\n' + '\n\n'.join(hits[:12]))
     emit('Probe', '\n\n'.join(out))
