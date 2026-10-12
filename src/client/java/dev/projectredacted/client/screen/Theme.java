@@ -1,7 +1,13 @@
 package dev.projectredacted.client.screen;
 
 import net.minecraft.client.gui.Font;
+import dev.projectredacted.ProjectRedacted;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.resources.Identifier;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The Foundation look (GUI design §2): an off-white terminal case around a dark screen with amber and green
@@ -63,14 +69,28 @@ public final class Theme {
         g.fill(x + w - 1, y, x + w, y + h, lighten(fill, 30));
     }
 
+    private static final Map<String, Identifier> SPRITES = new HashMap<>();
+
+    /**
+     * Draws a GUI sprite from assets/projectredacted/textures/gui/sprites/foundation/. Each PNG can have a .mcmeta
+     * that says how it stretches (nine-slice keeps the borders crisp at any size).
+     */
+    public static void sprite(GuiGraphicsExtractor g, String name, int x, int y, int w, int h) {
+        if (w > 0 && h > 0) g.blitSprite(RenderPipelines.GUI_TEXTURED, SPRITES.computeIfAbsent(name, n -> ProjectRedacted.id("foundation/" + n)), x, y, w, h);
+    }
+
+    /** A white sprite tinted with an ARGB color, for things colored by data (bars, pills, map cells). */
+    public static void sprite(GuiGraphicsExtractor g, String name, int x, int y, int w, int h, int color) {
+        if (w > 0 && h > 0) g.blitSprite(RenderPipelines.GUI_TEXTURED, SPRITES.computeIfAbsent(name, n -> ProjectRedacted.id("foundation/" + n)), x, y, w, h, color);
+    }
+
     /** Yellow and black blocks along a strip. */
     public static void hazard(GuiGraphicsExtractor g, int x, int y, int w, int h) {
-        for (int i = 0; i < w; i += 6) g.fill(x + i, y, Math.min(x + w, x + i + 6), y + h, (i / 6) % 2 == 0 ? HAZARD_YELLOW : HAZARD_BLACK);
+        sprite(g, "hazard", x, y, w, h);
     }
 
     public static void pill(GuiGraphicsExtractor g, Font font, String text, int x, int y, int bg, int fg) {
-        int w = font.width(text) + 6;
-        g.fill(x, y, x + w, y + 10, bg);
+        sprite(g, "pill", x, y, font.width(text) + 6, 10, bg);
         g.text(font, text, x + 3, y + 1, fg, false);
     }
 

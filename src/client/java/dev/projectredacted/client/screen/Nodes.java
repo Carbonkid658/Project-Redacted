@@ -224,8 +224,8 @@ public final class Nodes {
             if (content > h) {
                 int barH = Math.max(10, h * h / content);
                 int barY = y + (int) ((h - barH) * (scrollY(c) / (double) Math.max(1, content - h)));
-                c.g().fill(x + w - 2, y, x + w, y + h, 0x40FFFFFF);
-                c.g().fill(x + w - 2, barY, x + w, barY + barH, c.paper() ? Theme.INK_MUTED : Theme.AMBER);
+                Theme.sprite(c.g(), "scroll_track", x + w - 2, y, 2, h);
+                Theme.sprite(c.g(), "scroll_thumb", x + w - 2, barY, 2, barH);
             }
         }
 
@@ -284,7 +284,7 @@ public final class Nodes {
             for (int i = 0; i < cols.size(); i++) {
                 Column col = cols.get(i);
                 col.render(c);
-                if (i > 0) c.g().fill(col.x - 4, y, col.x - 3, y + h, c.paper() ? 0x40000000 : Theme.SCREEN_EDGE);
+                if (i > 0) Theme.sprite(c.g(), "separator", col.x - 4, y, 1, h);
             }
         }
 
@@ -385,8 +385,7 @@ public final class Nodes {
         @Override
         void render(Ctx c) {
             GuiGraphicsExtractor g = c.g();
-            int line = c.paper() ? Theme.INK_MUTED : Theme.SCREEN_EDGE;
-            g.outline(x, y + 4, w, h - 4, line);
+            Theme.sprite(g, "box", x, y + 4, w, h - 4);
             String title = c.tr(str(o, "title", ""));
             int tw = c.font().width(title);
             g.fill(x + 5, y, x + 9 + tw, y + 9, c.paper() ? Theme.PAPER : Theme.SCREEN);
@@ -489,7 +488,8 @@ public final class Nodes {
 
         @Override
         void render(Ctx c) {
-            c.g().fill(x, y + 1, x + w, y + 2, c.paper() ? 0x40000000 : Theme.SCREEN_EDGE);
+            if (c.paper()) c.g().fill(x, y + 1, x + w, y + 2, 0x40000000);
+            else Theme.sprite(c.g(), "separator", x, y + 1, w, 1);
         }
     }
 
@@ -561,12 +561,9 @@ public final class Nodes {
                 text = "→ " + (long) value + " / " + (long) supply;
             }
             int bx = x + lw, bw = w - lw;
-            Theme.inset(g, bx, y, bw, 11, c.paper() ? 0xFFD8CCB0 : 0xFF06090A);
+            Theme.sprite(g, "bar", bx, y, bw, 11);
             int fw = (int) ((bw - 2) * Math.max(0, Math.min(1, value / max)));
-            if (fw > 0) {
-                g.fill(bx + 1, y + 1, bx + 1 + fw, y + 10, Theme.shade(color, 0.75f));
-                g.fill(bx + 1, y + 1, bx + 1 + fw, y + 3, Theme.lighten(Theme.shade(color, 0.75f), 30));
-            }
+            if (fw > 0) Theme.sprite(g, "bar_fill", bx + 1, y + 1, fw, 9, Theme.shade(color, 0.85f));
             if (!text.isEmpty()) {
                 String t = Theme.fit(c.font(), text, bw - 4);
                 g.text(c.font(), t, bx + bw - 3 - c.font().width(t), y + 2, 0xFFFFFFFF, true);
@@ -593,8 +590,7 @@ public final class Nodes {
             int value = (int) num(o, "value", 0), max = (int) num(o, "max", 4);
             for (int i = 0; i < max; i++) {
                 int sx = x + lw + i * 17;
-                Theme.inset(c.g(), sx, y, 15, 10, 0xFF06090A);
-                if (i < value) c.g().fill(sx + 1, y + 1, sx + 14, y + 9, 0xFFD23C3C);
+                Theme.sprite(c.g(), i < value ? "segment_on" : "segment", sx, y, 15, 10);
             }
             c.g().text(c.font(), value + "/" + max, x + lw + max * 17 + 3, y + 2, Theme.MUTED, false);
         }
@@ -602,15 +598,15 @@ public final class Nodes {
 
     // ================================================================ buttons
 
-    static int buttonFill(String style, boolean disabled, boolean hover) {
-        if (disabled) return 0xFF3A3D39;
-        int base = switch (style == null ? "" : style) {
-            case "primary" -> 0xFF2F5FA8;
-            case "confirm" -> 0xFF2E7D46;
-            case "danger" -> 0xFF9E2B2B;
-            default -> 0xFF5A5E58;
+    static String buttonSprite(String style, boolean disabled, boolean hover) {
+        if (disabled) return "button_disabled";
+        String base = switch (style == null ? "" : style) {
+            case "primary" -> "button_primary";
+            case "confirm" -> "button_confirm";
+            case "danger" -> "button_danger";
+            default -> "button";
         };
-        return hover ? Theme.lighten(base, 25) : base;
+        return hover ? base + "_hover" : base;
     }
 
     /** Draws a button from its JSON; used by buttons, footer buttons and dialogs. */
@@ -619,8 +615,7 @@ public final class Nodes {
         boolean disabled = b.has("disabled");
         boolean hover = c.hovered(x, y, w, h);
         String style = str(b, "style");
-        Theme.bevel(g, x, y, w, h, buttonFill(style, disabled, hover && !disabled));
-        if ("danger".equals(style) && !disabled) Theme.hazard(g, x + 1, y + h - 3, w - 2, 2);
+        Theme.sprite(g, buttonSprite(style, disabled, hover), x, y, w, h);
         String label = Theme.fit(c.font(), c.tr(str(b, "label", "")), w - 6);
         g.centeredText(c.font(), label, x + w / 2, y + (h - 8) / 2, disabled ? 0xFF85857C : 0xFFFFFFFF);
         if (hover) {
@@ -682,17 +677,13 @@ public final class Nodes {
             String label = c.tr(str(o, "label", ""));
             int textColor = disabled ? Theme.MUTED : c.paper() ? Theme.INK : Theme.TEXT;
             if (bool(o, "check")) {
-                Theme.inset(g, x, y + 1, 10, 10, 0xFF06090A);
-                if (on) g.text(c.font(), "✔", x + 2, y + 2, disabled ? Theme.MUTED : 0xFF6BD97A, false);
+                Theme.sprite(g, "checkbox" + (disabled ? "_disabled" : "") + (on ? "_checked" : ""), x, y + 1, 10, 10);
                 g.text(c.font(), Theme.fit(c.font(), label, w - 14), x + 14, y + 2, textColor, false);
             } else {
                 int sx = x + w - 24;
                 if (!label.isEmpty()) g.text(c.font(), Theme.fit(c.font(), label, w - 28), x, y + 2, textColor, false);
-                int track = disabled ? 0xFF33352F : on ? 0xFF2E7D46 : 0xFF4A4C46;
-                Theme.inset(g, sx, y + 1, 24, 10, hover && !disabled ? Theme.lighten(track, 20) : track);
-                int kx = on ? sx + 13 : sx + 1;
-                Theme.bevel(g, kx, y + 1, 10, 10, disabled ? 0xFF55574F : 0xFFC9C5B9);
-                g.text(c.font(), on ? "I" : "O", on ? sx + 4 : sx + 15, y + 2, 0xFFE6E0C8, false);
+                String sprite = disabled ? (on ? "toggle_disabled_on" : "toggle_disabled_off") : (on ? "toggle_on" : "toggle_off") + (hover ? "_hover" : "");
+                Theme.sprite(g, sprite, sx, y + 1, 24, 10);
             }
             if (hover) {
                 if (disabled) c.tooltip(List.of("✖ " + str(o, "disabled")));
@@ -742,7 +733,7 @@ public final class Nodes {
             if (value <= min) minus.addProperty("disabled", "Minimum is " + min + ".");
             if (value >= max) plus.addProperty("disabled", "Maximum is " + max + ".");
             drawButton(c, minus, bx, y, 14, 14);
-            Theme.inset(g, bx + 16, y, 24, 14, 0xFF06090A);
+            Theme.sprite(g, "field", bx + 16, y, 24, 14);
             g.centeredText(c.font(), String.valueOf(value), bx + 28, y + 3, Theme.AMBER);
             drawButton(c, plus, bx + 42, y, 14, 14);
         }
@@ -820,8 +811,7 @@ public final class Nodes {
     static void drawField(Ctx c, String key, String placeholder, int x, int y, int w, int h, String suggestion) {
         GuiGraphicsExtractor g = c.g();
         boolean focused = key.equals(c.focus());
-        Theme.inset(g, x, y, w, h, c.paper() ? 0xFFF7F0DC : 0xFF06090A);
-        if (focused) g.outline(x, y, w, h, Theme.AMBER);
+        Theme.sprite(g, focused ? "field_focused" : "field", x, y, w, h);
         String text = (String) c.state().getOrDefault(key, "");
         int ty = y + (h - 8) / 2;
         if (text.isEmpty() && !focused) {
@@ -874,8 +864,7 @@ public final class Nodes {
                 }
                 boolean sel = value.equals(str(opt, "id"));
                 boolean hover = c.hovered(lx, ly, pw, 12);
-                int bg = sel ? Theme.AMBER : hover ? 0xFF3A4540 : 0xFF232B27;
-                c.g().fill(lx, ly, lx + pw, ly + 12, bg);
+                Theme.sprite(c.g(), sel ? "chip_selected" : hover ? "chip_hover" : "chip", lx, ly, pw, 12);
                 c.g().text(c.font(), label, lx + 5, ly + 2, sel ? 0xFF1A1408 : Theme.TEXT, false);
                 boxes.add(new int[]{lx, ly, pw});
                 lx += pw + 2;
@@ -975,7 +964,7 @@ public final class Nodes {
             Font font = c.font();
             if (searchable()) drawField(c, "search:" + id(), "🔍 Search", x, y, w, 14, null);
             int listH = y + h - top;
-            Theme.inset(g, x, top, w, listH, c.paper() ? 0xFFE3D8BC : 0xFF0A0E0C);
+            Theme.sprite(g, "list", x, top, w, listH);
             List<JsonObject> vis = visible(c);
             if (vis.isEmpty()) {
                 g.text(font, Theme.fit(font, c.tr(str(o, "empty", "Nothing here.")), w - 8), x + 4, top + 4, Theme.MUTED, false);
@@ -990,10 +979,8 @@ public final class Nodes {
                 JsonObject r = vis.get(i);
                 boolean hover = c.hovered(x, ry, w, rowH);
                 boolean sel = bool(r, "selected");
-                int bg = sel ? Theme.ROW_SELECTED : hover && clickable ? Theme.ROW_HOVER : i % 2 == 0 ? Theme.ROW : 0xFF111613;
-                if (c.paper()) bg = sel ? 0xFFD9C79A : hover ? 0xFFE9DFC6 : 0xFFE3D8BC;
-                g.fill(x + 1, ry, x + w - 1, ry + rowH, bg);
-                if (sel) g.fill(x + 1, ry, x + 3, ry + rowH, Theme.AMBER);
+                String rowSprite = sel ? "row_selected" : hover && clickable ? "row_hover" : i % 2 == 0 ? "row" : "row_alt";
+                Theme.sprite(g, rowSprite, x + 1, ry, w - 2, rowH);
                 int tx = x + 5;
                 if (r.has("icon")) {
                     g.item(item(str(r, "icon")), x + 4, ry + (rowH - 16) / 2);
@@ -1028,7 +1015,7 @@ public final class Nodes {
             if (content > listH) {
                 int barH = Math.max(8, listH * listH / content);
                 int barY = top + (int) ((listH - barH) * (scroll / (double) Math.max(1, content - listH)));
-                g.fill(x + w - 3, barY, x + w - 1, barY + barH, Theme.AMBER);
+                Theme.sprite(g, "scroll_thumb", x + w - 3, barY, 2, barH);
             }
         }
 
@@ -1134,7 +1121,7 @@ public final class Nodes {
                 String colorName = str(cell, "color", "dark");
                 int base = "dark".equals(colorName) ? 0xFF1A211D : Theme.shade(Theme.color(colorName, false), 0.55f);
                 boolean hover = c.hovered(cx, cy, s, s);
-                g.fill(cx, cy, cx + s - 1, cy + s - 1, hover ? Theme.lighten(base, 25) : base);
+                Theme.sprite(g, "cell", cx, cy, s - 1, s - 1, hover ? Theme.lighten(base, 25) : base);
                 String label = str(cell, "label", "");
                 if (!label.isEmpty()) {
                     String fit = Theme.fit(c.font(), label, s - 2);
@@ -1188,13 +1175,12 @@ public final class Nodes {
                 JsonObject e = entries.get(i).getAsJsonObject();
                 int cx = x + (i % cols) * CW, cy = y + (i / cols) * CH;
                 boolean hover = c.hovered(cx, cy, CW - 2, CH - 2);
-                Theme.inset(g, cx, cy, CW - 2, CH - 2, bool(e, "selected") ? Theme.ROW_SELECTED : hover ? Theme.ROW_HOVER : Theme.ROW);
+                Theme.sprite(g, bool(e, "selected") ? "slot_selected" : hover ? "slot_hover" : "slot", cx, cy, CW - 2, CH - 2);
                 ItemStack stack = item(str(e, "item")).copyWithCount(Math.max(1, (int) num(e, "count", 1)));
                 g.item(stack, cx + 4, cy + 2);
                 g.itemDecorations(c.font(), stack, cx + 4, cy + 2);
                 String label = str(e, "label", "");
                 g.centeredText(c.font(), Theme.fit(c.font(), label, CW - 2), cx + (CW - 2) / 2, cy + 19, Theme.color("gold", false));
-                if (bool(e, "selected")) g.outline(cx, cy, CW - 2, CH - 2, Theme.AMBER);
                 if (bool(e, "dim")) g.fill(cx + 1, cy + 1, cx + CW - 3, cy + CH - 3, 0xA0000000);
                 if (hover) c.tooltip(lines(e, "tip"));
             }
@@ -1236,7 +1222,7 @@ public final class Nodes {
         @Override
         void render(Ctx c) {
             GuiGraphicsExtractor g = c.g();
-            Theme.inset(g, x, y, 36, 36, 0xFF06090A);
+            Theme.sprite(g, "face_frame", x, y, 36, 36);
             face(g, str(o, "skin", ""), x + 2, y + 2, 32);
             int tx = x + 42;
             String badge = str(o, "badge");
@@ -1279,8 +1265,7 @@ public final class Nodes {
                 JsonObject card = cards.get(i).getAsJsonObject();
                 int cx = x + i * (cw + 4);
                 boolean sel = bool(card, "selected"), hover = c.hovered(cx, y, cw, h);
-                Theme.inset(g, cx, y, cw, h, sel ? Theme.ROW_SELECTED : hover ? Theme.ROW_HOVER : Theme.ROW);
-                if (sel) g.outline(cx, y, cw, h, Theme.AMBER);
+                Theme.sprite(g, sel ? "slot_selected" : hover ? "slot_hover" : "slot", cx, y, cw, h);
                 g.item(item(str(card, "icon")), cx + 4, y + 4);
                 g.text(c.font(), Theme.fit(c.font(), str(card, "title", ""), cw - 26), cx + 23, y + 5, sel ? Theme.AMBER : Theme.TEXT, false);
                 String tag = str(card, "tag");

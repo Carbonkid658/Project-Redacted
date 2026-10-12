@@ -3,7 +3,6 @@ package dev.projectredacted.client.screen;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import dev.projectredacted.ProjectRedacted;
 import dev.projectredacted.net.ActionPayload;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.gui.Font;
@@ -12,11 +11,9 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.FormattedCharSequence;
 
@@ -32,7 +29,6 @@ import java.util.Map;
  * terminal frame around it, keeps scroll positions and typed text between refreshes, and sends clicks back.
  */
 public class FoundationScreen extends Screen implements Ctx {
-    private static final Identifier LOGO = ProjectRedacted.id("textures/gui/logo.png");
     private static final int HEADER = 18, FOOTER = 16, TAB_W = 78, TAB_H = 18, PAD = 5;
 
     static FoundationScreen current;
@@ -209,18 +205,13 @@ public class FoundationScreen extends Screen implements Ctx {
     private void drawFrame() {
         boolean paper = paperStyle();
         // case
-        Theme.bevel(g, px, py, pw, ph, Theme.CASE);
-        g.outline(px - 1, py - 1, pw + 2, ph + 2, 0xFF000000);
-        if (hazardStyle()) {
-            Theme.hazard(g, px + 2, py + 2, pw - 4, 3);
-            Theme.hazard(g, px + 2, py + ph - 5, pw - 4, 3);
-        }
+        Theme.sprite(g, hazardStyle() ? "frame_hazard" : "frame", px - 1, py - 1, pw + 2, ph + 2);
         // header
         int hy = py + 3;
-        g.blit(RenderPipelines.GUI_TEXTURED, LOGO, px + 5, hy + 2, 0f, 0f, 12, 12, 12, 12);
+        Theme.sprite(g, "logo", px + 5, hy + 2, 12, 12);
         int tx = px + 21;
         if (view.has("face")) {
-            Theme.inset(g, tx, hy, 16, 16, 0xFF06090A);
+            Theme.sprite(g, "face_frame", tx - 1, hy - 1, 18, 18);
             Nodes.face(g, Nodes.str(view, "face"), tx, hy, 16);
             tx += 20;
         }
@@ -238,8 +229,7 @@ public class FoundationScreen extends Screen implements Ctx {
         g.text(font, Theme.fit(font, tr(Nodes.str(view, "title", "")), right - tx - 4), tx, hy + 4, Theme.CASE_TEXT, false);
         // close
         boolean closeHover = hovered(px + pw - 16, hy + 1, 13, 13);
-        Theme.bevel(g, px + pw - 16, hy + 1, 13, 13, closeHover ? 0xFFB33A3A : Theme.CASE_DARK);
-        g.centeredText(font, "✕", px + pw - 10, hy + 4, 0xFFFFFFFF);
+        Theme.sprite(g, closeHover ? "close_hover" : "close", px + pw - 16, hy + 1, 13, 13);
         if (closeHover) tooltip(List.of("Close (Esc)"));
 
         // tabs
@@ -247,7 +237,7 @@ public class FoundationScreen extends Screen implements Ctx {
         int top = py + HEADER + 2;
         int bottom = py + ph - 4 - (hasFooter() ? FOOTER + 2 : 0);
         if (!tabs.isEmpty()) {
-            Theme.inset(g, px + 4, top, TAB_W, bottom - top, 0xFF3B3A34);
+            Theme.sprite(g, "sidebar", px + 4, top, TAB_W, bottom - top);
             String active = Nodes.str(view, "tab", "");
             for (int i = 0; i < tabs.size(); i++) {
                 JsonObject t = tabs.get(i).getAsJsonObject();
@@ -255,9 +245,7 @@ public class FoundationScreen extends Screen implements Ctx {
                 if (ty + TAB_H > bottom) break;
                 boolean sel = active.equals(Nodes.str(t, "id")), locked = t.has("locked");
                 boolean hover = hovered(px + 5, ty, TAB_W - 2, TAB_H - 1);
-                int bg = sel ? Theme.SCREEN : hover && !locked ? 0xFF4B4A42 : 0xFF3B3A34;
-                g.fill(px + 5, ty, px + 3 + TAB_W, ty + TAB_H - 1, bg);
-                if (sel) g.fill(px + 5, ty, px + 7, ty + TAB_H - 1, Theme.AMBER);
+                Theme.sprite(g, sel ? "tab_selected" : hover && !locked ? "tab_hover" : "tab", px + 5, ty, TAB_W - 2, TAB_H - 1);
                 if (t.has("icon")) g.item(Nodes.item(Nodes.str(t, "icon")), px + 8, ty + 1);
                 String label = (locked ? "🔒 " : "") + tr(Nodes.str(t, "label", ""));
                 g.text(font, Theme.fit(font, label, TAB_W - 28), px + 26, ty + 5, locked ? Theme.MUTED : sel ? Theme.AMBER : Theme.TEXT, false);
@@ -267,10 +255,7 @@ public class FoundationScreen extends Screen implements Ctx {
         // the screen itself
         int left = px + 4 + (tabs.isEmpty() ? 0 : TAB_W + 2);
         int screenBottom = bottom - (view.has("banner") ? 12 : 0);
-        Theme.inset(g, left, top, px + pw - 4 - left, screenBottom - top, paper ? Theme.PAPER : Theme.SCREEN);
-        if (!paper) {
-            for (int sy = top + 2; sy < screenBottom - 1; sy += 3) g.fill(left + 1, sy, px + pw - 5, sy + 1, 0x0CFFFFFF);
-        }
+        Theme.sprite(g, paper ? "paper" : "screen", left, top, px + pw - 4 - left, screenBottom - top);
         if (view.has("banner")) {
             JsonObject b = view.getAsJsonObject("banner");
             int col = Theme.color(Nodes.str(b, "color", "red"), false);
@@ -328,8 +313,8 @@ public class FoundationScreen extends Screen implements Ctx {
         int[] b = modalBox();
         int x = b[0], y = b[1], w = b[2], h = b[3];
         boolean danger = modalButton != null && "danger".equals(Nodes.str(modalButton, "style"));
-        Theme.bevel(g, x, y, w, h, Theme.CASE);
-        Theme.inset(g, x + 3, y + 3, w - 6, h - 6, Theme.SCREEN);
+        Theme.sprite(g, "frame", x - 1, y - 1, w + 2, h + 2);
+        Theme.sprite(g, "screen", x + 3, y + 3, w - 6, h - 6);
         if (danger) Theme.hazard(g, x + 4, y + 4, w - 8, 3);
         int ly = y + 10;
         for (FormattedCharSequence line : Nodes.wrap(font, modalText(), w - 16)) {
@@ -366,8 +351,7 @@ public class FoundationScreen extends Screen implements Ctx {
         for (FormattedCharSequence l : lines) w = Math.max(w, font.width(l) + 12);
         int h = lines.size() * 10 + 6;
         int x = px + pw - w - 6, y = py + HEADER + 4;
-        int col = toastError ? 0xFF7A1F1F : 0xFF1F5A2E;
-        Theme.bevel(g, x, y, w, h, col);
+        Theme.sprite(g, toastError ? "toast_error" : "toast", x, y, w, h);
         int ly = y + 4;
         for (FormattedCharSequence l : lines) {
             g.text(font, l, x + 6, ly, 0xFFFFFFFF, false);
