@@ -20,6 +20,7 @@ jobs:
           chmod +x ./gradlew
           set -o pipefail
           { ./gradlew runDatagen --stacktrace && ./gradlew build --stacktrace; } 2>&1 | tee build.log
+          test -f build/resources/client/projectredacted-client.txt
       - name: Report errors
         if: failure()
         run: python3 .github/ci-report.py errors
