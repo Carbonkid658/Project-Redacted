@@ -37,7 +37,7 @@ public final class ClientTest {
 
     private static void tick(Minecraft mc) {
         ticks++;
-        Screen screen = mc.screen;
+        Screen screen = currentScreen(mc);
         String name = screen == null ? "none" : screen.getClass().getName();
         if (ticks % 100 == 0) ProjectRedacted.LOG.info("[clienttest] tick {} stage '{}' screen {}", ticks, stage, name);
         try {
@@ -54,7 +54,7 @@ public final class ClientTest {
                             for (int i = 0; i < args.length; i++) {
                                 if (types[i] == Minecraft.class) args[i] = mc;
                                 else if (types[i] == Screen.class) args[i] = screen;
-                                else if (types[i] == Runnable.class) args[i] = (Runnable) () -> mc.setScreen(new TitleScreen());
+                                else if (types[i] == Runnable.class) args[i] = (Runnable) () -> mc.gui.setScreen(new TitleScreen());
                             }
                             ProjectRedacted.LOG.info("[clienttest] calling {}", m);
                             m.invoke(null, args);
@@ -95,6 +95,24 @@ public final class ClientTest {
             step = 4;
             mc.stop();
         }
+    }
+
+    /** The open screen; looked up by reflection since its accessor moved in 26.x. */
+    private static Screen currentScreen(Minecraft mc) {
+        for (Object holder : new Object[]{mc.gui, mc}) {
+            for (Class<?> c = holder.getClass(); c != null && c != Object.class; c = c.getSuperclass()) {
+                for (java.lang.reflect.Field f : c.getDeclaredFields()) {
+                    if (!Screen.class.isAssignableFrom(f.getType()) || java.lang.reflect.Modifier.isStatic(f.getModifiers())) continue;
+                    try {
+                        f.setAccessible(true);
+                        Object v = f.get(holder);
+                        if (v instanceof Screen sc) return sc;
+                    } catch (Exception ignored) {
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     private static void watch() {
