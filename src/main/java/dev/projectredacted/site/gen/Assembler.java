@@ -256,14 +256,33 @@ public final class Assembler {
             reject = "overlaps " + o;
             return null;
         }
-        for (SitePlan.PlanPart o : placed) if (o.box.intersects(box)) {
-            reject = "overlaps " + o.part.id;
-            return null;
+        for (SitePlan.PlanPart o : placed) {
+            if (o.box.intersects(box)) {
+                reject = "overlaps " + o.part.id;
+                return null;
+            }
+            for (int i = 0; i < o.part.connectors.size(); i++) {
+                SitePart.Connector c = o.connector(i);
+                if (c.type().equals(SitePart.SURFACE_EXIT) && SitePart.exitClearance(c).intersects(box)) {
+                    reject = "in front of the Entrance";
+                    return null;
+                }
+            }
         }
         for (int i = 0; i < p.connectors.size(); i++) {
             SitePart.Connector c = p.worldConnector(i, origin, rot);
-            if (c.type().equals(SitePart.SURFACE_EXIT) && !in.exitOk.test(c.pos(), c.facing())) {
+            if (!c.type().equals(SitePart.SURFACE_EXIT)) continue;
+            if (!in.exitOk.test(c.pos(), c.facing())) {
                 reject = "entrance would face a wall";
+                return null;
+            }
+            Box clear = SitePart.exitClearance(c);
+            for (Box o : in.occupied) if (o.intersects(clear)) {
+                reject = "entrance would face the facility";
+                return null;
+            }
+            for (SitePlan.PlanPart o : placed) if (o.box.intersects(clear)) {
+                reject = "entrance would face the facility";
                 return null;
             }
         }

@@ -214,7 +214,6 @@ public class AutoPlace {
         }
         SiteGen.commit((ServerLevel) player.level(), site, plan, survey, false);
         String msg = "Construction of a " + type().name + " has begun" + (hallways(plan) > 0 ? " with " + hallways(plan) + " connecting part(s)." : ".");
-        site.log(msg);
         if (!Cassie.announce(site, msg)) Cassie.broadcast(site, Component.literal(msg).withStyle(ChatFormatting.GREEN), false);
         stop(player);
         return null;

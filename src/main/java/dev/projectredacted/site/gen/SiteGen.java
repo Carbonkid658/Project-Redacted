@@ -90,9 +90,7 @@ public final class SiteGen {
             for (int i = 0; i < part.connectors.size(); i++) {
                 SitePart.Connector c = part.worldConnector(i, p.origin, p.rot);
                 if (!c.type().equals(SitePart.SURFACE_EXIT)) continue;
-                Direction along = c.facing().getClockWise();
-                in.occupied.add(Box.of(c.pos().relative(c.facing()).relative(along, -2).below(),
-                        c.pos().relative(c.facing(), 6).relative(along, 2).above(SitePart.STOREY - 2)));
+                in.occupied.add(SitePart.exitClearance(c));
             }
         }
         List<Doorway> sources = new ArrayList<>();

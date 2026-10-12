@@ -155,6 +155,12 @@ public class SitePart {
         return min.offset(-atZero.x1(), -atZero.y1(), -atZero.z1());
     }
 
+    /** The ground kept clear in front of a surface exit so the Entrance stays a way in. */
+    public static Box exitClearance(Connector c) {
+        Direction along = c.facing().getClockWise();
+        return Box.of(c.pos().relative(c.facing()).relative(along, -2).below(), c.pos().relative(c.facing(), 6).relative(along, 2).above(STOREY - 2));
+    }
+
     public Connector worldConnector(int i, BlockPos origin, int r) {
         Connector c = connectors.get(i);
         return new Connector(origin.offset(rotate(c.pos(), r)), rotate(c.facing(), r), c.type(), rotate(c.top(), r), c.turnsInto());

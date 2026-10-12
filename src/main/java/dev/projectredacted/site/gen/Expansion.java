@@ -210,7 +210,6 @@ public final class Expansion {
         Room room = null;
         for (int n : site.parts.get(site.parts.size() - plan.parts.size() + indexOfRoom(plan)).rooms) room = site.room(n);
         String msg = "Expansion ordered: " + (room != null ? room.displayName() : type.name) + ".";
-        site.log(msg);
         if (!Cassie.announce(site, msg)) Cassie.broadcast(site, Component.literal(msg).withStyle(ChatFormatting.AQUA), false);
     }
 
