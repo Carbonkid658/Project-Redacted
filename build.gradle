@@ -1,77 +1,88 @@
 plugins {
-    // Minecraft 26.x ships without obfuscation, so the non-remapping Loom plugin is used.
-    id 'net.fabricmc.fabric-loom' version "${loom_version}"
-    id 'maven-publish'
+	id 'net.fabricmc.fabric-loom' version "${loom_version}"
+	id 'maven-publish'
 }
 
-version = project.mod_version
-group = project.maven_group
-
-base {
-    archivesName = project.archives_base_name
+repositories {
+	// Add repositories to retrieve artifacts from in here.
+	// You should only use this when depending on other mods because
+	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
+	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
+	// for more information about repositories.
 }
 
 loom {
-    splitEnvironmentSourceSets()
+	splitEnvironmentSourceSets()
 
-    runs {
-        client {
-            client()
-            name = "Minecraft Client"
-            ideConfigGenerated = true
-            // If the game crashes natively, the JVM crash report lands next to the logs.
-            vmArg "-XX:ErrorFile=logs/hs_err_pid%p.log"
-            runDir = "run"
-        }
-        server {
-            server()
-            name = "Minecraft Server"
-            ideConfigGenerated = true
-            runDir = "run/server"
-        }
-    }
-
-    mods {
-        "projectredacted" {
-            sourceSet sourceSets.main
-            sourceSet sourceSets.client
-        }
-    }
+	mods {
+		"projectredacted" {
+			sourceSet sourceSets.main
+			sourceSet sourceSets.client
+		}
+	}
 }
 
 fabricApi {
-    // Adds the "Data Generation" run and its runDatagen task; output goes to src/main/generated.
-    configureDataGeneration()
+	// Adds the "Data Generation" run and its runDatagen task; output goes to src/main/generated.
+	configureDataGeneration()
 }
 
 dependencies {
-    minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    implementation "net.fabricmc:fabric-loader:${project.loader_version}"
-    implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+	// To change the versions see the gradle.properties file
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+
+	// Fabric API. This is technically optional, but you probably want it anyway.
+	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 }
 
 processResources {
-    inputs.property "version", project.version
-    filesMatching("fabric.mod.json") {
-        expand "version": inputs.properties.version
-    }
-}
+	def version = project.version
+	inputs.property "version", version
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(25)
-    }
-    withSourcesJar()
+	filesMatching("fabric.mod.json") {
+		expand "version": version
+	}
 }
 
 tasks.withType(JavaCompile).configureEach {
-    it.options.release = 25
-    it.options.encoding = 'UTF-8'
-    it.options.compilerArgs += ['-Xmaxerrs', '2000']
+	it.options.release = 25
+	it.options.encoding = 'UTF-8'
+	it.options.compilerArgs += ['-Xmaxerrs', '2000']
+}
+
+java {
+	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
+	// if it is present.
+	// If you remove this line, sources will not be generated.
+	withSourcesJar()
+
+	sourceCompatibility = JavaVersion.VERSION_25
+	targetCompatibility = JavaVersion.VERSION_25
 }
 
 jar {
-    from("LICENSE") {
-        rename { "${it}_${project.base.archivesName.get()}" }
-    }
+	def projectName = project.name
+	inputs.property "projectName", projectName
+
+	from("LICENSE") {
+		rename { "${it}_$projectName"}
+	}
+}
+
+// configure the maven publication
+publishing {
+	publications {
+		create("mavenJava", MavenPublication) {
+			from components.java
+		}
+	}
+
+	// See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
+	repositories {
+		// Add repositories to publish to here.
+		// Notice: This block does NOT have the same function as the block in the top level.
+		// The repositories here will be used for publishing your artifact, not for
+		// retrieving dependencies.
+	}
 }

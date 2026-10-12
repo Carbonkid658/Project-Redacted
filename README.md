@@ -12,7 +12,7 @@ Needs JDK 25.
 ./gradlew build
 ```
 
-The jar lands in `build/libs/`. It builds against Minecraft 26.3, Fabric Loader 0.19.5, Loom 1.15.5 and Fabric API 0.162.0+26.3.
+The jar lands in `build/libs/`. It builds against Minecraft 26.3, Fabric Loader 0.19.5, Loom 1.18 (from the official Fabric 26.3 example mod template) and Fabric API 0.162.0+26.3.
 `.github/workflows/build.yml` builds the jar on every push and attaches it to the run as `project-redacted-jar`.
 If the build fails, the compiler errors are also published as a "report: Errors" check on the commit.
 

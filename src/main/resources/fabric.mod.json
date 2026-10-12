@@ -1,22 +1,30 @@
 {
-  "schemaVersion": 1,
-  "id": "projectredacted",
-  "version": "${version}",
-  "name": "Project [REDACTED]",
-  "description": "Found and run your own SCP Foundation site after the end of the world: claim land, build rooms, recruit staff, contain anomalies and hold off rival factions.",
-  "authors": ["catbonkid"],
-  "license": "All-Rights-Reserved",
-  "icon": "assets/projectredacted/icon.png",
-  "environment": "*",
-  "entrypoints": {
-    "main": ["dev.projectredacted.ProjectRedacted"],
-    "client": ["dev.projectredacted.client.ProjectRedactedClient"],
-    "fabric-datagen": ["dev.projectredacted.datagen.ProjectRedactedDataGenerator"]
-  },
-  "depends": {
-    "fabricloader": ">=0.18.0",
-    "minecraft": "~26.3",
-    "java": ">=25",
-    "fabric-api": "*"
-  }
+	"schemaVersion": 1,
+	"id": "projectredacted",
+	"version": "${version}",
+	"name": "Project [REDACTED]",
+	"description": "Found and run your own SCP Foundation site after the end of the world: claim land, build rooms, recruit staff, contain anomalies and hold off rival factions.",
+	"authors": [
+		"catbonkid"
+	],
+	"license": "All-Rights-Reserved",
+	"icon": "assets/projectredacted/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"dev.projectredacted.ProjectRedacted"
+		],
+		"client": [
+			"dev.projectredacted.client.ProjectRedactedClient"
+		],
+		"fabric-datagen": [
+			"dev.projectredacted.datagen.ProjectRedactedDataGenerator"
+		]
+	},
+	"depends": {
+		"fabricloader": ">=0.19.5",
+		"minecraft": "~26.3",
+		"java": ">=25",
+		"fabric-api": "*"
+	}
 }
