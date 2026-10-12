@@ -14,12 +14,32 @@ base {
 loom {
     splitEnvironmentSourceSets()
 
+    runs {
+        client {
+            client()
+            name = "Minecraft Client"
+            ideConfigGenerated = true
+            runDir = "run"
+        }
+        server {
+            server()
+            name = "Minecraft Server"
+            ideConfigGenerated = true
+            runDir = "run/server"
+        }
+    }
+
     mods {
         "projectredacted" {
             sourceSet sourceSets.main
             sourceSet sourceSets.client
         }
     }
+}
+
+fabricApi {
+    // Adds the "Data Generation" run and its runDatagen task; output goes to src/main/generated.
+    configureDataGeneration()
 }
 
 dependencies {

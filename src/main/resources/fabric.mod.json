@@ -10,7 +10,8 @@
   "environment": "*",
   "entrypoints": {
     "main": ["dev.projectredacted.ProjectRedacted"],
-    "client": ["dev.projectredacted.client.ProjectRedactedClient"]
+    "client": ["dev.projectredacted.client.ProjectRedactedClient"],
+    "fabric-datagen": ["dev.projectredacted.datagen.ProjectRedactedDataGenerator"]
   },
   "depends": {
     "fabricloader": ">=0.18.0",
