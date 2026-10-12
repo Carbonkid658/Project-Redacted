@@ -36,3 +36,33 @@ if mode == 'errors':
 elif mode == 'smoke':
     log = open('smoke.log', errors='replace').read()
     emit('Smoke', log[-120000:])
+elif mode == 'probe':
+    # Looks up method signatures of the classes listed in .github/probe.txt, to check API names after
+    # Minecraft or Fabric renames. Lines: find:<regex> (class names) or class:<fqcn>[:<line regex>].
+    import glob, subprocess, zipfile
+    queries = [q.strip() for q in open('.github/probe.txt') if q.strip() and not q.startswith('#')]
+    if not queries:
+        sys.exit(0)
+    jars = [j for j in glob.glob(os.path.expanduser('~/.gradle/caches') + '/**/*.jar', recursive=True)
+            if re.search(r'minecraft|fabric|joml', j) and 'sources' not in j]
+    index = set()
+    for j in jars:
+        try:
+            with zipfile.ZipFile(j) as z:
+                index.update(n[:-6].replace('/', '.') for n in z.namelist() if n.endswith('.class'))
+        except Exception:
+            pass
+    cp = ':'.join(sorted(set(jars)))
+    out = []
+    for q in queries:
+        kind, _, arg = q.partition(':')
+        if kind == 'find':
+            out.append(f'## find {arg}\n' + '\n'.join(sorted(c for c in index if re.search(arg, c))[:300]))
+        elif kind == 'class':
+            name, _, pattern = arg.partition(':')
+            r = subprocess.run(['javap', '-public', '-cp', cp, name], capture_output=True, text=True)
+            text = r.stdout or r.stderr
+            if pattern:
+                text = '\n'.join(l for l in text.splitlines() if re.search(pattern, l))
+            out.append(f'## {name}\n' + text)
+    emit('Probe', '\n\n'.join(out))

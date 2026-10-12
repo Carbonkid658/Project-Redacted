@@ -27,6 +27,11 @@ jobs:
         run: python3 .github/ci-report.py errors
         env:
           GITHUB_TOKEN: ${{ github.token }}
+      - name: Probe APIs
+        if: always()
+        run: python3 .github/ci-report.py probe
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
       - name: Server smoke test
         run: |
           mkdir -p run && echo "eula=true" > run/eula.txt
