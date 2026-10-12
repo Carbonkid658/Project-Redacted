@@ -167,19 +167,44 @@ public final class Expansion {
         long now = level.getGameTime();
         if (now < site.nextExpandCheck) return;
         site.nextExpandCheck = now + CHECK_TICKS;
-        for (PlacedPart p : site.parts) if (!p.built && !p.removed) return; // one order at a time
+        for (PlacedPart p : site.parts) {
+            if (!p.built && !p.removed) {
+                site.expandStatus = "Waiting for construction to finish.";
+                return; // one order at a time
+            }
+        }
         RoomType type = next(site);
-        if (type == null) return;
+        if (type == null) {
+            site.expandStatus = "Nothing needed right now.";
+            return;
+        }
         List<SitePart> sizes = PartKit.active().sizes(type.id);
         if (sizes.isEmpty()) return;
         SiteGen.Survey survey = SiteGen.survey(level, site, level.getRandom().nextLong());
         survey.input().exitOk = (p, d) -> true;
         SitePlan plan = SiteGen.addRoom(site, survey.input(), type.id, sizes.get(0));
-        if (!plan.ok() || plan.overwrites > 0) return; // never replaces player blocks; tries again later
+        if (!plan.ok()) {
+            site.expandStatus = plan.error;
+            return;
+        }
+        if (plan.overwrites > 0) {
+            // Never replaces player blocks; tries again later with another spot.
+            site.expandStatus = "The only spot found for a " + type.name + " has player-built blocks in the way.";
+            return;
+        }
         Cost cost = new Cost();
         for (SitePlan.PlanPart pp : plan.parts) AutoPlace.partCost(pp.part).items.forEach(cost::add);
         List<Container> pool = pool(level, site, false);
-        if (!canPay(pool, cost)) return;
+        if (!canPay(pool, cost)) {
+            List<String> short_ = new ArrayList<>();
+            for (Map.Entry<Item, Integer> e : cost.items.entrySet()) {
+                int have = count(pool, e.getKey());
+                if (have < e.getValue()) short_.add(e.getKey().getName().getString() + " " + have + "/" + e.getValue());
+            }
+            site.expandStatus = "Can't pay for a " + type.name + " yet: " + String.join(", ", short_) + ".";
+            return;
+        }
+        site.expandStatus = null;
         pay(pool, cost);
         SiteGen.commit(level, site, plan, survey, false);
         Room room = null;

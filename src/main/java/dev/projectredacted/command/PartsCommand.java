@@ -449,6 +449,7 @@ public final class PartsCommand {
                     + (unreachable.isEmpty() ? "all rooms walkable" : "unreachable: " + String.join(", ", unreachable)),
                     built == site.parts.size() && site.forcedChunks.isEmpty() && unreachable.isEmpty() ? ChatFormatting.GREEN : ChatFormatting.RED);
             for (String line : site.logLines) say(src, "  log: " + line, ChatFormatting.GRAY);
+            if (site.autoExpand) say(src, "  auto-expand: " + site.expandStatus + " (rooms " + site.rooms.size() + ")", ChatFormatting.GRAY);
         }
         return 1;
     }

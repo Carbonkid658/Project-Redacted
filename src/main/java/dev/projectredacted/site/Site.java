@@ -48,6 +48,8 @@ public class Site {
     public boolean autoExpand;
     public List<String> expandPriority = new ArrayList<>();
     public long nextExpandCheck;
+    /** What auto-expand is waiting on, shown in the Add Room section. */
+    public transient String expandStatus;
     public int nextRoomNumber = 1;
     public Map<UUID, Member> members = new LinkedHashMap<>();
     public Map<UUID, StaffRecord> staff = new LinkedHashMap<>();

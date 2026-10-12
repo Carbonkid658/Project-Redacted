@@ -639,6 +639,7 @@ public class TerminalScreen extends GuiScreen {
         v.add(El.text(site.autoExpand
                 ? "The site orders its own rooms, paid from the Supply Depot and Storage Rooms. Next: " + (next == null ? "nothing needed" : next.name) + "."
                 : "Off. When on, the site orders the Suggested room by itself whenever the Supply Depot and Storage Rooms can pay.", "gray"));
+        if (site.autoExpand && site.expandStatus != null) v.add(El.text(site.expandStatus, "yellow"));
     }
 
     // ---------------------------------------------------------------- log
