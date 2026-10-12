@@ -96,7 +96,7 @@ public final class Construction {
                 level.sendParticles(ParticleTypes.WAX_ON, p.getX() + 0.5, p.getY() + 0.5, p.getZ() + 0.5, 3, 0.3, 0.3, 0.3, 0);
             }
             if (end >= job.placements.size()) {
-                PartBuilder.finish(level, site, i, job);
+                PartBuilder.finish(level, site, i, job, true);
                 JOBS.remove(key);
                 if (!pp.fast) announce(site, pp);
             }

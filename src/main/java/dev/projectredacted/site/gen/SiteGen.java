@@ -40,9 +40,15 @@ public final class SiteGen {
         List<Integer> heights = new ArrayList<>();
         for (int dx = -20; dx < 20; dx += 2)
             for (int dz = -20; dz < 20; dz += 2)
-                heights.add(level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, center.getX() + dx, center.getZ() + dz) - 1);
+                heights.add(height(level, center.getX() + dx, center.getZ() + dz));
         heights.sort(Integer::compare);
         return heights.get(heights.size() / 2);
+    }
+
+    /** The top solid block at x, z, loading the chunk first (unloaded chunks report the bottom of the world). */
+    public static int height(ServerLevel level, int x, int z) {
+        level.getChunk(x >> 4, z >> 4);
+        return level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z) - 1;
     }
 
     /** Floor height of the Director's Office storey for a new site of this type. */
@@ -115,7 +121,7 @@ public final class SiteGen {
     /** An entrance needs open ground in front, no more than a step up and not a cliff down. */
     private static boolean exitOk(ServerLevel level, BlockPos pos, Direction facing) {
         BlockPos front = pos.relative(facing, 2);
-        int ground = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, front.getX(), front.getZ()) - 1;
+        int ground = height(level, front.getX(), front.getZ());
         return ground <= pos.getY() && ground >= pos.getY() - 5;
     }
 

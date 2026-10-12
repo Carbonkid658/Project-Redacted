@@ -148,6 +148,7 @@ public final class SiteManager {
         if (tickCounter % 10 == 0) DesignSession.tickPreviews(srv);
         if (tickCounter % 10 == 5) dev.projectredacted.site.gen.PlanPreview.tick(srv);
         if (tickCounter % 20 == 7) dev.projectredacted.site.gen.AutoPlace.tickHud(srv);
+        if (tickCounter % 10 == 3) dev.projectredacted.site.gen.PartFrames.tickOutlines(srv);
         if (tickCounter % 6000 == 0) save();
     }
 

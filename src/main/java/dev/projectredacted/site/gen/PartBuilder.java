@@ -78,7 +78,7 @@ public final class PartBuilder {
 
     private static void terrain(ServerLevel level, Box box, List<Box> others, List<RoomBuilder.Placement> out) {
         BlockState air = Blocks.AIR.defaultBlockState(), stone = Blocks.STONE_BRICKS.defaultBlockState(), rock = Blocks.STONE.defaultBlockState();
-        int surface = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, (box.x1() + box.x2()) / 2, (box.z1() + box.z2()) / 2) - 1;
+        int surface = SiteGen.height(level, (box.x1() + box.x2()) / 2, (box.z1() + box.z2()) / 2);
         boolean buried = box.y2() < surface - 1;
         // Trees and plants just above a surface part.
         if (!buried) {
@@ -195,7 +195,7 @@ public final class PartBuilder {
 
     // ---------------------------------------------------------------- finishing
 
-    public static void finish(ServerLevel level, Site site, int index, Job job) {
+    public static void finish(ServerLevel level, Site site, int index, Job job, boolean register) {
         PlacedPart pp = site.parts.get(index);
         SitePart part = pp.part();
         if (part != null && part.template != null) {
@@ -210,7 +210,7 @@ public final class PartBuilder {
             }
             for (RoomBuilder.Placement p : job.fixups) Construction.place(level, p);
         }
-        for (BlockPos r : job.readers) SiteManager.addReader(r);
+        if (register) for (BlockPos r : job.readers) SiteManager.addReader(r);
         for (Room r : SiteGen.rooms(site, pp)) {
             r.built = true;
             r.buildProgress = 0;

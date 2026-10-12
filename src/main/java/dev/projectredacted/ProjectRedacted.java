@@ -10,6 +10,7 @@ import dev.projectredacted.room.RoomTypes;
 import dev.projectredacted.site.ClaimProtection;
 import dev.projectredacted.site.SiteEvents;
 import dev.projectredacted.site.SiteManager;
+import dev.projectredacted.site.gen.PartFrames;
 import dev.projectredacted.site.gen.PartKit;
 import dev.projectredacted.site.gen.SiteTypeRules;
 import dev.projectredacted.util.Scheduler;
@@ -57,6 +58,7 @@ public class ProjectRedacted implements ModInitializer {
             SiteTypeRules.reload(server.getResourceManager());
             PartKit.reload(server.getResourceManager());
             SiteManager.load(server);
+            PartFrames.load(server);
             runAutotest(server);
         });
         ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, resourceManager, success) -> {
@@ -69,6 +71,7 @@ public class ProjectRedacted implements ModInitializer {
         ServerLifecycleEvents.SERVER_STOPPING.register(server -> SiteManager.save());
         ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
             SiteManager.unload();
+            PartFrames.unload();
             Gui.clear();
         });
 

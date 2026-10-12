@@ -27,6 +27,8 @@ public final class ModItems {
     public static final Item KEYCARD_5 = keycard(5);
     public static final Item CLIPBOARD = register("clipboard", ClipboardItem::new, new Item.Properties().stacksTo(1));
     public static final Item ROOM_DESIGNATOR = register("room_designator", DesignatorItem::new, new Item.Properties().stacksTo(1));
+    /** Creative-only tool for framing hand-built site parts (site generation §7). */
+    public static final Item PART_FRAME = register("part_frame", PartFrameItem::new, new Item.Properties().stacksTo(1).rarity(Rarity.EPIC));
     public static final Item FACILITY_TABLET = register("facility_tablet", TabletItem::new, new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON));
     public static final Item RESEARCH_DOCUMENT = register("research_document", dev.projectredacted.item.ResearchDocumentItem::new, new Item.Properties());
     public static final Item REPAIR_KIT = register("repair_kit", RepairKitItem::new, new Item.Properties().stacksTo(16));
