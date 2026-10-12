@@ -60,6 +60,10 @@ public final class PartBuilder {
             if (b != null) others.add(b);
         }
         terrain(level, box, others, job.placements);
+        for (int i = 0; i < part.connectors.size(); i++) {
+            SitePart.Connector c = part.worldConnector(i, pp.origin, pp.rot);
+            if (c.type().equals(SitePart.SURFACE_EXIT)) exitPath(level, c, others, job.placements);
+        }
         if (part.procedural()) {
             RoomBuilder.Plan plan = ProceduralParts.build(part, pp.origin, pp.rot, pp.used, pp.seed);
             job.body = plan;
@@ -108,6 +112,39 @@ public final class PartBuilder {
                 BlockState s = level.getBlockState(p);
                 if (s.isAir() || s.liquid() || s.is(Blocks.GRAVEL) || s.is(net.minecraft.tags.BlockTags.SAND)) out.add(new RoomBuilder.Placement(p.immutable(), rock, false, true));
             }
+        }
+    }
+
+    /**
+     * A way out of the Entrance (§3: the surface exit faces open air): a 3-wide path dug out of any hillside in
+     * front of the exit, with a solid floor, until it reaches open ground.
+     */
+    private static void exitPath(ServerLevel level, SitePart.Connector c, List<Box> others, List<RoomBuilder.Placement> out) {
+        BlockState air = Blocks.AIR.defaultBlockState(), path = Blocks.STONE_BRICKS.defaultBlockState();
+        Direction along = c.facing().getClockWise();
+        int floor = c.pos().getY() - 1;
+        for (int d = 1; d <= 16; d++) {
+            boolean open = true;
+            for (int k = -1; k <= 1; k++) {
+                BlockPos col = c.pos().relative(c.facing(), d).relative(along, k);
+                if (inside(others, col)) continue;
+                int ground = SiteGen.height(level, col.getX(), col.getZ());
+                if (ground > floor) open = false;
+                for (int y = 0; y < 3; y++) {
+                    BlockPos p = col.above(y);
+                    if (!level.getBlockState(p).isAir()) out.add(new RoomBuilder.Placement(p, air, false, false));
+                }
+                BlockPos below = col.below();
+                BlockState under = level.getBlockState(below);
+                if (under.isAir() || under.liquid() || under.canBeReplaced() || SiteGen.vegetation(under)) out.add(new RoomBuilder.Placement(below, path, false, true));
+                for (int dy = 2; dy <= 6; dy++) {
+                    BlockPos f = col.below(dy);
+                    BlockState fs = level.getBlockState(f);
+                    if (!(fs.isAir() || fs.liquid() || fs.canBeReplaced())) break;
+                    out.add(new RoomBuilder.Placement(f, path, false, true));
+                }
+            }
+            if (open && d >= 2) break;
         }
     }
 

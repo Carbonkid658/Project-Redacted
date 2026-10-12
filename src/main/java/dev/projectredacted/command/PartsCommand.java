@@ -440,11 +440,17 @@ public final class PartsCommand {
             for (net.minecraft.core.Direction d : net.minecraft.core.Direction.values()) {
                 BlockPos n = p.relative(d);
                 if (!area.contains(n) || seen.contains(n.asLong())) continue;
-                if (!passable(level, n)) continue;
+                if (!passable(level, n)) {
+                    BlockPos step = n.above();
+                    if (d.getAxis() != net.minecraft.core.Direction.Axis.Y && passable(level, step) && passable(level, step.above()) && passable(level, p.above(2))
+                            && seen.add(step.asLong())) queue.add(step);
+                    continue;
+                }
                 if (d == net.minecraft.core.Direction.UP && !ladder && !level.getBlockState(n).is(Blocks.LADDER)) continue;
                 if (d.getAxis() != net.minecraft.core.Direction.Axis.Y) {
-                    // Needs headroom and something to stand on (or a ladder).
+                    // Needs headroom and something to stand on (or a ladder); a one block step can be jumped.
                     if (!passable(level, n.above())) continue;
+                    if (!passable(level, n)) continue;
                     boolean nLadder = level.getBlockState(n).is(Blocks.LADDER);
                     if (!nLadder && passable(level, n.below()) && !level.getBlockState(n.below()).is(Blocks.LADDER)) {
                         // Walking off an edge: fall to the ground below.
