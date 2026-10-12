@@ -516,9 +516,7 @@ public class FoundationScreen extends Screen implements Ctx {
     @Override
     public void popClip() {
         clips.pop();
-        g.disableScissor();
-        int[] parent = clips.peek();
-        if (parent != null) g.enableScissor(parent[0], parent[1], parent[2], parent[3]);
+        g.disableScissor(); // the graphics keep their own stack, so this restores the parent clip
     }
 
     @Override

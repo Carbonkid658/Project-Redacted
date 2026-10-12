@@ -1,7 +1,0 @@
-# API lookups for CI (find:<regex>, class:<fqcn>[:<line regex>]); empty means skip.
-class:net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper
-class:net.minecraft.client.KeyMapping$Category
-class:net.minecraft.client.KeyMapping:KeyMapping\(|consumeClick
-class:net.minecraft.sounds.SoundEvents:UI_BUTTON
-class:net.minecraft.server.level.ServerLevel:getEntity
-class:net.minecraft.client.gui.screens.Screen:onClose|removed|charTyped|keyPressed|mouseClicked|mouseScrolled
