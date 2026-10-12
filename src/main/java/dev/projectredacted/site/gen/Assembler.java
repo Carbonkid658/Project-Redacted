@@ -125,7 +125,7 @@ public final class Assembler {
             Assembler a = new Assembler(in, in.seed ^ (i * 0x632BE59BD9B4E019L));
             a.budget = Math.max(800, in.budget / Math.max(1, Math.min(order.size(), 12)));
             Open start = a.open.get(i);
-            if (!a.chain(start, goal, 3)) continue;
+            if (!a.chain(start, goal, goal.storey() != null ? 5 : 3)) continue;
             SitePlan plan = a.result(in.seed);
             if (seen.add(plan.key())) out.add(plan);
         }

@@ -178,6 +178,40 @@ public final class SiteGen {
         return plan;
     }
 
+    /**
+     * The storey growth should use next (design §4): Surface-Tall fills a storey up to the crowded share of the
+     * claim and then goes up; Underground does the same going down. Null for Surface-Flat.
+     */
+    public static Integer preferredStorey(Site site, Assembler.Input in) {
+        if (site.type == SiteType.SURFACE_FLAT) return null;
+        double claim = (double) (in.bounds.x2() - in.bounds.x1() + 1) * (in.bounds.z2() - in.bounds.z1() + 1);
+        double crowded = SiteTypeRules.of(site.type).crowded;
+        java.util.Map<Integer, Integer> cover = new java.util.HashMap<>();
+        for (PlacedPart p : site.parts) {
+            Box b = p.removed ? null : p.box();
+            if (b == null) continue;
+            SitePart part = p.part();
+            for (int k = 0; k < (part == null ? 1 : part.storeys()); k++) cover.merge(p.storey + k, b.area(), Integer::sum);
+        }
+        int surface = SiteTypeRules.surfaceStorey(site.type);
+        int step = site.type == SiteType.UNDERGROUND ? -1 : 1;
+        int start = site.type == SiteType.UNDERGROUND ? surface - 1 : 0;
+        for (int s = start, n = 0; n < 64; s += step, n++) {
+            if (cover.getOrDefault(s, 0) / claim < crowded) return s;
+        }
+        return null;
+    }
+
+    /** One spot for a room joined to the facility, on the preferred storey if possible. */
+    public static SitePlan addRoom(Site site, Assembler.Input in, String roomType, SitePart size) {
+        Integer storey = preferredStorey(site, in);
+        if (storey != null) {
+            SitePlan plan = Assembler.addRoom(in, new Assembler.Goal(roomType, false, storey, size));
+            if (plan.ok()) return plan;
+        }
+        return Assembler.addRoom(in, new Assembler.Goal(roomType, false, null, size));
+    }
+
     // ---------------------------------------------------------------- committing (§6)
 
     /**

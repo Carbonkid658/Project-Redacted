@@ -105,14 +105,23 @@ public class AutoPlace {
         Assembler.Input in = survey.input();
         in.near = nearMe ? player.blockPosition() : null;
         in.exitOk = (p, d) -> true;
-        spots.addAll(Assembler.spots(in, new Assembler.Goal(typeId, false, null, part), MAX_SPOTS));
+        Integer storey = SiteGen.preferredStorey(site, in);
+        if (storey != null && !nearMe) spots.addAll(Assembler.spots(in, new Assembler.Goal(typeId, false, storey, part), MAX_SPOTS));
+        if (spots.size() < MAX_SPOTS) {
+            java.util.Set<String> have = new java.util.HashSet<>();
+            for (SitePlan p : spots) have.add(p.key());
+            for (SitePlan p : Assembler.spots(in, new Assembler.Goal(typeId, false, null, part), MAX_SPOTS)) {
+                if (spots.size() >= MAX_SPOTS) break;
+                if (have.add(p.key())) spots.add(p);
+            }
+        }
         if (spots.isEmpty()) {
             error = "No free space joined to the facility for a " + sizeLabel(part) + " " + type().name
                     + ". Try a smaller size, or upgrade the facility level for a bigger claim.";
             PlanPreview.clear(player);
             return false;
         }
-        if (!nearMe) spots.sort(Comparator.comparingInt((SitePlan p) -> p.overwrites).thenComparingInt(p -> p.parts.size()));
+        if (!nearMe) spots.sort(Comparator.comparingInt((SitePlan p) -> p.overwrites));
         PlanPreview.show(player, current());
         return true;
     }

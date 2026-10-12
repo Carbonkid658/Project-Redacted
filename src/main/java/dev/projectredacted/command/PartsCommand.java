@@ -297,6 +297,16 @@ public final class PartsCommand {
      * With one: generates a full Level 0 site of that type in front of you (each run rerolls).
      */
     private static int test(CommandSourceStack src, String kitName, String typeName) {
+        try {
+            return runTest(src, kitName, typeName);
+        } catch (RuntimeException e) {
+            ProjectRedacted.LOG.error("[parts] test failed", e);
+            say(src, "Test failed: " + e, ChatFormatting.RED);
+            return 0;
+        }
+    }
+
+    private static int runTest(CommandSourceStack src, String kitName, String typeName) {
         ServerLevel level = src.getLevel();
         BlockPos at = BlockPos.containing(src.getPosition());
         PartKit kit = kit(src, kitName);
@@ -350,7 +360,7 @@ public final class PartsCommand {
                 s.input().exitOk = (p, d) -> true;
                 List<SitePart> sizes = kit.sizes(t.id);
                 if (sizes.isEmpty()) continue;
-                SitePlan room = Assembler.addRoom(s.input(), new Assembler.Goal(t.id, false, null, sizes.get(0)));
+                SitePlan room = SiteGen.addRoom(site, s.input(), t.id, sizes.get(0));
                 if (!room.ok()) {
                     failed.add(t.name);
                     continue;
