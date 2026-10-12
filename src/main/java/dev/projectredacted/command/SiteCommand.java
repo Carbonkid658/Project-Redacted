@@ -30,7 +30,8 @@ public final class SiteCommand {
                                         IntegerArgumentType.getInteger(ctx, "level"))))))
                 .then(Commands.literal("transfer").then(Commands.argument("player", EntityArgument.player())
                         .executes(ctx -> transfer(ctx.getSource().getPlayerOrException(), EntityArgument.getPlayer(ctx, "player")))))
-                .then(Commands.literal("leave").executes(ctx -> leave(ctx.getSource().getPlayerOrException()))));
+                .then(Commands.literal("leave").executes(ctx -> leave(ctx.getSource().getPlayerOrException())))
+                .then(PartsCommand.node()));
     }
 
     private static Site directed(ServerPlayer player) {
