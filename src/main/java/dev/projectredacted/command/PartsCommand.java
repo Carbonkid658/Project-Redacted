@@ -487,7 +487,25 @@ public final class PartsCommand {
             boolean reached = false;
             for (int x = r.x1 + 1; x < r.x2 && !reached; x++)
                 for (int z = r.z1 + 1; z < r.z2 && !reached; z++) reached = seen.contains(BlockPos.asLong(x, r.y1 + 1, z));
-            if (!reached) out.add(r.displayName() + (r.part >= 0 ? " [" + site.parts.get(r.part).id + " " + new BlockPos(r.x1, r.y1, r.z1).toShortString() + "]" : ""));
+            if (!reached) {
+                StringBuilder sb = new StringBuilder(r.displayName());
+                if (r.part >= 0) {
+                    PlacedPart pp = site.parts.get(r.part);
+                    SitePart part = pp.part();
+                    sb.append(" [").append(pp.id).append(" #").append(r.part).append(" used ").append(Integer.toBinaryString(pp.used)).append(" doors ").append(r.doors);
+                    for (int i = 0; part != null && i < part.connectors.size(); i++) {
+                        if ((pp.used & (1 << i)) == 0) continue;
+                        SitePart.Connector c = part.worldConnector(i, pp.origin, pp.rot);
+                        BlockPos q = c.pos();
+                        sb.append(" | ").append(c.facing().getName()).append(" ").append(q.toShortString()).append(": ")
+                                .append(name(level, q.relative(c.facing().getOpposite()))).append("/").append(name(level, q)).append("/")
+                                .append(name(level, q.relative(c.facing()))).append("/").append(name(level, q.relative(c.facing(), 2)))
+                                .append(" up ").append(name(level, q.above())).append("/").append(name(level, q.relative(c.facing()).above()));
+                    }
+                    sb.append("]");
+                }
+                out.add(sb.toString());
+            }
         }
         if (!out.isEmpty()) {
             StringBuilder sb = new StringBuilder("(walked " + seen.size() + " blocks from " + start.toShortString() + ":");
@@ -508,6 +526,10 @@ public final class PartsCommand {
             out.add(sb + ")");
         }
         return out;
+    }
+
+    private static String name(ServerLevel level, BlockPos pos) {
+        return BuiltInRegistries.BLOCK.getKey(level.getBlockState(pos).getBlock()).getPath();
     }
 
     private static boolean passable(ServerLevel level, BlockPos pos) {
