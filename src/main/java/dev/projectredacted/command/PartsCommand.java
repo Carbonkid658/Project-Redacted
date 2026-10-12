@@ -483,7 +483,7 @@ public final class PartsCommand {
         if (ruinTarget == null) return 0;
         boolean any = false;
         for (dev.projectredacted.site.SiteManager.RuinRecord r : dev.projectredacted.site.SiteManager.ruins()) {
-            if (r.mainframe == null || r.mainframe.distSqr(ruinTarget) > 64 * 64) continue;
+            if (r.mainframe == null || Math.abs(r.mainframe.getX() - ruinTarget.getX()) > 64 || Math.abs(r.mainframe.getZ() - ruinTarget.getZ()) > 64) continue;
             any = true;
             String block = BuiltInRegistries.BLOCK.getKey(level.getBlockState(r.mainframe).getBlock()).getPath();
             List<String> types = new ArrayList<>();
