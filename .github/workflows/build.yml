@@ -13,10 +13,8 @@ jobs:
       - uses: gradle/actions/setup-gradle@v5
       - name: Versions (temporary)
         run: |
-          v=$(curl -s https://maven.fabricmc.net/net/fabricmc/fabric-api/fabric-api/maven-metadata.xml | grep -o '<version>[^<]*</version>' | tail -15 | tr '\n' ' ')
-          l=$(curl -s https://meta.fabricmc.net/v2/versions/loader | head -c 300)
-          g=$(curl -s https://meta.fabricmc.net/v2/versions/game | head -c 400)
-          echo "::notice title=Versions::api $v %0Aloader $l %0Agame $g"
+          l=$(curl -s https://meta.fabricmc.net/v2/versions/loader | tr -d '\n ' | head -c 300)
+          echo "::notice title=Versions::loader $l"
       - name: Build
         run: |
           chmod +x ./gradlew
