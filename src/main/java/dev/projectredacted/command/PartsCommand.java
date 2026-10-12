@@ -583,6 +583,7 @@ public final class PartsCommand {
             }
         }
         for (dev.projectredacted.room.Room r : site.rooms) {
+            if (!r.built) continue; // still under construction
             boolean reached = false;
             for (int x = r.x1 + 1; x < r.x2 && !reached; x++)
                 for (int z = r.z1 + 1; z < r.z2 && !reached; z++) reached = seen.contains(BlockPos.asLong(x, r.y1 + 1, z));

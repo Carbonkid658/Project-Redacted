@@ -1,5 +1,12 @@
 # API lookups for CI (find:<regex>, class:<fqcn>[:<line regex>], code:<fqcn>:<regex>); empty means skip.
-class:net.minecraft.commands.Commands:hasPermission|LEVEL_|static
-class:net.minecraft.commands.CommandSourceStack:send|permission|Permission|getPosition|getLevel
-class:net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate:fillFromWorld|save|load|getSize
-class:net.minecraft.world.level.material.MapColor:col|calculateARGBColor|getColor
+class:net.minecraft.world.level.levelgen.structure.Structure:protected|public|abstract
+class:net.minecraft.world.level.levelgen.structure.Structure$GenerationContext
+class:net.minecraft.world.level.levelgen.structure.Structure$GenerationStub
+class:net.minecraft.world.level.levelgen.structure.StructurePiece:protected|public|abstract
+class:net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType
+class:net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilder:public
+class:net.minecraft.world.level.levelgen.structure.StructureType
+class:net.minecraft.world.level.levelgen.structure.BoundingBox:public
+class:net.minecraft.world.level.chunk.ChunkGenerator:Height|height
+find:StructurePieceSerializationContext
+find:levelgen\.structure\.TerrainAdjustment
