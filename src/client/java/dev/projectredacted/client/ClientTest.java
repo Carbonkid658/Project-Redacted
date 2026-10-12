@@ -47,8 +47,11 @@ public final class ClientTest {
                     else if (screen instanceof TitleScreen) {
                         progress("title screen; opening Create World");
                         step = 1;
+                        Method best = null;
                         for (Method m : Class.forName("net.minecraft.client.gui.screens.worldselection.CreateWorldScreen").getDeclaredMethods()) {
-                            if (!m.getName().equals("openFresh")) continue;
+                            if (m.getName().equals("openFresh") && (best == null || m.getParameterCount() < best.getParameterCount())) best = m;
+                        }
+                        for (Method m : new Method[]{best}) {
                             m.setAccessible(true);
                             Object[] args = new Object[m.getParameterCount()];
                             Class<?>[] types = m.getParameterTypes();
