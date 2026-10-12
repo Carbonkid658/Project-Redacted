@@ -199,7 +199,7 @@ public final class Expansion {
             List<String> short_ = new ArrayList<>();
             for (Map.Entry<Item, Integer> e : cost.items.entrySet()) {
                 int have = count(pool, e.getKey());
-                if (have < e.getValue()) short_.add(e.getKey().getName().getString() + " " + have + "/" + e.getValue());
+                if (have < e.getValue()) short_.add(dev.projectredacted.gui.Ui.name(e.getKey()) + " " + have + "/" + e.getValue());
             }
             site.expandStatus = "Can't pay for a " + type.name + " yet: " + String.join(", ", short_) + ".";
             return;
