@@ -317,6 +317,7 @@ public final class PartsCommand {
                 return 0;
             }
             if (src.getEntity() != null) at = at.relative(src.getEntity().getDirection(), 24);
+            else at = at.offset(200 * (type.ordinal() + 1), 0, 0); // console: keep test sites apart
             Site site = fakeSite(at, type);
             SiteGen.Survey survey = SiteGen.survey(level, site, RANDOM.nextLong());
             survey.input().kit = kit;
@@ -401,6 +402,7 @@ public final class PartsCommand {
         say(src, "Built a " + type.displayName + " Level 0 test site at " + site.anchor.toShortString() + ": " + site.parts.size() + " parts, "
                 + blocks + " blocks in " + (System.nanoTime() - start) / 1_000_000 + " ms.", ChatFormatting.GREEN);
         List<String> unreachable = walk(level, site);
+        if (!unreachable.isEmpty()) for (PlacedPart p : site.parts) say(src, "  " + p.id + " r" + p.rot + " storey " + p.storey + " " + p.box() + " used " + Integer.toBinaryString(p.used), ChatFormatting.GRAY);
         say(src, unreachable.isEmpty() ? "Every room can be walked to from the surface." : "Can't walk from the surface to: " + String.join(", ", unreachable),
                 unreachable.isEmpty() ? ChatFormatting.GREEN : ChatFormatting.RED);
     }
