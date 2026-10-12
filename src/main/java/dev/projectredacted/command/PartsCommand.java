@@ -60,6 +60,9 @@ public final class PartsCommand {
                         .executes(ctx -> export(ctx.getSource(), StringArgumentType.getString(ctx, "kit")))))
                 .then(Commands.literal("import").then(Commands.argument("kit", StringArgumentType.word())
                         .executes(ctx -> importKit(ctx.getSource(), StringArgumentType.getString(ctx, "kit")))))
+                .then(Commands.literal("live").then(Commands.argument("type", StringArgumentType.word())
+                        .executes(ctx -> live(ctx.getSource(), StringArgumentType.getString(ctx, "type")))))
+                .then(Commands.literal("status").executes(ctx -> status(ctx.getSource())))
                 .then(Commands.literal("test")
                         .executes(ctx -> test(ctx.getSource(), null, null))
                         .then(Commands.argument("kit", StringArgumentType.word())
@@ -396,6 +399,57 @@ public final class PartsCommand {
         }
         say(src, failures == 0 ? "Kit test passed." : "Kit test: " + failures + " site type(s) failed.", failures == 0 ? ChatFormatting.GREEN : ChatFormatting.RED);
         return failures == 0 ? 1 : 0;
+    }
+
+    /**
+     * Founds a real test site (no director) at the command's position and starts its Level 0 build at the fast
+     * speed, exactly as the terminal does. /site parts status reports on it afterwards.
+     */
+    private static int live(CommandSourceStack src, String typeName) {
+        SiteType type = parseType(typeName);
+        if (type == null) return 0;
+        ServerLevel level = src.getLevel();
+        BlockPos at = BlockPos.containing(src.getPosition());
+        if (src.getEntity() == null) at = at.offset(-300 * (type.ordinal() + 1), 0, -300 * consoleRuns++);
+        at = new BlockPos(at.getX(), SiteGen.height(level, at.getX(), at.getZ()) + 1, at.getZ());
+        Site site = new Site();
+        site.id = java.util.UUID.randomUUID().toString();
+        site.director = java.util.UUID.randomUUID();
+        site.directorName = "Test";
+        site.mainframe = at;
+        site.anchor = at;
+        site.type = type;
+        level.setBlock(at, dev.projectredacted.registry.ModBlocks.MAINFRAME.defaultBlockState(), 3);
+        dev.projectredacted.site.SiteManager.add(site);
+        SiteGen.Survey survey = SiteGen.survey(level, site, RANDOM.nextLong());
+        SitePlan plan = SiteGen.planLevel0(survey, site);
+        if (!plan.ok()) {
+            say(src, "Live " + type.displayName + ": " + plan.error, ChatFormatting.RED);
+            return 0;
+        }
+        SiteGen.commit(level, site, plan, survey, true);
+        site.generated = true;
+        say(src, "Live " + type.displayName + " site at " + at.toShortString() + ": " + plan.parts.size() + " parts queued, " + site.forcedChunks.size() + " chunks kept loaded",
+                ChatFormatting.GREEN);
+        return 1;
+    }
+
+    private static int status(CommandSourceStack src) {
+        ServerLevel level = src.getLevel();
+        for (Site site : dev.projectredacted.site.SiteManager.sites()) {
+            if (!"Test".equals(site.directorName)) continue;
+            int built = 0;
+            for (PlacedPart p : site.parts) if (p.built) built++;
+            String main = site.mainframe == null ? "none" : site.mainframe.toShortString() + " " + BuiltInRegistries.BLOCK.getKey(level.getBlockState(site.mainframe).getBlock()).getPath();
+            String term = site.terminal == null ? "none" : site.terminal.toShortString() + " " + BuiltInRegistries.BLOCK.getKey(level.getBlockState(site.terminal).getBlock()).getPath();
+            List<String> unreachable = walk(level, site);
+            say(src, site.type.displayName + " live site: " + built + "/" + site.parts.size() + " parts built, " + site.forcedChunks.size() + " chunks still forced, "
+                    + "Mainframe " + main + ", Terminal " + term + ", " + site.doorways.size() + " open doorways, "
+                    + (unreachable.isEmpty() ? "all rooms walkable" : "unreachable: " + String.join(", ", unreachable)),
+                    built == site.parts.size() && site.forcedChunks.isEmpty() && unreachable.isEmpty() ? ChatFormatting.GREEN : ChatFormatting.RED);
+            for (String line : site.logLines) say(src, "  log: " + line, ChatFormatting.GRAY);
+        }
+        return 1;
     }
 
     private static Site fakeSite(BlockPos at, SiteType type) {
