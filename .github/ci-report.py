@@ -41,7 +41,7 @@ elif mode == 'parts':
     lines = open('smoke.log', errors='replace').read().splitlines()
     keep = []
     for i, l in enumerate(lines):
-        if '[parts]' in l or 'Exception' in l or '/ERROR]' in l or l.lstrip().startswith(('at dev.', 'Caused by')):
+        if '[parts]' in l or '[autotest]' in l or 'Exception' in l or '/ERROR]' in l or l.lstrip().startswith(('at dev.', 'Caused by')):
             keep.append(l)
     emit('Parts', '\n'.join(keep[:400]) or '(no parts output)')
 elif mode == 'probe':

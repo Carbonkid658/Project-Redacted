@@ -57,6 +57,7 @@ public class ProjectRedacted implements ModInitializer {
             SiteTypeRules.reload(server.getResourceManager());
             PartKit.reload(server.getResourceManager());
             SiteManager.load(server);
+            runAutotest(server);
         });
         ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, resourceManager, success) -> {
             if (success) {
@@ -79,5 +80,24 @@ public class ProjectRedacted implements ModInitializer {
         });
 
         LOG.info("Project [REDACTED] initialized. Site Director, welcome back.");
+    }
+
+    /**
+     * CI hook: if the server folder has projectredacted-autotest.txt, runs each line as a console command once
+     * the server has started, then stops the server. Used to test site generation on a real world.
+     */
+    private static void runAutotest(net.minecraft.server.MinecraftServer server) {
+        java.nio.file.Path file = java.nio.file.Path.of("projectredacted-autotest.txt");
+        if (!java.nio.file.Files.exists(file)) return;
+        try {
+            for (String line : java.nio.file.Files.readAllLines(file)) {
+                if (line.isBlank() || line.startsWith("#")) continue;
+                LOG.info("[autotest] /{}", line);
+                server.getCommands().performPrefixedCommand(server.createCommandSourceStack(), line);
+            }
+        } catch (Exception e) {
+            LOG.error("[autotest] failed", e);
+        }
+        server.halt(false);
     }
 }
