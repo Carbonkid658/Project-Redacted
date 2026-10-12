@@ -43,7 +43,8 @@ public final class ClientTest {
         try {
             switch (step) {
                 case 0 -> {
-                    if (screen instanceof TitleScreen) {
+                    if (name.endsWith("OnboardingScreen")) mc.gui.setScreen(new TitleScreen());
+                    else if (screen instanceof TitleScreen) {
                         progress("title screen; opening Create World");
                         step = 1;
                         for (Method m : Class.forName("net.minecraft.client.gui.screens.worldselection.CreateWorldScreen").getDeclaredMethods()) {

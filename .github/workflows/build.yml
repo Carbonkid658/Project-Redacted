@@ -45,7 +45,7 @@ jobs:
         if: always()
         run: |
           sudo apt-get install -y -qq xvfb mesa-utils libgl1-mesa-dri libegl-mesa0 mesa-vulkan-drivers > /dev/null
-          mkdir -p run && touch run/projectredacted-clienttest.txt && rm -f run/projectredacted-autotest.txt
+          mkdir -p run && touch run/projectredacted-clienttest.txt && echo onboardAccessibility:false > run/options.txt && rm -f run/projectredacted-autotest.txt
           LIBGL_ALWAYS_SOFTWARE=1 MESA_GL_VERSION_OVERRIDE=4.6 SDL_VIDEO_DRIVER=x11 timeout 600 xvfb-run -a -s "-screen 0 1280x720x24 +extension GLX +render -noreset" ./gradlew runClient > client.log 2>&1 || true
           rm -f run/projectredacted-clienttest.txt
           python3 .github/ci-report.py client || true
