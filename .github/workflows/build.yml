@@ -11,30 +11,17 @@ jobs:
           distribution: temurin
           java-version: '25'
       - uses: gradle/actions/setup-gradle@v5
-      - name: Versions (temporary)
-        run: |
-          l=$(curl -s https://meta.fabricmc.net/v2/versions/loader | tr -d '\n ' | head -c 300)
-          echo "::notice title=Versions::loader $l"
       - name: Build
         run: |
           chmod +x ./gradlew
           set -o pipefail
           ./gradlew build --stacktrace 2>&1 | tee build.log
-      - name: Summarize build errors
+      - name: Report errors
         if: failure()
-        run: |
-          python3 - <<'PY'
-          import re
-          lines = open('build.log', errors='replace').read().splitlines()
-          keep = []
-          for i, l in enumerate(lines):
-              if re.search(r'error:|What went wrong|Could not|Caused by|FAILURE|> ', l):
-                  keep.extend(lines[i:i + 4])
-          text = '\n'.join(dict.fromkeys(keep)) or '\n'.join(lines[-150:])
-          text = text[:60000]
-          enc = text.replace('%', '%25').replace('\r', '%0D').replace('\n', '%0A')
-          print('::error title=Build log::' + enc)
-          PY
+        run: python3 .github/ci-report.py errors
+      - name: Probe APIs
+        if: always()
+        run: python3 .github/ci-report.py probe
       - uses: actions/upload-artifact@v5
         with:
           name: project-redacted-jar
