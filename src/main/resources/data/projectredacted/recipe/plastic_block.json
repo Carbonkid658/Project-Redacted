@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "PPP",
+    "PPP",
+    "PPP"
+  ],
+  "key": {
+    "P": "projectredacted:plastic"
+  },
+  "result": {
+    "id": "projectredacted:plastic_block",
+    "count": 1
+  }
+}

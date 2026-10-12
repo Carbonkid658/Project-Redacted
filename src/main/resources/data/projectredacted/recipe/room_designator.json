@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "PGP",
+    "PRP",
+    "P P"
+  ],
+  "key": {
+    "P": "projectredacted:plastic",
+    "G": "minecraft:glass_pane",
+    "R": "minecraft:redstone"
+  },
+  "result": {
+    "id": "projectredacted:room_designator",
+    "count": 1
+  }
+}

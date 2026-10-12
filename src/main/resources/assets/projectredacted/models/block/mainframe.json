@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "front": "projectredacted:block/mainframe_front",
+    "side": "projectredacted:block/mainframe_side",
+    "top": "projectredacted:block/mainframe_top"
+  }
+}

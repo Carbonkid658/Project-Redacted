@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "projectredacted:block/ruined_cassie"
+    },
+    "facing=east": {
+      "model": "projectredacted:block/ruined_cassie",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "projectredacted:block/ruined_cassie",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "projectredacted:block/ruined_cassie",
+      "y": 270
+    }
+  }
+}
