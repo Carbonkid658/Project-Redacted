@@ -8,6 +8,7 @@ import dev.projectredacted.registry.ModItems;
 import dev.projectredacted.room.Construction;
 import dev.projectredacted.room.Room;
 import dev.projectredacted.room.RoomType;
+import dev.projectredacted.room.RoomTypes;
 import dev.projectredacted.site.*;
 import dev.projectredacted.staff.Assignment;
 import dev.projectredacted.staff.StaffRecord;
@@ -610,9 +611,27 @@ public class TerminalScreen extends GuiScreen {
             }
         } else {
             v.add(El.text("Changing type only affects how you plan to grow (down or up).", "gray"));
+            addRoomSection(v, p);
         }
         v.add(El.text("Site name: " + site.name(), "white"));
         v.add(El.input("site_name", "New site name", El.button("Rename", "rename_site").disabled(director ? null : "Only the Site Director can rename the site.")));
+    }
+
+    /** Add Room (design §8.1): pick a room type and the mod finds a free spot joined to the facility. */
+    private void addRoomSection(View v, ServerPlayer p) {
+        v.add(El.heading("ADD ROOM"));
+        String blocked = site.canBuild(p) ? null : "You need build rights.";
+        var placing = dev.projectredacted.site.gen.AutoPlace.get(p);
+        if (placing != null && placing.site == site && placing.current() != null) {
+            v.add(El.row(El.text("Placing a " + placing.type().name + " (spot " + (placing.index + 1) + " of " + placing.spots.size() + ")", "white"),
+                    El.button("Continue", "add_room_continue").style("primary")));
+        }
+        List<El> row = new ArrayList<>();
+        row.add(El.text("Suggested:", "gray"));
+        for (RoomType t : dev.projectredacted.site.gen.AutoPlace.suggested(site)) row.add(El.button(t.name, "add_room").arg("id", t.id).disabled(blocked));
+        if (row.size() > 1) v.add(El.row(row));
+        v.add(El.row(El.button("Pick a room type…", "add_room_pick").disabled(blocked)
+                .tip("Pick any room type and size; the mod finds a free spot and shows it as an outline.")));
     }
 
     // ---------------------------------------------------------------- log
@@ -749,6 +768,21 @@ public class TerminalScreen extends GuiScreen {
                 } else {
                     dev.projectredacted.site.gen.PlanPreview.show(p, level0Plan);
                 }
+            }
+            case "add_room" -> {
+                RoomType t = RoomTypes.get(a.str("id"));
+                if (t == null || !site.canBuild(p)) return;
+                var placing = dev.projectredacted.site.gen.AutoPlace.start(p, site, t.id, 0);
+                placing.search(p);
+                Gui.openChild(p, new AutoPlaceScreen(placing));
+            }
+            case "add_room_continue" -> {
+                var placing = dev.projectredacted.site.gen.AutoPlace.get(p);
+                if (placing != null) Gui.openChild(p, new AutoPlaceScreen(placing));
+            }
+            case "add_room_pick" -> {
+                if (!site.canBuild(p)) return;
+                Gui.openChild(p, new RoomPickerScreen(site, dev.projectredacted.room.DesignSession.get(p), true));
             }
             case "generate_cancel" -> {
                 level0Plan = null;

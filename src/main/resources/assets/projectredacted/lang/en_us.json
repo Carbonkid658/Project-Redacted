@@ -58,5 +58,6 @@
   "lore.projectredacted.7.body": "Has the end of the world got you down? Dr. Wondertainment's Little Misters are still only 4 low payments! Find our friendly Sales Representative today!",
   "key.category.projectredacted.controls": "Project [REDACTED]",
   "key.projectredacted.rotate": "Rotate room preview",
-  "key.projectredacted.reroll": "Reroll room layout"
+  "key.projectredacted.reroll": "Reroll room layout",
+  "key.projectredacted.next_spot": "Next auto-place spot"
 }

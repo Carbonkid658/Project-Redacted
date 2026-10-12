@@ -76,13 +76,27 @@ public class RoomPreviewScreen extends GuiScreen {
 
     /** The R and G keybinds while holding the device in preview (no screen open). */
     public static void registerKeys() {
+        Gui.registerGlobal("designer_next", (p, a) -> {
+            var auto = dev.projectredacted.site.gen.AutoPlace.get(p);
+            if (auto != null && auto.current() != null) auto.next(p);
+        });
         Gui.registerGlobal("designer_rotate", (p, a) -> {
+            var auto = dev.projectredacted.site.gen.AutoPlace.get(p);
+            if (auto != null && auto.current() != null && dev.projectredacted.site.gen.PlanPreview.shown(p) != null) {
+                auto.next(p);
+                return;
+            }
             DesignSession s = DesignSession.get(p);
             if (s.typeId == null || !p.getMainHandItem().is(dev.projectredacted.registry.ModItems.ROOM_DESIGNATOR)) return;
             s.rotation = (s.rotation + 1) & 3;
             s.previewing = true;
         });
         Gui.registerGlobal("designer_reroll", (p, a) -> {
+            var auto = dev.projectredacted.site.gen.AutoPlace.get(p);
+            if (auto != null && auto.current() != null && dev.projectredacted.site.gen.PlanPreview.shown(p) != null) {
+                if (!auto.reroll(p)) Gui.toast(p, auto.error, true);
+                return;
+            }
             DesignSession s = DesignSession.get(p);
             if (s.typeId == null || !p.getMainHandItem().is(dev.projectredacted.registry.ModItems.ROOM_DESIGNATOR)) return;
             s.reroll();

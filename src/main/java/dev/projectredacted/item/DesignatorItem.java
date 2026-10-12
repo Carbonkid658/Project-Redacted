@@ -20,6 +20,7 @@ import net.minecraft.world.level.Level;
 /**
  * Room Configuration Device. Use on two blocks to mark the corners of an area (floor corner, then the opposite
  * ceiling corner), then use it in the air to pick a room type, preview it as ghost blocks, rotate, reroll and build.
+ * Used in the air with no corners marked, it auto-places a room: pick a type and it finds a free spot.
  */
 public class DesignatorItem extends Item {
     public DesignatorItem(Properties properties) {
@@ -61,7 +62,11 @@ public class DesignatorItem extends Item {
         }
         DesignSession session = DesignSession.get(player);
         if (session.cornerA == null || session.cornerB == null) {
-            Msg.send(player, "Mark two corners first by using the device on blocks.", ChatFormatting.YELLOW);
+            // No corners: auto-place (design §8.1). A spot being shown opens its build panel.
+            ServerPlayer sp = (ServerPlayer) player;
+            dev.projectredacted.site.gen.AutoPlace auto = dev.projectredacted.site.gen.AutoPlace.get(sp);
+            if (auto != null && auto.site == site && auto.current() != null) Gui.open(sp, new dev.projectredacted.gui.screen.AutoPlaceScreen(auto));
+            else Gui.open(sp, new RoomPickerScreen(site, session, true));
             return InteractionResult.SUCCESS;
         }
         if (session.typeId != null) Gui.open((ServerPlayer) player, new RoomPreviewScreen(site, session));
