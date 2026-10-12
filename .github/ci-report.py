@@ -36,6 +36,14 @@ if mode == 'errors':
 elif mode == 'smoke':
     log = open('smoke.log', errors='replace').read()
     emit('Smoke', log[-120000:])
+elif mode == 'parts':
+    # The /site parts test output from the smoke test, plus any errors around it.
+    lines = open('smoke.log', errors='replace').read().splitlines()
+    keep = []
+    for i, l in enumerate(lines):
+        if '[parts]' in l or 'Exception' in l or '/ERROR]' in l or l.lstrip().startswith(('at dev.', 'Caused by')):
+            keep.append(l)
+    emit('Parts', '\n'.join(keep[:400]) or '(no parts output)')
 elif mode == 'probe':
     # Looks up method signatures of the classes listed in .github/probe.txt, to check API names after
     # Minecraft or Fabric renames. Lines: find:<regex> (class names) or class:<fqcn>[:<line regex>].

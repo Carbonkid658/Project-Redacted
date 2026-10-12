@@ -37,7 +37,7 @@ jobs:
           mkdir -p run && echo "eula=true" > run/eula.txt
           (sleep 5; echo "site parts test default build"; echo stop) | timeout 300 ./gradlew runServer --args=nogui > smoke.log 2>&1 || true
           grep -q "projectredacted" smoke.log && grep -q "Done (" smoke.log || { python3 .github/ci-report.py smoke; exit 1; }
-          grep -E "\[parts\]|Exception|ERROR" smoke.log | head -80 || true
+          python3 .github/ci-report.py parts || true
         env:
           GITHUB_TOKEN: ${{ github.token }}
       - uses: actions/upload-artifact@v7
