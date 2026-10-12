@@ -482,10 +482,11 @@ public final class PartsCommand {
                     items.add(net.minecraft.world.item.Items.IRON_INGOT);
                     items.add(net.minecraft.world.item.Items.LADDER);
                     for (RoomType t : RoomTypes.all()) for (var item : t.cost().items.keySet()) if (!items.contains(item)) items.add(item);
-                    for (int i = 0; i < c.getContainerSize() && i < items.size(); i++) {
-                        c.setItem(i, new net.minecraft.world.item.ItemStack(items.get(i), items.get(i).getDefaultMaxStackSize()));
-                        filled++;
+                    for (int i = 0; i < c.getContainerSize(); i++) {
+                        var item = items.get((filled + i) % items.size());
+                        c.setItem(i, new net.minecraft.world.item.ItemStack(item, item.getDefaultMaxStackSize()));
                     }
+                    filled += c.getContainerSize();
                 }
             }
             site.autoExpand = true;
