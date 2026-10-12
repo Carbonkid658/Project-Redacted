@@ -1,12 +1,24 @@
 """Turns CI output into check-run annotations so build errors and API lookups can be read
 through the GitHub API (the raw log download is not always reachable)."""
-import glob, os, re, subprocess, sys, zipfile
+import glob, json, os, re, subprocess, sys, urllib.request, zipfile
 
 def emit(title, text, level='notice'):
+    """Publishes text as extra check runs on the commit (annotations are capped at 4 KB)."""
     chunks = [text[i:i + 60000] for i in range(0, len(text), 60000)] or ['(empty)']
-    for n, c in enumerate(chunks[:9]):
-        enc = c.replace('%', '%25').replace('\r', '%0D').replace('\n', '%0A')
-        print(f'::{level} title={title} {n + 1}/{len(chunks)}::{enc}')
+    for n, c in enumerate(chunks[:20]):
+        body = json.dumps({
+            'name': f'report: {title} {n + 1}/{len(chunks)}',
+            'head_sha': os.environ['GITHUB_SHA'],
+            'status': 'completed',
+            'conclusion': 'neutral',
+            'output': {'title': title, 'summary': f'part {n + 1}', 'text': c},
+        }).encode()
+        req = urllib.request.Request(
+            f"{os.environ['GITHUB_API_URL']}/repos/{os.environ['GITHUB_REPOSITORY']}/check-runs",
+            data=body, method='POST', headers={
+                'Authorization': f"Bearer {os.environ['GITHUB_TOKEN']}",
+                'Accept': 'application/vnd.github+json'})
+        urllib.request.urlopen(req).read()
 
 mode = sys.argv[1]
 if mode == 'errors':

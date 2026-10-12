@@ -1,6 +1,9 @@
 # API lookups for CI (find:<regex> or class:<fully.qualified.Name>); empty means skip.
-find:levelgen\.feature\.[A-Za-z]+$
+find:levelgen\.feature\.[a-z]+\.[A-Za-z]+$
 find:ConfiguredFeature|PlacedFeature|BiomeModification|GenerationStep
 class:net.minecraft.world.level.levelgen.feature.Feature
 class:net.minecraft.world.inventory.ContainerInput
 class:net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTab
+class:net.minecraft.world.level.levelgen.feature.NoOpFeature
+class:net.minecraft.world.level.levelgen.feature.FeatureTypes
+class:net.minecraft.world.level.levelgen.feature.SimpleBlockFeature

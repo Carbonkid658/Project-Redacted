@@ -1,6 +1,10 @@
 name: build
 on: [push, pull_request, workflow_dispatch]
 
+permissions:
+  contents: read
+  checks: write
+
 jobs:
   build:
     runs-on: ubuntu-24.04
@@ -19,9 +23,13 @@ jobs:
       - name: Report errors
         if: failure()
         run: python3 .github/ci-report.py errors
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
       - name: Probe APIs
         if: always()
         run: python3 .github/ci-report.py probe
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
       - uses: actions/upload-artifact@v5
         with:
           name: project-redacted-jar
