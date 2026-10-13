@@ -37,7 +37,69 @@ public final class ProceduralParts {
         out.add(hall("hall_t", true, true, false, true));
         out.add(hall("hall_cross", true, true, true, true));
         out.add(stairwell());
+        // v3 (§4A.6): hub, gates, spine and tunnel.
+        out.add(hub());
+        out.add(gate("gate_wing_5x7", null, 7, new int[]{3}));
+        out.add(gate("gate_section_5x5", SitePart.TAG_SECTION, 5, new int[]{2}));
+        out.add(gate("gate_transition_5x9", SitePart.TAG_TRANSITION, 9, new int[]{2, 6}));
+        out.add(spine());
+        out.add(tunnel());
         return out;
+    }
+
+    /** The outpost hub: a 9×9 lobby with a hallway arm opening on every side. */
+    private static SitePart hub() {
+        SitePart p = base("hub_9x9", SitePart.Kind.HUB, 9, 9);
+        p.shape = new Shape("hall", null);
+        p.connectors.add(conn(4, 1, 0, Direction.NORTH, SitePart.HALL));
+        p.connectors.add(conn(8, 1, 4, Direction.EAST, SitePart.HALL));
+        p.connectors.add(conn(4, 1, 8, Direction.SOUTH, SitePart.HALL));
+        p.connectors.add(conn(0, 1, 4, Direction.WEST, SitePart.HALL));
+        p.markers.add(new SitePart.Marker(new BlockPos(2, 1, 2), "staff_post"));
+        return p;
+    }
+
+    /**
+     * A gate: hall openings north and south with a wall across the middle (or two, for an airlock), a door in
+     * each wall and a keycard reader on both faces of it. Its reader levels come from the areas on either side
+     * ({@link Wings#applyReaders}).
+     */
+    private static SitePart gate(String id, String tag, int length, int[] walls) {
+        SitePart p = base(id, SitePart.Kind.GATE, 5, length);
+        p.shape = new Shape("gate", null);
+        if (tag != null) p.tags.add(tag);
+        p.connectors.add(conn(2, 1, 0, Direction.NORTH, SitePart.HALL));
+        p.connectors.add(conn(2, 1, length - 1, Direction.SOUTH, SitePart.HALL));
+        for (int z : walls) {
+            p.markers.add(new SitePart.Marker(new BlockPos(2, 1, z), "gate_door"));
+            p.readers.add(new BlockPos(1, 2, z));
+            p.readers.add(new BlockPos(3, 2, z));
+        }
+        if (!SitePart.TAG_SECTION.equals(tag)) p.markers.add(new SitePart.Marker(new BlockPos(3, 1, walls.length > 1 ? length / 2 : 1), "staff_post"));
+        p.weight = 10;
+        return p;
+    }
+
+    /** A spine segment: straight, with branches east and west for wings (§4A.4). */
+    private static SitePart spine() {
+        SitePart p = base("hall_spine_5x9", SitePart.Kind.HALLWAY, 5, 9);
+        p.shape = new Shape("hall", null);
+        p.tags.add(SitePart.TAG_SPINE);
+        p.connectors.add(conn(2, 1, 0, Direction.NORTH, SitePart.HALL));
+        p.connectors.add(conn(2, 1, 8, Direction.SOUTH, SitePart.HALL));
+        p.connectors.add(conn(4, 1, 4, Direction.EAST, SitePart.HALL));
+        p.connectors.add(conn(0, 1, 4, Direction.WEST, SitePart.HALL));
+        return p;
+    }
+
+    /** A long plain tunnel between sectors. */
+    private static SitePart tunnel() {
+        SitePart p = base("hall_tunnel_5x15", SitePart.Kind.HALLWAY, 5, 15);
+        p.shape = new Shape("hall", null);
+        p.tags.add(SitePart.TAG_TUNNEL);
+        p.connectors.add(conn(2, 1, 0, Direction.NORTH, SitePart.HALL));
+        p.connectors.add(conn(2, 1, 14, Direction.SOUTH, SitePart.HALL));
+        return p;
     }
 
     /** One or two sizes of a room type, from its allowed side lengths. */
@@ -160,6 +222,7 @@ public final class ProceduralParts {
                 yield type == null ? new RoomBuilder.Plan() : RoomBuilder.plan(r, type);
             }
             case "stair" -> corridor(part, origin, rot, used, true);
+            case "gate" -> gate(part, origin, rot, used);
             default -> corridor(part, origin, rot, used, false);
         };
     }
@@ -222,6 +285,60 @@ public final class ProceduralParts {
         }
         plan.placements.addAll(ladders);
         return plan;
+    }
+
+    /** A corridor shell with the gate's wall, door and readers across it. */
+    private static RoomBuilder.Plan gate(SitePart part, BlockPos origin, int rot, int used) {
+        RoomBuilder.Plan shell = corridor(part, origin, rot, used, false);
+        java.util.Map<Long, RoomBuilder.Placement> blocks = new java.util.LinkedHashMap<>();
+        for (RoomBuilder.Placement p : shell.placements) blocks.put(p.pos().asLong(), p);
+        BlockState wall = ModBlocks.FACILITY_WALL.defaultBlockState();
+        boolean airlock = part.tagged(SitePart.TAG_TRANSITION);
+        BlockState door = (airlock ? ModBlocks.REINFORCED_DOOR : Blocks.IRON_DOOR).defaultBlockState();
+        Direction north = SitePart.rotate(Direction.NORTH, rot);
+        List<RoomBuilder.Placement> doors = new ArrayList<>();
+        boolean signed = false;
+        for (SitePart.Marker m : part.markers) {
+            if (!m.name().equals("gate_door")) continue;
+            int z = m.pos().getZ();
+            if (!signed) {
+                // Wing signs above the first door, on both faces; Wings fills in the text.
+                signed = true;
+                for (Direction face : new Direction[]{Direction.NORTH, Direction.SOUTH}) {
+                    BlockPos sp = origin.offset(SitePart.rotate(new BlockPos(2, 3, z + face.getStepZ()), rot));
+                    doors.add(new RoomBuilder.Placement(sp, Blocks.OAK_WALL_SIGN.defaultBlockState()
+                            .setValue(net.minecraft.world.level.block.WallSignBlock.FACING, SitePart.rotate(face, rot)), false, false));
+                }
+            }
+            for (int x = 1; x <= part.sx - 2; x++)
+                for (int y = 1; y < H - 1; y++) {
+                    BlockPos w = origin.offset(SitePart.rotate(new BlockPos(x, y, z), rot));
+                    blocks.put(w.asLong(), new RoomBuilder.Placement(w, wall, false, true));
+                }
+            BlockPos lower = origin.offset(SitePart.rotate(m.pos(), rot));
+            blocks.remove(lower.asLong());
+            blocks.remove(lower.above().asLong());
+            BlockState d = door.setValue(net.minecraft.world.level.block.DoorBlock.FACING, north).setValue(net.minecraft.world.level.block.DoorBlock.OPEN, false);
+            doors.add(new RoomBuilder.Placement(lower, d.setValue(net.minecraft.world.level.block.DoorBlock.HALF, net.minecraft.world.level.block.state.properties.DoubleBlockHalf.LOWER), true, true));
+            doors.add(new RoomBuilder.Placement(lower.above(), d.setValue(net.minecraft.world.level.block.DoorBlock.HALF, net.minecraft.world.level.block.state.properties.DoubleBlockHalf.UPPER), true, true));
+        }
+        // Readers face away from the wall: west one north, east one south (the levels are set when it's done).
+        for (BlockPos r : part.readers) {
+            BlockPos w = origin.offset(SitePart.rotate(r, rot));
+            Direction face = r.getX() < part.sx / 2 ? Direction.NORTH : Direction.SOUTH;
+            BlockState rs = ModBlocks.KEYCARD_READER.defaultBlockState().setValue(dev.projectredacted.block.FacingBlock.FACING, SitePart.rotate(face, rot));
+            blocks.put(w.asLong(), new RoomBuilder.Placement(w, rs, false, true));
+            shell.readers.add(w);
+        }
+        shell.placements.clear();
+        shell.placements.addAll(blocks.values());
+        shell.placements.addAll(doors);
+        return shell;
+    }
+
+    /** Which way a placeholder gate's reader faces, in local coordinates (templates read it from the block). */
+    public static Direction readerFacing(SitePart part, BlockPos local) {
+        return local.getX() < part.sx / 2 ? Direction.NORTH : Direction.SOUTH;
     }
 
     private ProceduralParts() {}

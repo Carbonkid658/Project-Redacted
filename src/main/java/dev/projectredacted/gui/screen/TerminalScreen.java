@@ -317,7 +317,8 @@ public class TerminalScreen extends GuiScreen {
         boolean canEdit = site.canBuild(p) && !offline();
         List<El> out = new ArrayList<>();
         out.add(El.heading(r.displayName()));
-        out.add(El.text("#" + r.number + " · " + (t == null ? "?" : t.category) + " · " + (r.x2 - r.x1 + 1) + "×" + (r.z2 - r.z1 + 1) + "×" + (r.y2 - r.y1 + 1), "gray"));
+        out.add(El.text(r.label() + (r.wing != null ? " (#" + r.number + ", " + dev.projectredacted.site.gen.Wings.title(r.wing)
+                + (r.section > 0 ? ", section " + dev.projectredacted.site.gen.Wings.sectionLabel(r.wing, r.section) : "") + ")" : "") + " · " + (t == null ? "?" : t.category) + " · " + (r.x2 - r.x1 + 1) + "×" + (r.z2 - r.z1 + 1) + "×" + (r.y2 - r.y1 + 1), "gray"));
         out.add(El.text("From " + r.x1 + " " + r.y1 + " " + r.z1 + " to " + r.x2 + " " + r.y2 + " " + r.z2, "gray"));
         out.add(El.text(status(r), statusColor(r)));
         out.add(El.need("Integrity", r.integrity));
@@ -595,6 +596,7 @@ public class TerminalScreen extends GuiScreen {
             if (!director) c.addProperty("disabled", "Only the Site Director can change this.");
         }
         v.add(cards);
+        connectionSection(v, director);
         if (!site.generated) {
             String blocked = director ? offline() ? "The Mainframe is offline." : null : "Only the Site Director can do this.";
             if (level0Plan == null) {
@@ -612,9 +614,69 @@ public class TerminalScreen extends GuiScreen {
         } else {
             v.add(El.text("Changing type only affects how you plan to grow (down or up).", "gray"));
             addRoomSection(v, p);
+            wingsSection(v, p);
         }
         v.add(El.text("Site name: " + site.name(), "white"));
         v.add(El.input("site_name", "New site name", El.button("Rename", "rename_site").disabled(director ? null : "Only the Site Director can rename the site.")));
+    }
+
+    /** How wings join (§4A.4); for future growth only once the site exists. */
+    private void connectionSection(View v, boolean director) {
+        var current = dev.projectredacted.site.gen.Wings.connection(site);
+        List<String> pairs = new ArrayList<>();
+        for (var c : dev.projectredacted.site.gen.Wings.Connection.values()) {
+            pairs.add(c.name());
+            pairs.add(c.displayName);
+        }
+        v.add(El.row(El.text("Wings join by:", "gray"), El.chips("connection", current.name(), pairs.toArray(new String[0]))
+                .tip(current.description, director ? "Changing it only affects wings founded from now on." : "Only the Site Director can change this.")));
+        if (site.type == SiteType.SURFACE_FLAT) {
+            v.add(El.checkbox("Containment goes one storey underground", site.containmentBelow, "containment_below")
+                    .tip("E and F wings are dug one storey down instead of sitting at the back of the site (D14). Affects new wings only."));
+        }
+    }
+
+    /** Wings, their sections and clearances, and lockdowns (§4A.3, D15). */
+    private void wingsSection(View v, ServerPlayer p) {
+        boolean director = site.isDirector(p);
+        String blocked = director ? null : "Only the Site Director can change clearances.";
+        v.add(El.heading("WINGS"));
+        boolean any = false;
+        for (var wing : dev.projectredacted.site.gen.Wings.all()) {
+            var ws = site.wings.get(wing.letter);
+            int rooms = 0;
+            for (Room r : site.rooms) if (wing.letter.equals(r.wing)) rooms++;
+            if (rooms == 0 && (ws == null || !ws.founded)) continue;
+            any = true;
+            int clr = dev.projectredacted.site.gen.Wings.wingClearance(site, wing.letter);
+            boolean custom = ws != null && ws.clearance >= 0;
+            boolean locked = site.lockdown.contains(wing.letter);
+            String state = ws != null && ws.founded ? rooms + " room(s)" : rooms + " room(s) in the outpost";
+            List<El> row = new ArrayList<>();
+            row.add(El.text(wing.title() + " · " + wing.name + " · " + state + " · CLR " + clr + (custom ? "" : " (auto)") + (locked ? " · LOCKDOWN" : ""),
+                    locked ? "red" : wing.color));
+            if (ws != null && ws.founded) {
+                row.add(El.button("−", "wing_clr").arg("wing", wing.letter).arg("d", -1).disabled(blocked));
+                row.add(El.button("+", "wing_clr").arg("wing", wing.letter).arg("d", 1).disabled(blocked));
+                if (custom) row.add(El.button("Auto", "wing_clr").arg("wing", wing.letter).arg("d", 0).disabled(blocked));
+            }
+            if (locked) row.add(El.button("Lift lockdown", "lift_lockdown").arg("wing", wing.letter).style("danger").disabled(blocked));
+            v.add(El.row(row));
+            if (ws == null) continue;
+            for (var sec : ws.sections) {
+                int n = dev.projectredacted.site.gen.Wings.rooms(site, wing.letter, sec.number);
+                int sc = dev.projectredacted.site.gen.Wings.sectionClearance(site, wing.letter, sec.number);
+                List<El> srow = new ArrayList<>();
+                srow.add(El.text("   Section " + dev.projectredacted.site.gen.Wings.sectionLabel(wing.letter, sec.number) + " · " + n + "/"
+                        + dev.projectredacted.site.gen.Wings.SECTION_ROOMS + " rooms · CLR " + sc + (sec.clearance >= 0 ? "" : " (auto)"), "gray"));
+                srow.add(El.button("−", "section_clr").arg("wing", wing.letter).arg("section", sec.number).arg("d", -1).disabled(blocked));
+                srow.add(El.button("+", "section_clr").arg("wing", wing.letter).arg("section", sec.number).arg("d", 1).disabled(blocked));
+                if (sec.clearance >= 0) srow.add(El.button("Auto", "section_clr").arg("wing", wing.letter).arg("section", sec.number).arg("d", 0).disabled(blocked));
+                v.add(El.row(srow));
+            }
+        }
+        if (!any) v.add(El.text("No wings yet. Each room you add goes to its wing; the first one founds it with a gate and a corridor.", "gray"));
+        else v.add(El.text("A gate checks the area behind it: the wing gate the wing's clearance, a section door the section's. Auto means a section uses its highest room and a wing its lowest section.", "gray"));
     }
 
     /** Add Room (design §8.1): pick a room type and the mod finds a free spot joined to the facility. */
@@ -819,6 +881,35 @@ public class TerminalScreen extends GuiScreen {
                 level0Plan = null;
                 level0Survey = null;
                 Msg.send(p, "The Level 0 facility is building itself. Then head out and recruit staff from Foundation Bunkers.", ChatFormatting.GOLD);
+            }
+            case "connection" -> {
+                if (!director) return;
+                try {
+                    site.connection = dev.projectredacted.site.gen.Wings.Connection.valueOf(a.str("id"));
+                } catch (IllegalArgumentException ignored) {
+                }
+            }
+            case "containment_below" -> {
+                if (director) site.containmentBelow = !site.containmentBelow;
+            }
+            case "wing_clr", "section_clr" -> {
+                if (!director) return;
+                var ws = dev.projectredacted.site.gen.Wings.state(site, a.str("wing", "A"));
+                int d = a.num("d", 0);
+                String wing = a.str("wing", "A");
+                if (action.equals("wing_clr")) {
+                    int now = dev.projectredacted.site.gen.Wings.wingClearance(site, wing);
+                    ws.clearance = d == 0 ? -1 : Math.max(1, Math.min(5, now + d));
+                } else {
+                    var sec = ws.section(a.num("section", -1));
+                    if (sec == null) return;
+                    int now = dev.projectredacted.site.gen.Wings.sectionClearance(site, wing, sec.number);
+                    sec.clearance = d == 0 ? -1 : Math.max(1, Math.min(5, now + d));
+                }
+                dev.projectredacted.site.gen.Wings.applyReaders((ServerLevel) p.level(), site);
+            }
+            case "lift_lockdown" -> {
+                if (director) dev.projectredacted.site.gen.Wings.lift((ServerLevel) p.level(), site, a.str("wing", ""));
             }
             case "rename_site" -> {
                 String name = a.text();

@@ -7,6 +7,7 @@ import dev.projectredacted.room.Construction;
 import dev.projectredacted.room.Room;
 import dev.projectredacted.room.RoomBuilder;
 import dev.projectredacted.room.RoomType;
+import dev.projectredacted.room.RoomTypes;
 import dev.projectredacted.site.Site;
 import dev.projectredacted.site.SiteManager;
 import net.minecraft.core.BlockPos;
@@ -262,10 +263,13 @@ public final class PartBuilder {
             r.buildProgress = 0;
             RoomType type = r.typeDef();
             if (type != null && type.structure != null && !type.structure.isEmpty() && part != null && part.procedural()) Construction.placeStructure(level, r, type);
+            if (RoomTypes.EMERGENCY_EXIT.equals(r.type)) dev.projectredacted.site.EmergencyExit.build(level, site, r);
         }
         if (part != null) markers(site, pp, part);
         if (pp.fast && job.mainframeSpot != null) moveCore(level, site, job);
         pp.built = true;
+        // A new gate, or a new room changing its section's clearance (D15).
+        Wings.applyReaders(level, site);
     }
 
     private static void markers(Site site, PlacedPart pp, SitePart part) {

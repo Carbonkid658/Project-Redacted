@@ -43,7 +43,23 @@ public class PartFrameScreen extends GuiScreen {
         List<El> left = new ArrayList<>();
         left.add(El.input("frame_name", "Name, e.g. barracks_a", El.button("Rename", "rename")));
         left.add(El.text("Kind:", "gray"));
-        left.add(El.chips("kind", frame.kind, "room", "Room", "hallway", "Hallway", "stairwell", "Stairwell", "entrance", "Entrance"));
+        left.add(El.chips("kind", frame.kind, "room", "Room", "hallway", "Hallway", "stairwell", "Stairwell", "entrance", "Entrance", "hub", "Hub", "gate", "Gate"));
+        List<String> wings = new ArrayList<>(List.of("", "Any"));
+        for (var w : dev.projectredacted.site.gen.Wings.all()) {
+            wings.add(w.letter);
+            wings.add(w.letter);
+        }
+        left.add(El.row(El.text("Wing:", "gray"), El.chips("wing", frame.wing == null ? "" : frame.wing, wings.toArray(new String[0]))
+                .tip("Only for wing-themed parts, e.g. concrete corridors used only in F Wing. Leave on Any for parts that work everywhere.")));
+        List<El> tags = new ArrayList<>();
+        tags.add(El.text("Tags:", "gray"));
+        for (String t : SitePart.TAGS) tags.add(El.checkbox(t, frame.tags.contains(t), "tag_" + t).tip(switch (t) {
+            case SitePart.TAG_SECTION -> "Gate: a section door inside a wing.";
+            case SitePart.TAG_TRANSITION -> "Gate: a Transition Checkpoint, for tunnels and the E and F wing gates.";
+            case SitePart.TAG_SPINE -> "Hallway: a segment of the central spine.";
+            default -> "Hallway: a long tunnel between sectors.";
+        }));
+        left.add(El.row(tags));
         left.add(El.stepper("Weight (how often this variant is picked)", frame.weight, 1, 100, "weight"));
         RoomType type = RoomTypes.get(frame.roomType);
         left.add(El.text("Room type: " + (type == null ? "none" : type.name), "white"));
@@ -92,6 +108,15 @@ public class PartFrameScreen extends GuiScreen {
                 frame.id = id;
             }
             case "kind" -> frame.kind = SitePart.Kind.parse(a.str("id", "room")).name().toLowerCase();
+            case "wing" -> {
+                String w = a.str("id", "");
+                frame.wing = w.isEmpty() ? null : w;
+            }
+            case "tag_section", "tag_transition", "tag_spine", "tag_tunnel" -> {
+                String t = action.substring(4);
+                if (!SitePart.TAGS.contains(t)) return;
+                if (!frame.tags.remove(t)) frame.tags.add(t);
+            }
             case "weight" -> frame.weight = Math.max(1, Math.min(100, a.num("value", frame.weight)));
             case "category" -> {
                 category = a.str("id", "");

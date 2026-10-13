@@ -39,6 +39,16 @@ public class Site {
     /** Floor height of the Director's Office storey; storeys are 6 blocks from here. */
     public Integer baseFloor;
     public long genSeed;
+    /** How wings join (§4A.4); null for the site type's default. Changing it only affects future growth. */
+    public dev.projectredacted.site.gen.Wings.Connection connection;
+    /** Wing letter -> founded, clearance overrides, sections, room numbering (§4A). */
+    public Map<String, dev.projectredacted.site.gen.Wings.WingState> wings = new LinkedHashMap<>();
+    /** Surface-Flat: the containment layer goes one storey down (D14). */
+    public boolean containmentBelow;
+    /** Wings in lockdown after a breach. */
+    public Set<String> lockdown = new TreeSet<>();
+    /** Inside readers of Emergency Exit hatches. */
+    public List<BlockPos> hatchReaders = new ArrayList<>();
     /** Chunks kept loaded while Level 0 builds, released when it finishes. */
     public List<Long> forcedChunks = new ArrayList<>();
     /** From part markers: where raiders arrive and where security stands. */

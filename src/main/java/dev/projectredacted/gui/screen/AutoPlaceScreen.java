@@ -49,6 +49,9 @@ public class AutoPlaceScreen extends GuiScreen {
         } else if (!sizes.isEmpty()) {
             v.add(El.text("Size " + AutoPlace.sizeLabel(sizes.get(0)), "gray"));
         }
+        v.add(El.checkbox("Put it anywhere", auto.anywhere, "anywhere")
+                .tip("Off: the room goes to its wing and a section there, founding the wing if it doesn't exist yet.",
+                        "On: any doorway of the facility, ignoring wings."));
         SitePlan plan = auto.current();
         if (plan == null) {
             v.add(El.text(auto.error != null ? auto.error : "Find a free spot joined to the facility. It shows as an outline in the world.", auto.error != null ? "red" : "gray"));
@@ -57,9 +60,10 @@ public class AutoPlaceScreen extends GuiScreen {
             int halls = auto.hallways(plan);
             v.add(El.text("Spot " + (auto.index + 1) + " of " + auto.spots.size() + (halls > 0 ? " · " + halls + " hallway part(s) to reach it" : " · joins the facility directly")
                     + (auto.nearMe ? " · nearest to you" : ""), "white"));
+            if (plan.note != null) v.add(El.text(plan.note, plan.newWing ? "gold" : "aqua"));
             if (plan.overwrites > 0) v.add(El.text(plan.overwrites + " blocks you built are in the way and would be replaced.", "red"));
             Cost cost = auto.cost(plan);
-            v.add(El.text("Cost (room" + (halls > 0 ? " and hallways" : "") + "):", "gray"));
+            v.add(El.text("Cost (room" + (halls > 0 ? plan.newWing || plan.newSection ? ", gates and hallways" : " and hallways" : "") + "):", "gray"));
             v.add(El.cost(Ui.costLines(p, cost)));
             String problem = auto.problem();
             boolean depot = problem == null && !p.isCreative() && !cost.canAfford(p) && auto.depotCanPay(p, plan);
@@ -89,6 +93,10 @@ public class AutoPlaceScreen extends GuiScreen {
             }
             case "near" -> {
                 auto.nearMe = true;
+                auto.search(p);
+            }
+            case "anywhere" -> {
+                auto.anywhere = !auto.anywhere;
                 auto.search(p);
             }
             case "next" -> auto.next(p);

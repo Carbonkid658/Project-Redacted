@@ -105,10 +105,12 @@ public class AssignScreen extends GuiScreen {
             RoomType t = room.typeDef();
             if (t == null || !room.built || kindFor(room, t) != tab) continue;
             String label = switch (tab) {
-                case SCP -> (room.scpLabel.isEmpty() ? "Empty cell" : room.scpLabel) + " · " + t.name + " #" + room.number;
+                case SCP -> (room.scpLabel.isEmpty() ? "Empty cell" : room.scpLabel) + " · " + t.name + " " + room.label();
                 case CHECKPOINT, ENTRANCE -> room.displayName();
                 default -> room.displayName();
             };
+            // Searchable by its wing label (E-04) and by its plain number (§4A.3).
+            if (room.wing != null) label += " · #" + room.number;
             String blocked = blocker(room, t, tab);
             list.add(String.valueOf(room.number), label).icon(t.iconItem()).sub(blocked != null ? blocked : hint(tab), blocked != null ? "red" : "gray")
                     .dim(blocked != null).selected(room.number == selected);

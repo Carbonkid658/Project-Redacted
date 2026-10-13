@@ -40,12 +40,20 @@ public class SiteTypeRules {
 
     /** Whether a part of this kind may sit on this storey (0 = the Director's Office storey). */
     public static boolean allowed(SiteType type, SitePart part, int storey, int storeys) {
+        return allowed(type, part, storey, storeys, false);
+    }
+
+    /**
+     * As above; {@code basement} lets a Surface-Flat site use one storey down for its containment layer (D14).
+     * Surface-Tall keeps its infrastructure layer in a basement storey (§4A.1).
+     */
+    public static boolean allowed(SiteType type, SitePart part, int storey, int storeys, boolean basement) {
         int top = storey + storeys - 1;
         int surface = surfaceStorey(type);
         int limit = of(type).maxStoreys;
         return switch (type) {
-            case SURFACE_FLAT -> storey == 0 && top == 0;
-            case SURFACE_TALL -> storey >= 0 && (part.kind != SitePart.Kind.ENTRANCE || storey == 0) && (limit < 0 || top <= limit);
+            case SURFACE_FLAT -> (storey == 0 && top == 0) || (basement && storey == -1 && top == -1 && part.kind != SitePart.Kind.ENTRANCE);
+            case SURFACE_TALL -> storey >= -1 && (part.kind != SitePart.Kind.ENTRANCE || storey == 0) && (limit < 0 || top <= limit);
             case UNDERGROUND -> {
                 if (part.kind == SitePart.Kind.ENTRANCE) yield storey == surface && top == surface;
                 if (part.kind == SitePart.Kind.STAIRWELL || part.kind == SitePart.Kind.HALLWAY) yield top <= surface && (limit < 0 || storey >= -limit);

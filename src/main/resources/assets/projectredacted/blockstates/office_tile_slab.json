@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "projectredacted:block/office_tile_slab"
+    },
+    "type=double": {
+      "model": "projectredacted:block/office_tile"
+    },
+    "type=top": {
+      "model": "projectredacted:block/office_tile_slab_top"
+    }
+  }
+}

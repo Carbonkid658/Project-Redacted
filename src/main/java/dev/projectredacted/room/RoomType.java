@@ -34,6 +34,8 @@ public class RoomType {
     /** Keycard level for the room's door reader (0 means a plain door). */
     public int clearance = 0;
     public String icon = "minecraft:bricks";
+    /** Wing letter (§4A.2); null to use the wing list. */
+    public String wing;
     public Map<String, Integer> cost = new LinkedHashMap<>();
 
     public transient boolean builtIn;

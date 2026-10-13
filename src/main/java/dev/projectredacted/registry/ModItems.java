@@ -20,6 +20,7 @@ public final class ModItems {
     public static final Item PLASTIC = register("plastic", Item::new, new Item.Properties());
     public static final Item COIN = register("coin", Item::new, new Item.Properties());
     public static final Item DOLLAR = register("dollar", Item::new, new Item.Properties());
+    public static final Item PHONE = register("phone", Item::new, new Item.Properties());
     public static final Item KEYCARD_1 = keycard(1);
     public static final Item KEYCARD_2 = keycard(2);
     public static final Item KEYCARD_3 = keycard(3);

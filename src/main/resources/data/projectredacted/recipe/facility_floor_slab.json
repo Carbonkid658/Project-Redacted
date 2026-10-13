@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "###"
+  ],
+  "key": {
+    "#": "projectredacted:facility_floor"
+  },
+  "result": {
+    "id": "projectredacted:facility_floor_slab",
+    "count": 6
+  }
+}

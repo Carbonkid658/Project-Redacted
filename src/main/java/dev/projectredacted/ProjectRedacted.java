@@ -38,6 +38,7 @@ public class ProjectRedacted implements ModInitializer {
 
     @Override
     public void onInitialize() {
+        ProjectRedactedBlockEntities.register();
         ModSounds.init();
         ModComponents.init();
         ModBlocks.init();
@@ -56,6 +57,7 @@ public class ProjectRedacted implements ModInitializer {
         ServerLifecycleEvents.SERVER_STARTED.register(server -> {
             RoomTypes.reload(server.getResourceManager());
             SiteTypeRules.reload(server.getResourceManager());
+            dev.projectredacted.site.gen.Wings.reload(server.getResourceManager());
             PartKit.reload(server.getResourceManager());
             SiteManager.load(server);
             PartFrames.load(server);
@@ -65,6 +67,7 @@ public class ProjectRedacted implements ModInitializer {
             if (success) {
                 RoomTypes.reload(server.getResourceManager());
                 SiteTypeRules.reload(server.getResourceManager());
+                dev.projectredacted.site.gen.Wings.reload(server.getResourceManager());
                 PartKit.reload(server.getResourceManager());
             }
         });

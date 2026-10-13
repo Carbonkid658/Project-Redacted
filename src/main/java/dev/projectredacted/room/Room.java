@@ -28,6 +28,10 @@ public class Room {
     public String scpLabel = "";
     /** Checkpoints and entrances get a name used by the clipboard. */
     public String name = "";
+    /** Wing letter (§4A.2), section number in the wing (0 for none) and number within the wing, as in E-04. */
+    public String wing;
+    public int section;
+    public int wingNo;
     /** Freeform rooms are hand-built by the player and only registered, never constructed. */
     public boolean freeform;
 
@@ -105,11 +109,17 @@ public class Room {
         return t.waterDraw <= 0 || wateredNow;
     }
 
+    /** "E-04", or "#12" for a room without a wing. */
+    public String label() {
+        if (wing == null || wingNo <= 0) return "#" + number;
+        return wing + "-" + (wingNo < 10 ? "0" : "") + wingNo;
+    }
+
     public String displayName() {
         RoomType t = typeDef();
         String base = t == null ? type : t.name;
         if (!name.isEmpty()) return name;
-        if (!scpLabel.isEmpty()) return base + " #" + number + " (" + scpLabel + ")";
-        return base + " #" + number;
+        if (!scpLabel.isEmpty()) return base + " " + label() + " (" + scpLabel + ")";
+        return base + " " + label();
     }
 }
