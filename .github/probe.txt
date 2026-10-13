@@ -1,4 +1,1 @@
 # API lookups for CI (find:<regex>, class:<fqcn>[:<line regex>], code:<fqcn>:<regex>); empty means skip.
-find:BlockRenderLayerMap
-find:ChunkSectionLayer
-class:net.minecraft.client.renderer.ItemBlockRenderTypes:(public)

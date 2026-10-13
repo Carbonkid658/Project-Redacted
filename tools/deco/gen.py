@@ -339,7 +339,7 @@ def do_entry(e):
         if kind == 'glass':
             (translucent if e.get('translucent') else cutout).append(id)
             factory = 'TransparentBlock::new'
-            extra = '.noOcclusion().isValidSpawn(DecoBlocks::never).isRedstoneConductor(DecoBlocks::never).isSuffocating(DecoBlocks::never).isViewBlocking(DecoBlocks::never)'
+            extra = '.noOcclusion().isValidSpawn((s, l, p, e) -> false).isRedstoneConductor((s, l, p) -> false).isSuffocating((s, l, p) -> false).isViewBlocking((s, l, p) -> false)'
         else:
             factory, extra = 'Block::new', ''
         register(id, e['name'], mat, factory, props(mat, extra + light_expr(e)))
@@ -477,15 +477,17 @@ def do_entry(e):
             (translucent if e.get('translucent') else cutout).append(vid)
             register(vid, e['name'] + ' Pane', mat, 'DecoPaneBlock::new', props(mat, '.noOcclusion()'), ingredient=f'{NS}:{id}', count=2)
             continue
-        if e.get('cutout') or kind == 'glass':
+        see_through = bool(e.get('cutout') or kind == 'glass')
+        vextra = '.noOcclusion()' if see_through else ''
+        if see_through:
             cutout.append(vid)
         if v == 'stairs':
             stair_models(vid, full_tx)
-            register(vid, e['name'] + ' Stairs', mat, f'p -> new StairBlock({const(id)}.defaultBlockState(), p)', props(mat),
+            register(vid, e['name'] + ' Stairs', mat, f'p -> new StairBlock({const(id)}.defaultBlockState(), p)', props(mat, vextra),
                      extra_tags=['stairs'], ingredient=f'{NS}:{id}')
         elif v == 'slab':
             slab_models(vid, full_tx, full_model)
-            register(vid, e['name'] + ' Slab', mat, 'SlabBlock::new', props(mat), extra_tags=['slabs'], loot_kind='slab',
+            register(vid, e['name'] + ' Slab', mat, 'SlabBlock::new', props(mat, vextra), extra_tags=['slabs'], loot_kind='slab',
                      ingredient=f'{NS}:{id}', count=2)
         elif v == 'wall':
             wall_models(vid, full_tx['side'])
@@ -533,29 +535,24 @@ def merge_tag(path, values):
 
 
 def write_java():
-    cut = ', '.join(const(i) for i in cutout)
-    tra = ', '.join(const(i) for i in translucent)
     src = f'''package dev.projectredacted.registry;
 
 import dev.projectredacted.ProjectRedacted;
 import dev.projectredacted.block.FacingBlock;
 import dev.projectredacted.block.SlidingDoorBlock;
 import dev.projectredacted.block.deco.*;
-import net.minecraft.core.BlockPos;
+import dev.projectredacted.block.deco.LightBlock;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DoubleHighBlockItem;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.material.MapColor;
 
@@ -571,10 +568,6 @@ public final class DecoBlocks {{
     public static final List<Block> ALL = new ArrayList<>();
 
 {chr(10).join(java_lines)}
-
-    /** Blocks with see-through pixels (grates, panes, decals) and with glass in them. */
-    public static final List<Block> CUTOUT = List.of({cut});
-    public static final List<Block> TRANSLUCENT = List.of({tra});
 
     private static BlockBehaviour.Properties metal() {{
         return BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(3f, 6f).sound(SoundType.METAL).requiresCorrectToolForDrops();
@@ -610,14 +603,6 @@ public final class DecoBlocks {{
 
     private static BlockBehaviour.Properties rubble() {{
         return BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(0.6f).sound(SoundType.GRAVEL);
-    }}
-
-    private static boolean never(BlockState state, BlockGetter level, BlockPos pos) {{
-        return false;
-    }}
-
-    private static boolean never(BlockState state, BlockGetter level, BlockPos pos, EntityType<?> type) {{
-        return false;
     }}
 
     private static Block block(String name, Function<BlockBehaviour.Properties, Block> factory, BlockBehaviour.Properties props) {{

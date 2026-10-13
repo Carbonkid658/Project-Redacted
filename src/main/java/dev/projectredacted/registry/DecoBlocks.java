@@ -4,21 +4,18 @@ import dev.projectredacted.ProjectRedacted;
 import dev.projectredacted.block.FacingBlock;
 import dev.projectredacted.block.SlidingDoorBlock;
 import dev.projectredacted.block.deco.*;
-import net.minecraft.core.BlockPos;
+import dev.projectredacted.block.deco.LightBlock;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DoubleHighBlockItem;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.material.MapColor;
 
@@ -131,8 +128,8 @@ public final class DecoBlocks {
     public static final Block RUSTED_DIAMOND_PLATE = block("rusted_diamond_plate", Block::new, metal());
     public static final Block RUSTED_DIAMOND_PLATE_STAIRS = block("rusted_diamond_plate_stairs", p -> new StairBlock(RUSTED_DIAMOND_PLATE.defaultBlockState(), p), metal());
     public static final Block RUSTED_DIAMOND_PLATE_SLAB = block("rusted_diamond_plate_slab", SlabBlock::new, metal());
-    public static final Block METAL_GRATE = block("metal_grate", TransparentBlock::new, metal().noOcclusion().isValidSpawn(DecoBlocks::never).isRedstoneConductor(DecoBlocks::never).isSuffocating(DecoBlocks::never).isViewBlocking(DecoBlocks::never));
-    public static final Block METAL_GRATE_SLAB = block("metal_grate_slab", SlabBlock::new, metal());
+    public static final Block METAL_GRATE = block("metal_grate", TransparentBlock::new, metal().noOcclusion().isValidSpawn((s, l, p, e) -> false).isRedstoneConductor((s, l, p) -> false).isSuffocating((s, l, p) -> false).isViewBlocking((s, l, p) -> false));
+    public static final Block METAL_GRATE_SLAB = block("metal_grate_slab", SlabBlock::new, metal().noOcclusion());
     public static final Block METAL_GRATE_TRAPDOOR = block("metal_grate_trapdoor", p -> new DecoTrapDoorBlock(BlockSetType.COPPER, p), metal().noOcclusion());
     public static final Block RUBBER_MAT = block("rubber_mat", CarpetBlock::new, cloth());
     public static final Block ANTI_STATIC_FLOOR = block("anti_static_floor", Block::new, stone());
@@ -197,13 +194,13 @@ public final class DecoBlocks {
     public static final Block SECURITY_DOOR = door("security_door", p -> new DoorBlock(BlockSetType.IRON, p), heavy().noOcclusion());
     public static final Block BULKHEAD_HATCH = block("bulkhead_hatch", p -> new DecoTrapDoorBlock(BlockSetType.IRON, p), heavy().noOcclusion());
     public static final Block FLOOR_HATCH = block("floor_hatch", p -> new DecoTrapDoorBlock(BlockSetType.IRON, p), metal().noOcclusion());
-    public static final Block OBSERVATION_WINDOW = block("observation_window", TransparentBlock::new, glass().noOcclusion().isValidSpawn(DecoBlocks::never).isRedstoneConductor(DecoBlocks::never).isSuffocating(DecoBlocks::never).isViewBlocking(DecoBlocks::never));
+    public static final Block OBSERVATION_WINDOW = block("observation_window", TransparentBlock::new, glass().noOcclusion().isValidSpawn((s, l, p, e) -> false).isRedstoneConductor((s, l, p) -> false).isSuffocating((s, l, p) -> false).isViewBlocking((s, l, p) -> false));
     public static final Block OBSERVATION_WINDOW_PANE = block("observation_window_pane", DecoPaneBlock::new, glass().noOcclusion());
-    public static final Block WIRED_GLASS = block("wired_glass", TransparentBlock::new, glass().noOcclusion().isValidSpawn(DecoBlocks::never).isRedstoneConductor(DecoBlocks::never).isSuffocating(DecoBlocks::never).isViewBlocking(DecoBlocks::never));
+    public static final Block WIRED_GLASS = block("wired_glass", TransparentBlock::new, glass().noOcclusion().isValidSpawn((s, l, p, e) -> false).isRedstoneConductor((s, l, p) -> false).isSuffocating((s, l, p) -> false).isViewBlocking((s, l, p) -> false));
     public static final Block WIRED_GLASS_PANE = block("wired_glass_pane", DecoPaneBlock::new, glass().noOcclusion());
-    public static final Block FROSTED_GLASS = block("frosted_glass", TransparentBlock::new, glass().noOcclusion().isValidSpawn(DecoBlocks::never).isRedstoneConductor(DecoBlocks::never).isSuffocating(DecoBlocks::never).isViewBlocking(DecoBlocks::never));
+    public static final Block FROSTED_GLASS = block("frosted_glass", TransparentBlock::new, glass().noOcclusion().isValidSpawn((s, l, p, e) -> false).isRedstoneConductor((s, l, p) -> false).isSuffocating((s, l, p) -> false).isViewBlocking((s, l, p) -> false));
     public static final Block FROSTED_GLASS_PANE = block("frosted_glass_pane", DecoPaneBlock::new, glass().noOcclusion());
-    public static final Block CRACKED_REINFORCED_GLASS = block("cracked_reinforced_glass", TransparentBlock::new, glass().noOcclusion().isValidSpawn(DecoBlocks::never).isRedstoneConductor(DecoBlocks::never).isSuffocating(DecoBlocks::never).isViewBlocking(DecoBlocks::never));
+    public static final Block CRACKED_REINFORCED_GLASS = block("cracked_reinforced_glass", TransparentBlock::new, glass().noOcclusion().isValidSpawn((s, l, p, e) -> false).isRedstoneConductor((s, l, p) -> false).isSuffocating((s, l, p) -> false).isViewBlocking((s, l, p) -> false));
     public static final Block CRACKED_REINFORCED_GLASS_PANE = block("cracked_reinforced_glass_pane", DecoPaneBlock::new, glass().noOcclusion());
     public static final Block SECURITY_BARS = block("security_bars", DecoPaneBlock::new, heavy().noOcclusion());
     public static final Block CHAIN_LINK_FENCE = block("chain_link_fence", DecoPaneBlock::new, metal().noOcclusion());
@@ -404,18 +401,14 @@ public final class DecoBlocks {
     public static final Block GREEN_CAMO_NETTING = block("green_camo_netting", DecoPaneBlock::new, cloth().noOcclusion());
     public static final Block DESERT_CAMO_NETTING = block("desert_camo_netting", DecoPaneBlock::new, cloth().noOcclusion());
     public static final Block TOWER_RAILING = block("tower_railing", DecoPaneBlock::new, metal().noOcclusion());
-    public static final Block CATWALK = block("catwalk", TransparentBlock::new, metal().noOcclusion().isValidSpawn(DecoBlocks::never).isRedstoneConductor(DecoBlocks::never).isSuffocating(DecoBlocks::never).isViewBlocking(DecoBlocks::never));
-    public static final Block CATWALK_SLAB = block("catwalk_slab", SlabBlock::new, metal());
-    public static final Block CATWALK_STAIRS = block("catwalk_stairs", p -> new StairBlock(CATWALK.defaultBlockState(), p), metal());
+    public static final Block CATWALK = block("catwalk", TransparentBlock::new, metal().noOcclusion().isValidSpawn((s, l, p, e) -> false).isRedstoneConductor((s, l, p) -> false).isSuffocating((s, l, p) -> false).isViewBlocking((s, l, p) -> false));
+    public static final Block CATWALK_SLAB = block("catwalk_slab", SlabBlock::new, metal().noOcclusion());
+    public static final Block CATWALK_STAIRS = block("catwalk_stairs", p -> new StairBlock(CATWALK.defaultBlockState(), p), metal().noOcclusion());
     public static final Block STEEL_LADDER = block("steel_ladder", DecoLadderBlock::new, metal().noOcclusion());
     public static final Block HELIPAD_MARKING = block("helipad_marking", Block::new, stone());
     public static final Block FRONT_COMPANY_SIGN = block("front_company_sign", p -> new ShapedBlock(p, new ShapedBlock.Spec(new double[][]{{0, 3, 15, 16, 13, 16}}, false, ShapedBlock.Mount.WALL, null, false)), metal().noOcclusion().noCollision());
     public static final Block ANTENNA_MAST = block("antenna_mast", p -> new TallShapedBlock(p, new ShapedBlock.Spec(new double[][]{{3, 0, 3, 13, 2, 13}, {7, 2, 7, 9, 32, 9}, {4, 22, 4, 12, 23, 12}, {5, 23, 10, 11, 29, 11}}, true, ShapedBlock.Mount.FLOOR, null, false)), metal().noOcclusion());
     public static final Block VENTILATION_STACK = block("ventilation_stack", p -> new TallShapedBlock(p, new ShapedBlock.Spec(new double[][]{{3, 0, 3, 13, 24, 13}, {2, 24, 2, 14, 27, 14}}, true, ShapedBlock.Mount.FLOOR, () -> ParticleTypes.SMOKE, false)), metal().noOcclusion());
-
-    /** Blocks with see-through pixels (grates, panes, decals) and with glass in them. */
-    public static final List<Block> CUTOUT = List.of(FARADAY_MESH, METAL_GRATE, METAL_GRATE_SLAB, METAL_GRATE_TRAPDOOR, HAZARD_FLOOR_EDGE, YELLOW_FLOOR_ARROW, WHITE_FLOOR_ARROW, YELLOW_ZONE_LINE, WHITE_ZONE_LINE, RED_ZONE_LINE, OFFICE_DOOR, SECURITY_DOOR, BULKHEAD_HATCH, FLOOR_HATCH, SECURITY_BARS, CHAIN_LINK_FENCE, BARBED_WIRE, ROOM_NUMBER_0, ROOM_NUMBER_1, ROOM_NUMBER_2, ROOM_NUMBER_3, ROOM_NUMBER_4, ROOM_NUMBER_5, ROOM_NUMBER_6, ROOM_NUMBER_7, ROOM_NUMBER_8, ROOM_NUMBER_9, AUTHORIZED_STENCIL, DO_NOT_LOOK_STENCIL, KEEP_SHUT_STENCIL, CHAOS_INSURGENCY_TAG, CHAOS_INSURGENCY_SCRAWL, BLOOD_SMEAR, BLOOD_POOL, POTTED_FERN, POTTED_FICUS, WALL_CLOCK, PRIVACY_CURTAIN, FEEDING_HATCH, GREEN_BIO_RESIDUE, BLACK_BIO_RESIDUE, SPARKING_WIRES, BURN_MARK, SCORCH_MARK, SHATTERED_GLASS, ABANDONED_PAPERWORK, GREEN_CAMO_NETTING, DESERT_CAMO_NETTING, TOWER_RAILING, CATWALK, CATWALK_SLAB, CATWALK_STAIRS, STEEL_LADDER);
-    public static final List<Block> TRANSLUCENT = List.of(OBSERVATION_WINDOW, OBSERVATION_WINDOW_PANE, WIRED_GLASS, WIRED_GLASS_PANE, FROSTED_GLASS, FROSTED_GLASS_PANE, CRACKED_REINFORCED_GLASS, CRACKED_REINFORCED_GLASS_PANE, RIOT_SHIELD_RACK, GUARD_BOOTH_WINDOW, FUME_HOOD, SAMPLE_CASE, WATER_COOLER, IV_STAND);
 
     private static BlockBehaviour.Properties metal() {
         return BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(3f, 6f).sound(SoundType.METAL).requiresCorrectToolForDrops();
@@ -451,14 +444,6 @@ public final class DecoBlocks {
 
     private static BlockBehaviour.Properties rubble() {
         return BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(0.6f).sound(SoundType.GRAVEL);
-    }
-
-    private static boolean never(BlockState state, BlockGetter level, BlockPos pos) {
-        return false;
-    }
-
-    private static boolean never(BlockState state, BlockGetter level, BlockPos pos, EntityType<?> type) {
-        return false;
     }
 
     private static Block block(String name, Function<BlockBehaviour.Properties, Block> factory, BlockBehaviour.Properties props) {
