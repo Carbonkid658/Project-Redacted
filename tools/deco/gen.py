@@ -339,7 +339,7 @@ def do_entry(e):
         if kind == 'glass':
             (translucent if e.get('translucent') else cutout).append(id)
             factory = 'TransparentBlock::new'
-            extra = '.noOcclusion().isValidSpawn((s, l, p, e) -> false).isRedstoneConductor((s, l, p) -> false).isSuffocating((s, l, p) -> false).isViewBlocking((s, l, p) -> false)'
+            extra = '.noOcclusion().isValidSpawn((s, l, p, e) -> false).isRedstoneConductor((s, l, p) -> false).isSuffocating((s, l, p) -> false).isViewBlocking((s, l, p, a) -> false)'
         else:
             factory, extra = 'Block::new', ''
         register(id, e['name'], mat, factory, props(mat, extra + light_expr(e)))

@@ -128,7 +128,7 @@ public final class DecoBlocks {
     public static final Block RUSTED_DIAMOND_PLATE = block("rusted_diamond_plate", Block::new, metal());
     public static final Block RUSTED_DIAMOND_PLATE_STAIRS = block("rusted_diamond_plate_stairs", p -> new StairBlock(RUSTED_DIAMOND_PLATE.defaultBlockState(), p), metal());
     public static final Block RUSTED_DIAMOND_PLATE_SLAB = block("rusted_diamond_plate_slab", SlabBlock::new, metal());
-    public static final Block METAL_GRATE = block("metal_grate", TransparentBlock::new, metal().noOcclusion().isValidSpawn((s, l, p, e) -> false).isRedstoneConductor((s, l, p) -> false).isSuffocating((s, l, p) -> false).isViewBlocking((s, l, p) -> false));
+    public static final Block METAL_GRATE = block("metal_grate", TransparentBlock::new, metal().noOcclusion().isValidSpawn((s, l, p, e) -> false).isRedstoneConductor((s, l, p) -> false).isSuffocating((s, l, p) -> false).isViewBlocking((s, l, p, a) -> false));
     public static final Block METAL_GRATE_SLAB = block("metal_grate_slab", SlabBlock::new, metal().noOcclusion());
     public static final Block METAL_GRATE_TRAPDOOR = block("metal_grate_trapdoor", p -> new DecoTrapDoorBlock(BlockSetType.COPPER, p), metal().noOcclusion());
     public static final Block RUBBER_MAT = block("rubber_mat", CarpetBlock::new, cloth());
@@ -194,13 +194,13 @@ public final class DecoBlocks {
     public static final Block SECURITY_DOOR = door("security_door", p -> new DoorBlock(BlockSetType.IRON, p), heavy().noOcclusion());
     public static final Block BULKHEAD_HATCH = block("bulkhead_hatch", p -> new DecoTrapDoorBlock(BlockSetType.IRON, p), heavy().noOcclusion());
     public static final Block FLOOR_HATCH = block("floor_hatch", p -> new DecoTrapDoorBlock(BlockSetType.IRON, p), metal().noOcclusion());
-    public static final Block OBSERVATION_WINDOW = block("observation_window", TransparentBlock::new, glass().noOcclusion().isValidSpawn((s, l, p, e) -> false).isRedstoneConductor((s, l, p) -> false).isSuffocating((s, l, p) -> false).isViewBlocking((s, l, p) -> false));
+    public static final Block OBSERVATION_WINDOW = block("observation_window", TransparentBlock::new, glass().noOcclusion().isValidSpawn((s, l, p, e) -> false).isRedstoneConductor((s, l, p) -> false).isSuffocating((s, l, p) -> false).isViewBlocking((s, l, p, a) -> false));
     public static final Block OBSERVATION_WINDOW_PANE = block("observation_window_pane", DecoPaneBlock::new, glass().noOcclusion());
-    public static final Block WIRED_GLASS = block("wired_glass", TransparentBlock::new, glass().noOcclusion().isValidSpawn((s, l, p, e) -> false).isRedstoneConductor((s, l, p) -> false).isSuffocating((s, l, p) -> false).isViewBlocking((s, l, p) -> false));
+    public static final Block WIRED_GLASS = block("wired_glass", TransparentBlock::new, glass().noOcclusion().isValidSpawn((s, l, p, e) -> false).isRedstoneConductor((s, l, p) -> false).isSuffocating((s, l, p) -> false).isViewBlocking((s, l, p, a) -> false));
     public static final Block WIRED_GLASS_PANE = block("wired_glass_pane", DecoPaneBlock::new, glass().noOcclusion());
-    public static final Block FROSTED_GLASS = block("frosted_glass", TransparentBlock::new, glass().noOcclusion().isValidSpawn((s, l, p, e) -> false).isRedstoneConductor((s, l, p) -> false).isSuffocating((s, l, p) -> false).isViewBlocking((s, l, p) -> false));
+    public static final Block FROSTED_GLASS = block("frosted_glass", TransparentBlock::new, glass().noOcclusion().isValidSpawn((s, l, p, e) -> false).isRedstoneConductor((s, l, p) -> false).isSuffocating((s, l, p) -> false).isViewBlocking((s, l, p, a) -> false));
     public static final Block FROSTED_GLASS_PANE = block("frosted_glass_pane", DecoPaneBlock::new, glass().noOcclusion());
-    public static final Block CRACKED_REINFORCED_GLASS = block("cracked_reinforced_glass", TransparentBlock::new, glass().noOcclusion().isValidSpawn((s, l, p, e) -> false).isRedstoneConductor((s, l, p) -> false).isSuffocating((s, l, p) -> false).isViewBlocking((s, l, p) -> false));
+    public static final Block CRACKED_REINFORCED_GLASS = block("cracked_reinforced_glass", TransparentBlock::new, glass().noOcclusion().isValidSpawn((s, l, p, e) -> false).isRedstoneConductor((s, l, p) -> false).isSuffocating((s, l, p) -> false).isViewBlocking((s, l, p, a) -> false));
     public static final Block CRACKED_REINFORCED_GLASS_PANE = block("cracked_reinforced_glass_pane", DecoPaneBlock::new, glass().noOcclusion());
     public static final Block SECURITY_BARS = block("security_bars", DecoPaneBlock::new, heavy().noOcclusion());
     public static final Block CHAIN_LINK_FENCE = block("chain_link_fence", DecoPaneBlock::new, metal().noOcclusion());
@@ -401,7 +401,7 @@ public final class DecoBlocks {
     public static final Block GREEN_CAMO_NETTING = block("green_camo_netting", DecoPaneBlock::new, cloth().noOcclusion());
     public static final Block DESERT_CAMO_NETTING = block("desert_camo_netting", DecoPaneBlock::new, cloth().noOcclusion());
     public static final Block TOWER_RAILING = block("tower_railing", DecoPaneBlock::new, metal().noOcclusion());
-    public static final Block CATWALK = block("catwalk", TransparentBlock::new, metal().noOcclusion().isValidSpawn((s, l, p, e) -> false).isRedstoneConductor((s, l, p) -> false).isSuffocating((s, l, p) -> false).isViewBlocking((s, l, p) -> false));
+    public static final Block CATWALK = block("catwalk", TransparentBlock::new, metal().noOcclusion().isValidSpawn((s, l, p, e) -> false).isRedstoneConductor((s, l, p) -> false).isSuffocating((s, l, p) -> false).isViewBlocking((s, l, p, a) -> false));
     public static final Block CATWALK_SLAB = block("catwalk_slab", SlabBlock::new, metal().noOcclusion());
     public static final Block CATWALK_STAIRS = block("catwalk_stairs", p -> new StairBlock(CATWALK.defaultBlockState(), p), metal().noOcclusion());
     public static final Block STEEL_LADDER = block("steel_ladder", DecoLadderBlock::new, metal().noOcclusion());
