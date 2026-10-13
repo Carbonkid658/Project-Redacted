@@ -1,0 +1,2 @@
+Client-only resources for Project [REDACTED] go in this folder.
+It also makes sure build/resources/client exists for dev launches.

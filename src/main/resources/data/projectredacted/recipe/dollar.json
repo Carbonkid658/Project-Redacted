@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CC",
+    "CC"
+  ],
+  "key": {
+    "C": "projectredacted:coin"
+  },
+  "result": {
+    "id": "projectredacted:dollar",
+    "count": 1
+  }
+}

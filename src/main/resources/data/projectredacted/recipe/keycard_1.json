@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "PPP",
+    "PNP"
+  ],
+  "key": {
+    "P": "projectredacted:plastic",
+    "N": "minecraft:gold_nugget"
+  },
+  "result": {
+    "id": "projectredacted:keycard_1",
+    "count": 1
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "BIB",
+    "BRB",
+    "BIB"
+  ],
+  "key": {
+    "B": "projectredacted:plastic_block",
+    "I": "minecraft:iron_block",
+    "R": "minecraft:redstone_block"
+  },
+  "result": {
+    "id": "projectredacted:mainframe",
+    "count": 1
+  }
+}

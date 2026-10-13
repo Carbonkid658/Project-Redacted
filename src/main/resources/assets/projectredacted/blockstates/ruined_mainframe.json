@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "projectredacted:block/ruined_mainframe"
+    },
+    "facing=east": {
+      "model": "projectredacted:block/ruined_mainframe",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "projectredacted:block/ruined_mainframe",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "projectredacted:block/ruined_mainframe",
+      "y": 270
+    }
+  }
+}
