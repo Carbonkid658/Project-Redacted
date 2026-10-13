@@ -1,0 +1,107 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "t0": "projectredacted:block/deco/mat_olive",
+    "t1": "projectredacted:block/deco/transformer_front",
+    "t2": "projectredacted:block/deco/mat_white",
+    "particle": "projectredacted:block/deco/mat_olive"
+  },
+  "elements": [
+    {
+      "from": [
+        2,
+        0,
+        2
+      ],
+      "to": [
+        14,
+        13,
+        14
+      ],
+      "faces": {
+        "down": {
+          "texture": "#t0"
+        },
+        "up": {
+          "texture": "#t0"
+        },
+        "north": {
+          "texture": "#t1"
+        },
+        "south": {
+          "texture": "#t0"
+        },
+        "west": {
+          "texture": "#t0"
+        },
+        "east": {
+          "texture": "#t0"
+        }
+      }
+    },
+    {
+      "from": [
+        4,
+        13,
+        6
+      ],
+      "to": [
+        6,
+        16,
+        8
+      ],
+      "faces": {
+        "down": {
+          "texture": "#t2"
+        },
+        "up": {
+          "texture": "#t2"
+        },
+        "north": {
+          "texture": "#t2"
+        },
+        "south": {
+          "texture": "#t2"
+        },
+        "west": {
+          "texture": "#t2"
+        },
+        "east": {
+          "texture": "#t2"
+        }
+      }
+    },
+    {
+      "from": [
+        10,
+        13,
+        6
+      ],
+      "to": [
+        12,
+        16,
+        8
+      ],
+      "faces": {
+        "down": {
+          "texture": "#t2"
+        },
+        "up": {
+          "texture": "#t2"
+        },
+        "north": {
+          "texture": "#t2"
+        },
+        "south": {
+          "texture": "#t2"
+        },
+        "west": {
+          "texture": "#t2"
+        },
+        "east": {
+          "texture": "#t2"
+        }
+      }
+    }
+  ]
+}

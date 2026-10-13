@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "projectredacted:block/steel_shelving"
+    },
+    "facing=east": {
+      "model": "projectredacted:block/steel_shelving",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "projectredacted:block/steel_shelving",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "projectredacted:block/steel_shelving",
+      "y": 270
+    }
+  }
+}

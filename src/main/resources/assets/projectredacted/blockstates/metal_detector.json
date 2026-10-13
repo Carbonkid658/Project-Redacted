@@ -1,0 +1,34 @@
+{
+  "variants": {
+    "facing=north,half=lower": {
+      "model": "projectredacted:block/metal_detector_lower"
+    },
+    "facing=north,half=upper": {
+      "model": "projectredacted:block/metal_detector_upper"
+    },
+    "facing=east,half=lower": {
+      "model": "projectredacted:block/metal_detector_lower",
+      "y": 90
+    },
+    "facing=east,half=upper": {
+      "model": "projectredacted:block/metal_detector_upper",
+      "y": 90
+    },
+    "facing=south,half=lower": {
+      "model": "projectredacted:block/metal_detector_lower",
+      "y": 180
+    },
+    "facing=south,half=upper": {
+      "model": "projectredacted:block/metal_detector_upper",
+      "y": 180
+    },
+    "facing=west,half=lower": {
+      "model": "projectredacted:block/metal_detector_lower",
+      "y": 270
+    },
+    "facing=west,half=upper": {
+      "model": "projectredacted:block/metal_detector_upper",
+      "y": 270
+    }
+  }
+}

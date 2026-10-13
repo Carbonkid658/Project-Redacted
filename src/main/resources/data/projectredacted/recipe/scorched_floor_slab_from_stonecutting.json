@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "projectredacted:scorched_floor",
+  "result": {
+    "id": "projectredacted:scorched_floor_slab",
+    "count": 2
+  }
+}

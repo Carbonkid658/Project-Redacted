@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "projectredacted:plastic_block",
+  "result": {
+    "id": "projectredacted:food_tray",
+    "count": 1
+  }
+}

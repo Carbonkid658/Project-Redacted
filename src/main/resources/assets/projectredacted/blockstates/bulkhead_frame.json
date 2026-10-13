@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "projectredacted:block/bulkhead_frame"
+    },
+    "facing=east": {
+      "model": "projectredacted:block/bulkhead_frame",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "projectredacted:block/bulkhead_frame",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "projectredacted:block/bulkhead_frame",
+      "y": 270
+    }
+  }
+}

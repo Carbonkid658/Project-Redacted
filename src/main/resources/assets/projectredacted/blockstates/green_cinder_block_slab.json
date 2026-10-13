@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "projectredacted:block/green_cinder_block_slab"
+    },
+    "type=top": {
+      "model": "projectredacted:block/green_cinder_block_slab_top"
+    },
+    "type=double": {
+      "model": "projectredacted:block/green_cinder_block"
+    }
+  }
+}

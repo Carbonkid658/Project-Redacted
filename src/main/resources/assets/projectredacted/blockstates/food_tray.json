@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "projectredacted:block/food_tray"
+    },
+    "facing=east": {
+      "model": "projectredacted:block/food_tray",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "projectredacted:block/food_tray",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "projectredacted:block/food_tray",
+      "y": 270
+    }
+  }
+}

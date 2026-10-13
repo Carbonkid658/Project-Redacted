@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/stairs",
+  "textures": {
+    "bottom": "projectredacted:block/deco/overgrown_facility_wall",
+    "top": "projectredacted:block/deco/overgrown_facility_wall",
+    "side": "projectredacted:block/deco/overgrown_facility_wall"
+  }
+}

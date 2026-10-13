@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "minecraft:iron_ingot",
+  "result": {
+    "id": "projectredacted:heavy_containment_zone_sign",
+    "count": 1
+  }
+}

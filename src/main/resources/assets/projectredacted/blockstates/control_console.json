@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "projectredacted:block/control_console"
+    },
+    "facing=east": {
+      "model": "projectredacted:block/control_console",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "projectredacted:block/control_console",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "projectredacted:block/control_console",
+      "y": 270
+    }
+  }
+}

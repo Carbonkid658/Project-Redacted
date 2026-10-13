@@ -42,6 +42,7 @@ public class ProjectRedacted implements ModInitializer {
         ModSounds.init();
         ModComponents.init();
         ModBlocks.init();
+        DecoBlocks.init();
         ModItems.init();
         ModEntities.init();
         ModTabs.init();

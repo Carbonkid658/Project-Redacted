@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/outer_stairs",
+  "textures": {
+    "bottom": "projectredacted:block/deco/asphalt",
+    "top": "projectredacted:block/deco/asphalt",
+    "side": "projectredacted:block/deco/asphalt"
+  }
+}

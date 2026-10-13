@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "axis=y": {
+      "model": "projectredacted:block/steel_beam"
+    },
+    "axis=z": {
+      "model": "projectredacted:block/steel_beam_horizontal",
+      "x": 90
+    },
+    "axis=x": {
+      "model": "projectredacted:block/steel_beam_horizontal",
+      "x": 90,
+      "y": 90
+    }
+  }
+}

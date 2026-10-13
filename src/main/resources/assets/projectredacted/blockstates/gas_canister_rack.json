@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "projectredacted:block/gas_canister_rack"
+    },
+    "facing=east": {
+      "model": "projectredacted:block/gas_canister_rack",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "projectredacted:block/gas_canister_rack",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "projectredacted:block/gas_canister_rack",
+      "y": 270
+    }
+  }
+}

@@ -1,0 +1,106 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "t0": "projectredacted:block/deco/shower_stall",
+    "t1": "projectredacted:block/deco/mat_steel",
+    "particle": "projectredacted:block/deco/shower_stall"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        15
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "down": {
+          "texture": "#t0"
+        },
+        "up": {
+          "texture": "#t0"
+        },
+        "north": {
+          "texture": "#t0"
+        },
+        "south": {
+          "texture": "#t0"
+        },
+        "west": {
+          "texture": "#t0"
+        },
+        "east": {
+          "texture": "#t0"
+        }
+      }
+    },
+    {
+      "from": [
+        7,
+        12,
+        11
+      ],
+      "to": [
+        9,
+        13,
+        15
+      ],
+      "faces": {
+        "down": {
+          "texture": "#t1"
+        },
+        "up": {
+          "texture": "#t1"
+        },
+        "north": {
+          "texture": "#t1"
+        },
+        "south": {
+          "texture": "#t1"
+        },
+        "west": {
+          "texture": "#t1"
+        },
+        "east": {
+          "texture": "#t1"
+        }
+      }
+    },
+    {
+      "from": [
+        6,
+        11,
+        10
+      ],
+      "to": [
+        10,
+        12,
+        12
+      ],
+      "faces": {
+        "down": {
+          "texture": "#t1"
+        },
+        "up": {
+          "texture": "#t1"
+        },
+        "north": {
+          "texture": "#t1"
+        },
+        "south": {
+          "texture": "#t1"
+        },
+        "west": {
+          "texture": "#t1"
+        },
+        "east": {
+          "texture": "#t1"
+        }
+      }
+    }
+  ]
+}

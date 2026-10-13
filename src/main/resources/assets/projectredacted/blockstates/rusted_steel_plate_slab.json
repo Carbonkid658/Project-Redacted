@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "projectredacted:block/rusted_steel_plate_slab"
+    },
+    "type=top": {
+      "model": "projectredacted:block/rusted_steel_plate_slab_top"
+    },
+    "type=double": {
+      "model": "projectredacted:block/rusted_steel_plate"
+    }
+  }
+}

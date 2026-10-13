@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "projectredacted:corrugated_metal",
+  "result": {
+    "id": "projectredacted:corrugated_metal_slab",
+    "count": 2
+  }
+}

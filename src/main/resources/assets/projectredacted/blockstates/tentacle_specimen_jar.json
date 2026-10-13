@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "projectredacted:block/tentacle_specimen_jar"
+    },
+    "facing=east": {
+      "model": "projectredacted:block/tentacle_specimen_jar",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "projectredacted:block/tentacle_specimen_jar",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "projectredacted:block/tentacle_specimen_jar",
+      "y": 270
+    }
+  }
+}

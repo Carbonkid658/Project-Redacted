@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab",
+  "textures": {
+    "bottom": "projectredacted:block/deco/linoleum",
+    "top": "projectredacted:block/deco/linoleum",
+    "side": "projectredacted:block/deco/linoleum"
+  }
+}

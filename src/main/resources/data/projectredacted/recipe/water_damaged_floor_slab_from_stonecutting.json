@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "projectredacted:water_damaged_floor",
+  "result": {
+    "id": "projectredacted:water_damaged_floor_slab",
+    "count": 2
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "projectredacted:block/facility_wall_upper_trim_slab"
+    },
+    "type=top": {
+      "model": "projectredacted:block/facility_wall_upper_trim_slab_top"
+    },
+    "type=double": {
+      "model": "projectredacted:block/facility_wall_upper_trim"
+    }
+  }
+}

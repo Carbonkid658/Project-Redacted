@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "projectredacted:hazard_wall",
+  "result": {
+    "id": "projectredacted:hazard_wall_stairs",
+    "count": 1
+  }
+}

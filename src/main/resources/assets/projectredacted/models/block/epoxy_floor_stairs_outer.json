@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/outer_stairs",
+  "textures": {
+    "bottom": "projectredacted:block/deco/epoxy_floor",
+    "top": "projectredacted:block/deco/epoxy_floor",
+    "side": "projectredacted:block/deco/epoxy_floor"
+  }
+}

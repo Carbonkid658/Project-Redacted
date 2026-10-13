@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab",
+  "textures": {
+    "bottom": "projectredacted:block/deco/diamond_plate",
+    "top": "projectredacted:block/deco/diamond_plate",
+    "side": "projectredacted:block/deco/diamond_plate"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "projectredacted:green_epoxy_floor",
+  "result": {
+    "id": "projectredacted:green_epoxy_floor_slab",
+    "count": 2
+  }
+}

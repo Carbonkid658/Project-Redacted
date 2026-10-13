@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "projectredacted:sandbags",
+  "result": {
+    "id": "projectredacted:sandbags_slab",
+    "count": 2
+  }
+}

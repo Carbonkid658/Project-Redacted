@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "projectredacted:white_cinder_block",
+  "result": {
+    "id": "projectredacted:white_cinder_block_slab",
+    "count": 2
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "minecraft:iron_ingot",
+  "result": {
+    "id": "projectredacted:forklift_prop",
+    "count": 1
+  }
+}

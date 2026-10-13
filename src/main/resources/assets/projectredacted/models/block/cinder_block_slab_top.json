@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab_top",
+  "textures": {
+    "bottom": "projectredacted:block/deco/cinder_block",
+    "top": "projectredacted:block/deco/cinder_block",
+    "side": "projectredacted:block/deco/cinder_block"
+  }
+}

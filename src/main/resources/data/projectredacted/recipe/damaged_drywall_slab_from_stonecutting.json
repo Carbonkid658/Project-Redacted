@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "projectredacted:damaged_drywall",
+  "result": {
+    "id": "projectredacted:damaged_drywall_slab",
+    "count": 2
+  }
+}

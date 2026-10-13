@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "projectredacted:block/steel_toilet"
+    },
+    "facing=east": {
+      "model": "projectredacted:block/steel_toilet",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "projectredacted:block/steel_toilet",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "projectredacted:block/steel_toilet",
+      "y": 270
+    }
+  }
+}

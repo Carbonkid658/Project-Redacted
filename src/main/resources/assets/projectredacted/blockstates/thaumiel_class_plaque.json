@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "projectredacted:block/thaumiel_class_plaque"
+    },
+    "facing=east": {
+      "model": "projectredacted:block/thaumiel_class_plaque",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "projectredacted:block/thaumiel_class_plaque",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "projectredacted:block/thaumiel_class_plaque",
+      "y": 270
+    }
+  }
+}

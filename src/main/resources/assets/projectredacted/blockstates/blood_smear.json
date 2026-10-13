@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "projectredacted:block/blood_smear"
+    },
+    "facing=east": {
+      "model": "projectredacted:block/blood_smear",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "projectredacted:block/blood_smear",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "projectredacted:block/blood_smear",
+      "y": 270
+    }
+  }
+}

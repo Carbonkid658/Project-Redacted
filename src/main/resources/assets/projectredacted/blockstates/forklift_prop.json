@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "projectredacted:block/forklift_prop"
+    },
+    "facing=east": {
+      "model": "projectredacted:block/forklift_prop",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "projectredacted:block/forklift_prop",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "projectredacted:block/forklift_prop",
+      "y": 270
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "projectredacted:block/drywall_slab"
+    },
+    "type=top": {
+      "model": "projectredacted:block/drywall_slab_top"
+    },
+    "type=double": {
+      "model": "projectredacted:block/drywall"
+    }
+  }
+}

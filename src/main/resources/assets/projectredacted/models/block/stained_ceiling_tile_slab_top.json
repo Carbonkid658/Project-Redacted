@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab_top",
+  "textures": {
+    "bottom": "projectredacted:block/deco/stained_ceiling_tile",
+    "top": "projectredacted:block/deco/stained_ceiling_tile",
+    "side": "projectredacted:block/deco/stained_ceiling_tile"
+  }
+}

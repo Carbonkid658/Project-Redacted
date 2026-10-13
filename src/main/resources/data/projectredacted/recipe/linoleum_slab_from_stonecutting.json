@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "projectredacted:linoleum",
+  "result": {
+    "id": "projectredacted:linoleum_slab",
+    "count": 2
+  }
+}

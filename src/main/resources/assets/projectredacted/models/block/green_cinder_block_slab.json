@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab",
+  "textures": {
+    "bottom": "projectredacted:block/deco/green_cinder_block",
+    "top": "projectredacted:block/deco/green_cinder_block",
+    "side": "projectredacted:block/deco/green_cinder_block"
+  }
+}

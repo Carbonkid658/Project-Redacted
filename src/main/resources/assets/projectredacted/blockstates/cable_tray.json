@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "axis=y": {
+      "model": "projectredacted:block/cable_tray"
+    },
+    "axis=z": {
+      "model": "projectredacted:block/cable_tray",
+      "x": 90
+    },
+    "axis=x": {
+      "model": "projectredacted:block/cable_tray",
+      "x": 90,
+      "y": 90
+    }
+  }
+}

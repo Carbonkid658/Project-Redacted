@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "projectredacted:wired_glass",
+  "result": {
+    "id": "projectredacted:wired_glass_pane",
+    "count": 2
+  }
+}

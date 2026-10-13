@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/inner_stairs",
+  "textures": {
+    "bottom": "projectredacted:block/deco/riveted_steel_plate",
+    "top": "projectredacted:block/deco/riveted_steel_plate",
+    "side": "projectredacted:block/deco/riveted_steel_plate"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "projectredacted:block/pa_speaker"
+    },
+    "facing=east": {
+      "model": "projectredacted:block/pa_speaker",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "projectredacted:block/pa_speaker",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "projectredacted:block/pa_speaker",
+      "y": 270
+    }
+  }
+}

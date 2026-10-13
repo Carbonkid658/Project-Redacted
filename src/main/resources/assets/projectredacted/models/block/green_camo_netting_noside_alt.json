@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/template_glass_pane_noside_alt",
+  "textures": {
+    "pane": "projectredacted:block/deco/green_camo_netting",
+    "edge": "projectredacted:block/deco/green_camo_netting"
+  }
+}

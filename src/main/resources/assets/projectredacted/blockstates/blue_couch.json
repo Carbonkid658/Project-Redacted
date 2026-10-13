@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "projectredacted:block/blue_couch"
+    },
+    "facing=east": {
+      "model": "projectredacted:block/blue_couch",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "projectredacted:block/blue_couch",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "projectredacted:block/blue_couch",
+      "y": 270
+    }
+  }
+}

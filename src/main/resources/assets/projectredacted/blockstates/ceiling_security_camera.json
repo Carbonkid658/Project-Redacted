@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "projectredacted:block/ceiling_security_camera"
+    },
+    "facing=east": {
+      "model": "projectredacted:block/ceiling_security_camera",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "projectredacted:block/ceiling_security_camera",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "projectredacted:block/ceiling_security_camera",
+      "y": 270
+    }
+  }
+}

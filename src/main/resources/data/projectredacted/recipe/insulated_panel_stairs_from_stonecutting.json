@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "projectredacted:insulated_panel",
+  "result": {
+    "id": "projectredacted:insulated_panel_stairs",
+    "count": 1
+  }
+}

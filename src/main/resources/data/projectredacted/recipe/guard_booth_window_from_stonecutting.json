@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "minecraft:iron_ingot",
+  "result": {
+    "id": "projectredacted:guard_booth_window",
+    "count": 1
+  }
+}

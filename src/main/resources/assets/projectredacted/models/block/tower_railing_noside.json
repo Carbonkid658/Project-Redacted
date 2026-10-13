@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/template_glass_pane_noside",
+  "textures": {
+    "pane": "projectredacted:block/deco/tower_railing",
+    "edge": "projectredacted:block/deco/tower_railing"
+  }
+}

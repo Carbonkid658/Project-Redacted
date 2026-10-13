@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "minecraft:stone",
+  "result": {
+    "id": "projectredacted:old_site_brick",
+    "count": 1
+  }
+}

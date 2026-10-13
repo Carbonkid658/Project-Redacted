@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/stairs",
+  "textures": {
+    "bottom": "projectredacted:block/deco/rusted_diamond_plate",
+    "top": "projectredacted:block/deco/rusted_diamond_plate",
+    "side": "projectredacted:block/deco/rusted_diamond_plate"
+  }
+}

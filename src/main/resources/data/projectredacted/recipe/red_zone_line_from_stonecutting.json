@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "minecraft:paper",
+  "result": {
+    "id": "projectredacted:red_zone_line",
+    "count": 4
+  }
+}

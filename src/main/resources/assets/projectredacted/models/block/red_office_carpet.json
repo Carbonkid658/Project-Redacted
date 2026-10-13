@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/carpet",
+  "textures": {
+    "wool": "projectredacted:block/deco/red_office_carpet"
+  }
+}

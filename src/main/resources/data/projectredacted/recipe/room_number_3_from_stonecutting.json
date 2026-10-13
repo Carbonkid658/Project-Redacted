@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "minecraft:paper",
+  "result": {
+    "id": "projectredacted:room_number_3",
+    "count": 4
+  }
+}

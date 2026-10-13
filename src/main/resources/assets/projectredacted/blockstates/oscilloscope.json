@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "projectredacted:block/oscilloscope"
+    },
+    "facing=east": {
+      "model": "projectredacted:block/oscilloscope",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "projectredacted:block/oscilloscope",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "projectredacted:block/oscilloscope",
+      "y": 270
+    }
+  }
+}

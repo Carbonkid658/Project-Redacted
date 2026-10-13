@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "minecraft:glass",
+  "result": {
+    "id": "projectredacted:frosted_glass",
+    "count": 1
+  }
+}

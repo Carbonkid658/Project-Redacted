@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "projectredacted:block/hazard_floor_edge"
+    },
+    "facing=east": {
+      "model": "projectredacted:block/hazard_floor_edge",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "projectredacted:block/hazard_floor_edge",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "projectredacted:block/hazard_floor_edge",
+      "y": 270
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "projectredacted:block/collapsed_ceiling"
+    },
+    "facing=east": {
+      "model": "projectredacted:block/collapsed_ceiling",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "projectredacted:block/collapsed_ceiling",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "projectredacted:block/collapsed_ceiling",
+      "y": 270
+    }
+  }
+}

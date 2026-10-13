@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab",
+  "textures": {
+    "bottom": "projectredacted:block/deco/raised_floor_panel",
+    "top": "projectredacted:block/deco/raised_floor_panel",
+    "side": "projectredacted:block/deco/raised_floor_panel"
+  }
+}

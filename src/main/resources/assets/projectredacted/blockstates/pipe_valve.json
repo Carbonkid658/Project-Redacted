@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "projectredacted:block/pipe_valve"
+    },
+    "facing=east": {
+      "model": "projectredacted:block/pipe_valve",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "projectredacted:block/pipe_valve",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "projectredacted:block/pipe_valve",
+      "y": 270
+    }
+  }
+}

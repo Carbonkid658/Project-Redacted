@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "projectredacted:block/yellow_zone_line"
+    },
+    "facing=east": {
+      "model": "projectredacted:block/yellow_zone_line",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "projectredacted:block/yellow_zone_line",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "projectredacted:block/yellow_zone_line",
+      "y": 270
+    }
+  }
+}

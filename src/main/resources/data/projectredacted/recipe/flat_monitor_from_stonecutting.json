@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "minecraft:glowstone_dust",
+  "result": {
+    "id": "projectredacted:flat_monitor",
+    "count": 1
+  }
+}

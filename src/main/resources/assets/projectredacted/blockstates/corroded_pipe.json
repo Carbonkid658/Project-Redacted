@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "axis=y": {
+      "model": "projectredacted:block/corroded_pipe"
+    },
+    "axis=z": {
+      "model": "projectredacted:block/corroded_pipe",
+      "x": 90
+    },
+    "axis=x": {
+      "model": "projectredacted:block/corroded_pipe",
+      "x": 90,
+      "y": 90
+    }
+  }
+}

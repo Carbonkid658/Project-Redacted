@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "projectredacted:block/sprinkler"
+    },
+    "facing=east": {
+      "model": "projectredacted:block/sprinkler",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "projectredacted:block/sprinkler",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "projectredacted:block/sprinkler",
+      "y": 270
+    }
+  }
+}

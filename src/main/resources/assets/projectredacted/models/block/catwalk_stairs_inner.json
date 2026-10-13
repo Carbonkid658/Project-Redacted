@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/inner_stairs",
+  "textures": {
+    "bottom": "projectredacted:block/deco/catwalk",
+    "top": "projectredacted:block/deco/catwalk",
+    "side": "projectredacted:block/deco/catwalk"
+  }
+}

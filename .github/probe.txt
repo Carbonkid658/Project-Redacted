@@ -1,24 +1,4 @@
 # API lookups for CI (find:<regex>, class:<fqcn>[:<line regex>], code:<fqcn>:<regex>); empty means skip.
-class:net.minecraft.world.level.block.Block:(animateTick|setPlacedBy|playerWillDestroy|stepOn|getStateForPlacement|updateShape|neighborChanged|playerDestroy)
-class:net.minecraft.world.level.block.state.BlockBehaviour:(getShape|getCollisionShape|entityInside|updateShape|neighborChanged|canSurvive|canBeReplaced|useWithoutItem|getVisualShape|propagatesSkylightDown|getShadeBrightness|isPathfindable|onPlace|rotate|mirror)
-class:net.minecraft.world.level.block.state.BlockBehaviour$Properties:(noCollision|noOcclusion|instabreak|lightLevel|forceSolid|replaceable|pushReaction|ignitedByLava|dynamicShape|offsetType|noLootTable|emissive|hasPostProcess)
-class:net.minecraft.world.level.block.DoublePlantBlock
-class:net.minecraft.world.level.block.IronBarsBlock:(public|protected)
-class:net.minecraft.world.level.block.WallBlock:(public)
-class:net.minecraft.world.level.block.CarpetBlock
-class:net.minecraft.world.level.block.TrapDoorBlock:(public)
-class:net.minecraft.world.level.block.FenceGateBlock:(public)
-class:net.minecraft.world.level.block.LadderBlock:(public)
-class:net.minecraft.world.level.block.RotatedPillarBlock
-class:net.minecraft.world.level.block.RedstoneLampBlock
-class:net.minecraft.world.level.block.WebBlock
-class:net.minecraft.world.level.block.SnowLayerBlock
-class:net.minecraft.world.level.block.HorizontalDirectionalBlock
-class:net.minecraft.world.level.block.ChainBlock
-class:net.minecraft.world.level.block.BarrelBlock
-class:net.minecraft.world.level.block.entity.BlockEntityType:(public)
-find:fabric.*BlockEntityType
-find:net\.minecraft\.world\.level\.block\.(Chain|IronChain|Bars|Copper).*
-code:net.minecraft.world.level.block.WebBlock:entityInside
-code:net.minecraft.world.level.block.SnowLayerBlock:canBeReplaced
-code:net.minecraft.world.level.block.DoublePlantBlock:(setPlacedBy|getStateForPlacement|playerWillDestroy|updateShape)
+find:BlockRenderLayerMap
+find:ChunkSectionLayer
+class:net.minecraft.client.renderer.ItemBlockRenderTypes:(public)

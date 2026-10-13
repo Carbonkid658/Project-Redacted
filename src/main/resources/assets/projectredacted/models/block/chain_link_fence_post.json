@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/template_glass_pane_post",
+  "textures": {
+    "pane": "projectredacted:block/deco/chain_link_fence",
+    "edge": "projectredacted:block/deco/chain_link_fence"
+  }
+}

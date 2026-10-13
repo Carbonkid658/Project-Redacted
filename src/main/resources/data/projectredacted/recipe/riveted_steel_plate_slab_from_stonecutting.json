@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "projectredacted:riveted_steel_plate",
+  "result": {
+    "id": "projectredacted:riveted_steel_plate_slab",
+    "count": 2
+  }
+}

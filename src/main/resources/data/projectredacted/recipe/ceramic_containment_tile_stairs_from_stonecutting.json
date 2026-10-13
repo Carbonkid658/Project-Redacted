@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "projectredacted:ceramic_containment_tile",
+  "result": {
+    "id": "projectredacted:ceramic_containment_tile_stairs",
+    "count": 1
+  }
+}

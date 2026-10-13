@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "projectredacted:block/authorized_stencil"
+    },
+    "facing=east": {
+      "model": "projectredacted:block/authorized_stencil",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "projectredacted:block/authorized_stencil",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "projectredacted:block/authorized_stencil",
+      "y": 270
+    }
+  }
+}

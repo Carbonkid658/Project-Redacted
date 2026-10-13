@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "projectredacted:block/red_hazard_wall_slab"
+    },
+    "type=top": {
+      "model": "projectredacted:block/red_hazard_wall_slab_top"
+    },
+    "type=double": {
+      "model": "projectredacted:block/red_hazard_wall"
+    }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "projectredacted:reinforced_concrete",
+  "result": {
+    "id": "projectredacted:reinforced_concrete_slab",
+    "count": 2
+  }
+}

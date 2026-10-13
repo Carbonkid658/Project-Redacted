@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "projectredacted:block/decon_shower"
+    },
+    "facing=east": {
+      "model": "projectredacted:block/decon_shower",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "projectredacted:block/decon_shower",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "projectredacted:block/decon_shower",
+      "y": 270
+    }
+  }
+}

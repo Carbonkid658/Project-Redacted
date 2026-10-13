@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "projectredacted:concrete_paver",
+  "result": {
+    "id": "projectredacted:concrete_paver_slab",
+    "count": 2
+  }
+}

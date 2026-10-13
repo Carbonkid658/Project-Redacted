@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "projectredacted:block/deco/cracked_old_site_brick"
+  }
+}

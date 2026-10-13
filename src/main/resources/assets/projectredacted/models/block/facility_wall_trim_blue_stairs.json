@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/stairs",
+  "textures": {
+    "bottom": "projectredacted:block/deco/facility_wall_trim_blue",
+    "top": "projectredacted:block/deco/facility_wall_trim_blue",
+    "side": "projectredacted:block/deco/facility_wall_trim_blue"
+  }
+}

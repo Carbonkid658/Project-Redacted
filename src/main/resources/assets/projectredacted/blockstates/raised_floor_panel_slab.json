@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "projectredacted:block/raised_floor_panel_slab"
+    },
+    "type=top": {
+      "model": "projectredacted:block/raised_floor_panel_slab_top"
+    },
+    "type=double": {
+      "model": "projectredacted:block/raised_floor_panel"
+    }
+  }
+}

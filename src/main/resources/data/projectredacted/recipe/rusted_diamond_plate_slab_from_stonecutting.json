@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "projectredacted:rusted_diamond_plate",
+  "result": {
+    "id": "projectredacted:rusted_diamond_plate_slab",
+    "count": 2
+  }
+}

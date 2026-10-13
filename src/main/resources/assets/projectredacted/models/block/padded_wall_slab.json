@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab",
+  "textures": {
+    "bottom": "projectredacted:block/deco/padded_wall",
+    "top": "projectredacted:block/deco/padded_wall",
+    "side": "projectredacted:block/deco/padded_wall"
+  }
+}

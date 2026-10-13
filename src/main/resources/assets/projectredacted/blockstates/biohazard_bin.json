@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "projectredacted:block/biohazard_bin"
+    },
+    "facing=east": {
+      "model": "projectredacted:block/biohazard_bin",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "projectredacted:block/biohazard_bin",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "projectredacted:block/biohazard_bin",
+      "y": 270
+    }
+  }
+}

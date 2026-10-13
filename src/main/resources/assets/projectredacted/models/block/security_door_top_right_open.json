@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/door_top_right_open",
+  "textures": {
+    "bottom": "projectredacted:block/deco/security_door_bottom",
+    "top": "projectredacted:block/deco/security_door_top"
+  }
+}

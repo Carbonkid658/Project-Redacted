@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "projectredacted:red_hazard_wall",
+  "result": {
+    "id": "projectredacted:red_hazard_wall_slab",
+    "count": 2
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "projectredacted:block/monitor_bank"
+    },
+    "facing=east": {
+      "model": "projectredacted:block/monitor_bank",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "projectredacted:block/monitor_bank",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "projectredacted:block/monitor_bank",
+      "y": 270
+    }
+  }
+}

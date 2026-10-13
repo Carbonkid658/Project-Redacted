@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "projectredacted:block/keyboard"
+    },
+    "facing=east": {
+      "model": "projectredacted:block/keyboard",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "projectredacted:block/keyboard",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "projectredacted:block/keyboard",
+      "y": 270
+    }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab",
+  "textures": {
+    "bottom": "projectredacted:block/deco/cracked_old_site_brick",
+    "top": "projectredacted:block/deco/cracked_old_site_brick",
+    "side": "projectredacted:block/deco/cracked_old_site_brick"
+  }
+}

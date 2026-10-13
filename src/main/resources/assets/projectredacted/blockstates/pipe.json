@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "axis=y": {
+      "model": "projectredacted:block/pipe"
+    },
+    "axis=z": {
+      "model": "projectredacted:block/pipe",
+      "x": 90
+    },
+    "axis=x": {
+      "model": "projectredacted:block/pipe",
+      "x": 90,
+      "y": 90
+    }
+  }
+}

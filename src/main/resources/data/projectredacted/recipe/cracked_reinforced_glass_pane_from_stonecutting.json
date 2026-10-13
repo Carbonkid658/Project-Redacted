@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "projectredacted:cracked_reinforced_glass",
+  "result": {
+    "id": "projectredacted:cracked_reinforced_glass_pane",
+    "count": 2
+  }
+}

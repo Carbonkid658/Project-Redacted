@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "projectredacted:lead_panel",
+  "result": {
+    "id": "projectredacted:lead_panel_stairs",
+    "count": 1
+  }
+}

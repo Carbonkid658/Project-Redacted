@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab_top",
+  "textures": {
+    "bottom": "projectredacted:block/deco/scorched_floor",
+    "top": "projectredacted:block/deco/scorched_floor",
+    "side": "projectredacted:block/deco/scorched_floor"
+  }
+}

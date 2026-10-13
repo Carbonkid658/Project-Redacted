@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column_horizontal",
+  "textures": {
+    "end": "projectredacted:block/deco/air_duct_end",
+    "side": "projectredacted:block/deco/air_duct_side"
+  }
+}
