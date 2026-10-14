@@ -1,6 +1,7 @@
 package dev.projectredacted.block;
 
-import dev.projectredacted.gui.TerminalGui;
+import dev.projectredacted.gui.Gui;
+import dev.projectredacted.gui.screen.TerminalScreen;
 import dev.projectredacted.site.Site;
 import dev.projectredacted.site.SiteManager;
 import dev.projectredacted.util.Msg;
@@ -46,11 +47,7 @@ public class TerminalBlock extends FacingBlock {
             Msg.send(player, "ACCESS DENIED. Your clearance doesn't allow terminal access.", ChatFormatting.RED);
             return InteractionResult.SUCCESS;
         }
-        if (!site.mainframeOnline()) {
-            Msg.send(player, "The Mainframe is offline. Repair or rebuild it to use the terminal.", ChatFormatting.RED);
-            return InteractionResult.SUCCESS;
-        }
-        TerminalGui.openMain((ServerPlayer) player, site);
+        Gui.open((ServerPlayer) player, new TerminalScreen(site, pos));
         return InteractionResult.SUCCESS;
     }
 }

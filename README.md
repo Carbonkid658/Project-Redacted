@@ -24,10 +24,17 @@ The code compiles, but it has not been play-tested in a running game yet.
    Your claim is 5x5 chunks around it. You get a **Level 4 keycard**.
    - If a ruined site is inside the claim, you're asked whether to move into it. You can also repair a **Ruined Mainframe** with 3 Repair Kits.
 2. **Place the Site Director's Computer** (plastic, glass pane, redstone) and use it. Pick a site type (Underground, Surface-Flat, Surface-Tall)
-   and generate the **Level 0 facility**: Entrance, Barracks (4 beds) and Director's Office. The Mainframe and Terminal move into the office.
+   and plan the **Level 0 facility**: Entrance, Barracks (4 beds) and Director's Office, fitted to the terrain. You see the plan as an outline
+   (with a warning if it would replace your own blocks), then Build it or Reroll. It builds quickly, and the Mainframe and Terminal move into the office.
 3. **Recruit staff** from **Foundation Bunkers** (Level 4 keycard door, 1 to 4 survivors). Some want diamonds. Each staff member needs a bed.
 4. **Build rooms** with the **Room Configuration Device**: use it on two blocks to mark the corners (floor and ceiling), then use it in the air.
    Pick a room, see a ghost-particle preview, rotate, reroll, then build (or register a room you built yourself). Construction just happens.
+   - Or let the mod find the spot: use the device with no corners marked (or pick a Suggested room on the terminal's Site tab), choose a room
+     type and size, and flip through free spots joined to the facility (N for the next spot, G for new spots). Hallways and stairwells are added
+     as needed and cost a little extra.
+   - The Director can turn on **Auto-expand**: the site orders the room it needs most (beds, power, water, breakers, cells first) when its
+     **Supply Depot** and Storage Rooms can pay, never over your own blocks. **Priorities…** lets you favor or block room types. Engineers
+     assigned to a powered Supply Depot restock it from Storage Rooms.
 5. **Power rooms** at a **Circuit Breaker** (or from the terminal). Rooms stay dormant until connected. Generators make power, Water Pumps make water,
    Circuit Breaker rooms add breaker slots.
 6. **Assign tasks** with the **Clipboard** on a staff member: room numbers, an SCP's cell, a checkpoint or an entrance. Sneak-use a security guard
@@ -51,7 +58,24 @@ The code compiles, but it has not been play-tested in a running game yet.
 - **Factions to trade with**: GOC outposts, Dr. Wondertainment stalls (restock daily), roaming MC&D contacts (sell SCPs as delivery flares),
   Ways to the Wanderers' Library (trade SCPs for Library Tomes and dollars). Coins craft into Dollars.
 - **Keycards and keycard doors**, Reinforced Doors/Glass, Containment Concrete, the **Alpha Warhead**, lore documents in ruins and bunkers.
-- **UI**: everything uses chest-style menus, so there's no client networking: terminal, facility map, breaker, clipboard, room designer, shops.
+- **UI**: Foundation-themed button screens for everything (terminal with map, rooms, staff, upgrades, personnel, security and log tabs; staff cards,
+  recruiting and the clipboard roster; shops and the Librarian; room picker and preview with R/G rotate and reroll keys; circuit breaker;
+  Mainframe, C.A.S.S.I.E., warhead and keycard reader panels; documents). The server builds each view and the client draws it
+  (`gui/` and `client/screen/`), so the mod is needed on both sides. Keycard swipes, delivery flares and repair kits stay instant.
+
+### Building your own site parts
+
+Facilities are assembled from **parts** (rooms, hallways, stairwells, entrances) that join at jigsaw blocks. The mod ships a procedural
+placeholder kit; to make your own, build parts in a creative world and frame them with the creative-only **Part Frame**: use it on two corners,
+then sneak-use inside a frame to name it and set its kind, room type, weight and rooms. Put jigsaw blocks in the doorways (name `door`, `hall`,
+`stair_up`, `stair_down` or `surface_exit`). Then:
+
+- `/site parts export <kit>` writes each frame as a `.nbt` and `.json` pair, plus `report.txt` and `preview.png`, to
+  `<world>/generated/projectredacted/kits/<kit>/`. Copy them into a datapack at `data/<namespace>/projectredacted/site_parts/`.
+- `/site parts import <kit>` places a kit's parts back in the world with their frames, to edit them.
+- `/site parts test [kit] [type]` plans every site type with the kit and reports what's missing, or builds one in front of you.
+
+Ruined sites are generated from the same kit as a world structure (`/locate structure projectredacted:ruined_site`), then decayed.
 
 ### Adding an SCP
 

@@ -1,6 +1,7 @@
 package dev.projectredacted.block;
 
-import dev.projectredacted.registry.ModItems;
+import dev.projectredacted.gui.Gui;
+import dev.projectredacted.gui.screen.BlockPanels;
 import dev.projectredacted.site.Site;
 import dev.projectredacted.site.SiteFounding;
 import dev.projectredacted.site.SiteManager;
@@ -35,32 +36,8 @@ public class MainframeBlock extends FacingBlock {
     }
 
     @Override
-    protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        if (!stack.is(ModItems.REPAIR_KIT)) return InteractionResult.TRY_WITH_EMPTY_HAND;
-        if (level.isClientSide()) return InteractionResult.SUCCESS;
-        Site site = SiteManager.byMainframe(pos);
-        if (site == null) return InteractionResult.PASS;
-        if (site.mainframeSabotaged) {
-            site.mainframeSabotaged = false;
-            if (!player.isCreative()) stack.shrink(1);
-            site.log("Mainframe repaired by " + player.getName().getString() + ".");
-            Msg.send(player, "The Mainframe is back online.", ChatFormatting.GREEN);
-        } else {
-            Msg.send(player, "The Mainframe doesn't need repairs.", ChatFormatting.GRAY);
-        }
-        return InteractionResult.SUCCESS;
-    }
-
-    @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
-        if (level.isClientSide()) return InteractionResult.SUCCESS;
-        Site site = SiteManager.byMainframe(pos);
-        if (site == null) {
-            Msg.send(player, "This Mainframe isn't linked to a site.", ChatFormatting.GRAY);
-        } else {
-            Msg.send(player, "Mainframe of " + site.directorName + "'s site: " + (site.mainframeOnline() ? "ONLINE" : "OFFLINE")
-                    + ". Use a Site Director's Computer to manage the site.", site.mainframeOnline() ? ChatFormatting.GREEN : ChatFormatting.RED);
-        }
+        if (!level.isClientSide()) Gui.open((ServerPlayer) player, new BlockPanels.Mainframe(pos));
         return InteractionResult.SUCCESS;
     }
 }

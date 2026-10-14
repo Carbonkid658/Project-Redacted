@@ -1,6 +1,9 @@
 package dev.projectredacted.item;
 
+import dev.projectredacted.gui.Gui;
+import dev.projectredacted.gui.screen.OneOffScreens;
 import dev.projectredacted.registry.ModComponents;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -28,8 +31,7 @@ public class LoreDocumentItem extends Item {
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
         if (level.isClientSide()) return InteractionResult.SUCCESS;
         int id = player.getItemInHand(hand).getOrDefault(ModComponents.LORE_ID, 0);
-        player.sendSystemMessage(Component.translatable("lore.projectredacted." + id + ".title").withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD));
-        player.sendSystemMessage(Component.translatable("lore.projectredacted." + id + ".body").withStyle(ChatFormatting.GRAY));
+        Gui.open((ServerPlayer) player, new OneOffScreens.Document("tr:lore.projectredacted." + id + ".title", "tr:lore.projectredacted." + id + ".body"));
         return InteractionResult.SUCCESS;
     }
 }

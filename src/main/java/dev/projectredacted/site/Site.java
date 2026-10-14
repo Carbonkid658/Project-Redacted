@@ -14,6 +14,8 @@ import java.util.*;
 /** One player's Foundation site. Saved as JSON in the world folder. */
 public class Site {
     public String id;
+    /** Shown in screen headers and typed to arm the Alpha Warhead. The Director can rename it. */
+    public String name;
     public UUID director;
     public String directorName;
     public BlockPos mainframe;
@@ -30,6 +32,34 @@ public class Site {
     public int cassieHack;
 
     public List<Room> rooms = new ArrayList<>();
+    /** Parts the facility is built from (site generation), in placement order. */
+    public List<dev.projectredacted.site.gen.PlacedPart> parts = new ArrayList<>();
+    /** Sealed doorways that growth can open up. */
+    public List<dev.projectredacted.site.gen.Doorway> doorways = new ArrayList<>();
+    /** Floor height of the Director's Office storey; storeys are 6 blocks from here. */
+    public Integer baseFloor;
+    public long genSeed;
+    /** How areas join (v4 §4.1); null for the site type's default. Changing it only affects future growth. */
+    public dev.projectredacted.site.gen.Areas.Layout connection;
+    /** Area key ("living-2") -> name, clearance override, room numbering (v4 §2). */
+    public Map<String, dev.projectredacted.site.gen.Areas.AreaState> areas = new LinkedHashMap<>();
+    /** Surface-Flat: the containment layer goes one storey down (D14). */
+    public boolean containmentBelow;
+    /** Areas in lockdown after a breach. */
+    public Set<String> lockdown = new TreeSet<>();
+    /** Inside readers of Emergency Exit hatches. */
+    public List<BlockPos> hatchReaders = new ArrayList<>();
+    /** Chunks kept loaded while Level 0 builds, released when it finishes. */
+    public List<Long> forcedChunks = new ArrayList<>();
+    /** From part markers: where raiders arrive and where security stands. */
+    public List<BlockPos> raiderEntries = new ArrayList<>();
+    public List<BlockPos> staffPosts = new ArrayList<>();
+    /** Auto-expand (Director only, off by default). */
+    public boolean autoExpand;
+    public List<String> expandPriority = new ArrayList<>();
+    public long nextExpandCheck;
+    /** What auto-expand is waiting on, shown in the Add Room section. */
+    public transient String expandStatus;
     public int nextRoomNumber = 1;
     public Map<UUID, Member> members = new LinkedHashMap<>();
     public Map<UUID, StaffRecord> staff = new LinkedHashMap<>();
@@ -54,6 +84,11 @@ public class Site {
     public transient boolean mainframePresent = true;
     public transient boolean cassiePresent = true;
     public transient int powerSupply, powerDemand, connectCapacity, waterSupply, waterDemand, beds, scpCount, scpWeight;
+
+    public String name() {
+        if (name == null || name.isBlank()) name = "Site-" + (10 + Math.floorMod(id == null ? 0 : id.hashCode(), 90));
+        return name;
+    }
 
     // ---- Membership and permissions ----
 
@@ -121,6 +156,40 @@ public class Site {
     public Room roomAt(BlockPos pos) {
         for (Room r : rooms) if (r.contains(pos)) return r;
         return null;
+    }
+
+    /** The room made by the key block at {@code pos}, or null. */
+    public Room roomWithKey(BlockPos pos) {
+        for (Room r : rooms) if (pos.equals(r.key)) return r;
+        return null;
+    }
+
+    /**
+     * Takes a room off the books without touching its blocks: staff assigned to it are freed, and a generated part
+     * whose rooms are all gone frees its space.
+     */
+    public void removeRoom(Room r) {
+        rooms.remove(r);
+        dev.projectredacted.room.Construction.forget(this, r);
+        for (StaffRecord s : staff.values()) if (s.assignment.room == r.number) s.assignment = new dev.projectredacted.staff.Assignment();
+        for (Room o : rooms) if (o.watches == r.number) o.watches = 0;
+        if (r.part >= 0 && r.part < parts.size()) {
+            var part = parts.get(r.part);
+            part.rooms.remove((Integer) r.number);
+            if (part.rooms.isEmpty()) {
+                part.removed = true;
+                int index = r.part;
+                doorways.removeIf(d -> d.part == index);
+            }
+        }
+    }
+
+    /** The other rooms placed together with this one (v4 §5.5), e.g. a Heavy Cell's Observation Room. */
+    public List<Room> companions(Room r) {
+        List<Room> out = new ArrayList<>();
+        if (r.group == 0) return out;
+        for (Room o : rooms) if (o != r && o.group == r.group) out.add(o);
+        return out;
     }
 
     public Room room(int number) {
@@ -204,7 +273,8 @@ public class Site {
     }
 
     public void log(String line) {
-        logLines.add(line);
+        net.minecraft.server.level.ServerLevel level = SiteManager.overworld();
+        logLines.add(level == null ? line : "[Day " + (dev.projectredacted.util.Time.day(level) + 1) + "] " + line);
         while (logLines.size() > 60) logLines.remove(0);
     }
 }

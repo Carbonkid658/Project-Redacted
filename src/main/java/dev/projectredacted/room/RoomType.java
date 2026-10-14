@@ -1,5 +1,6 @@
 package dev.projectredacted.room;
 
+import com.google.gson.annotations.SerializedName;
 import dev.projectredacted.staff.StaffRole;
 import dev.projectredacted.util.Cost;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -29,10 +30,20 @@ public class RoomType {
     /** Staff role that must work at the site before this room unlocks (null for none). */
     public String requiredRole;
     public int requiredLevel = 0;
+    /** Only one of these per site (the Supply Depot). */
+    public boolean unique;
     /** Keycard level for the room's door reader (0 means a plain door). */
     public int clearance = 0;
     public String icon = "minecraft:bricks";
+    /** Area kind (v4 §2), e.g. "living"; null to use the area lists. */
+    public String area;
     public Map<String, Integer> cost = new LinkedHashMap<>();
+    /**
+     * The block that makes a closed space this room (v4 §5.8), e.g. "projectredacted:bunk_bed". Datapack rooms
+     * name it as "key_block" and can use any block. Null for a room type without one.
+     */
+    @SerializedName("key_block")
+    public String keyBlock;
 
     public transient boolean builtIn;
 
@@ -47,6 +58,13 @@ public class RoomType {
 
     public Cost cost() {
         return Cost.parse(cost);
+    }
+
+    /** The key block, or null when there's none (or it isn't registered). */
+    public net.minecraft.world.level.block.Block keyBlockDef() {
+        Identifier rl = keyBlock == null ? null : Identifier.tryParse(keyBlock);
+        if (rl == null) return null;
+        return BuiltInRegistries.BLOCK.getOptional(rl).orElse(null);
     }
 
     public Item iconItem() {

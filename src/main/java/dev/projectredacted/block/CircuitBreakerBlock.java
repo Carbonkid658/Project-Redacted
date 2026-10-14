@@ -1,6 +1,7 @@
 package dev.projectredacted.block;
 
-import dev.projectredacted.gui.PowerGui;
+import dev.projectredacted.gui.Gui;
+import dev.projectredacted.gui.screen.BreakerScreen;
 import dev.projectredacted.site.Site;
 import dev.projectredacted.site.SiteManager;
 import dev.projectredacted.util.Msg;
@@ -30,7 +31,7 @@ public class CircuitBreakerBlock extends FacingBlock {
         } else if (!site.canAssign(player)) {
             Msg.send(player, "ACCESS DENIED.", ChatFormatting.RED);
         } else {
-            PowerGui.open((ServerPlayer) player, site, 0);
+            Gui.open((ServerPlayer) player, new BreakerScreen(site, pos));
         }
         return InteractionResult.SUCCESS;
     }

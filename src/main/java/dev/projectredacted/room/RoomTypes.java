@@ -24,9 +24,11 @@ public final class RoomTypes {
     public static final String ENTRANCE = "projectredacted:entrance";
     public static final String DIRECTORS_OFFICE = "projectredacted:directors_office";
     public static final String BARRACKS = "projectredacted:barracks";
+    public static final String EMERGENCY_EXIT = "projectredacted:emergency_exit";
 
     private static void builtIns() {
         TYPES.clear();
+        KeyBlocks.reset();
         add("entrance", "Entrance", "Core", "entrance", 7, 24, 4, 8, 0, 0, null, 0, 0, "minecraft:dark_oak_door",
                 "Where you enter and exit. Raiders break in here and push deeper.", "minecraft:stone_bricks", 32);
         add("directors_office", "Director's Office", "Core", "directors_office", 9, 20, 4, 8, 0, 0, null, 0, 4, "projectredacted:site_director_computer",
@@ -43,6 +45,10 @@ public final class RoomTypes {
                 "A nook with a breaker. Lets more rooms connect to power.", "minecraft:iron_ingot", 8, "minecraft:redstone", 16);
         add("storage_room", "Storage Room", "Engineering", "storage", 5, 16, 4, 8, 1, 0, "ENGINEER", 0, 1, "minecraft:barrel",
                 "Engineer storage. Lowers the cost of engineering upgrades.", "minecraft:chest", 4, "minecraft:iron_ingot", 4);
+        add("supply_depot", "Supply Depot", "Engineering", "storage", 9, 24, 4, 8, 1, 0, null, 2, 1, "minecraft:chest",
+                "One shared pool of chests and barrels. Auto-placed rooms and auto-expand pay from it first; engineers assigned here restock it from Storage Rooms. One per site.",
+                "minecraft:chest", 8, "minecraft:barrel", 8, "minecraft:iron_ingot", 8);
+        TYPES.get("projectredacted:supply_depot").unique = true;
         add("medbay", "Medbay", "Medical", "medbay", 7, 24, 4, 8, 2, 1, "MEDICAL", 0, 1, "minecraft:golden_apple",
                 "Hospital-style ward where staff are treated.", "minecraft:white_wool", 6, "projectredacted:plastic_block", 8);
         add("checkup_room", "Checkup Room", "Medical", "checkup", 4, 10, 4, 6, 1, 0, "MEDICAL", 0, 1, "minecraft:brewing_stand",
@@ -79,6 +85,98 @@ public final class RoomTypes {
                 "Several beds in one room. Every bed is room for one more staff member.", "minecraft:red_bed", 4, "minecraft:oak_planks", 16);
         add("single_bedroom", "Single Bedroom", "Housing", "single_bedroom", 4, 10, 4, 6, 0, 0, null, 0, 0, "minecraft:blue_bed",
                 "One bed. Opens onto a hall of similar rooms.", "minecraft:blue_bed", 1, "minecraft:oak_planks", 8);
+        // Extra room types. Mostly cosmetic for now: they count for their area (v4 §2); effects come later.
+        // Entrance area
+        add("security_office", "Security Office", "Security", "office", 5, 16, 4, 8, 2, 0, null, 0, 2, "minecraft:observer",
+                "Surveillance post for the Entrance area. Cosmetic for now.", "projectredacted:plastic_block", 8, "minecraft:observer", 2);
+        add("interrogation_room", "Interrogation Room", "Security", "waiting", 4, 10, 4, 6, 1, 0, null, 0, 2, "minecraft:iron_bars",
+                "A table, two chairs and a lamp. Cosmetic for now.", "minecraft:smooth_stone", 16, "minecraft:lantern", 1);
+        add("visitor_screening", "Visitor Screening", "Security", "waiting", 5, 16, 4, 6, 1, 0, null, 0, 1, "minecraft:spyglass",
+                "Where visitors wait to be cleared. Cosmetic for now.", "minecraft:oak_planks", 12, "minecraft:glass", 4);
+        add("emergency_exit", "Emergency Exit", "Security", "plain", 5, 9, 4, 6, 0, 0, null, 0, 1, "minecraft:iron_trapdoor",
+                "A ladder shaft up to a surface hatch, locked from outside by a reader at Entrance area clearance. Staff can get out from inside. You choose where it goes; auto-expand never builds one.",
+                "minecraft:ladder", 16, "minecraft:iron_trapdoor", 1, "projectredacted:keycard_reader", 2);
+        add("loading_dock", "Loading Dock", "Security", "storage", 7, 24, 4, 8, 0, 0, null, 0, 0, "minecraft:minecart",
+                "Crates and a wide door. Decoration for now (D13).", "minecraft:barrel", 6, "minecraft:oak_planks", 16);
+        // Admin area
+        add("conference_room", "Conference Room", "Offices", "office", 7, 20, 4, 8, 1, 0, null, 0, 2, "minecraft:oak_sign",
+                "A long table for staff meetings. Cosmetic for now.", "minecraft:oak_planks", 16, "projectredacted:plastic_block", 4);
+        add("records_room", "Records Room", "Offices", "storage", 5, 16, 4, 8, 0, 0, null, 0, 2, "minecraft:bookshelf",
+                "Filing cabinets and archives. Cosmetic for now.", "minecraft:bookshelf", 4, "minecraft:barrel", 2);
+        add("hr_office", "HR Office", "Offices", "office", 5, 16, 4, 8, 1, 0, null, 0, 1, "minecraft:paper",
+                "Personnel files. Cosmetic for now.", "projectredacted:plastic_block", 6, "minecraft:paper", 16);
+        add("ethics_committee_office", "Ethics Committee Office", "Offices", "office", 5, 16, 4, 8, 1, 0, null, 1, 3, "minecraft:writable_book",
+                "Where the Ethics Committee reviews your procedures. Cosmetic for now.", "projectredacted:plastic_block", 8, "minecraft:book", 4);
+        // Living area
+        add("showers", "Showers and Changing Room", "Common", "bathroom", 4, 16, 4, 6, 1, 1, null, 0, 0, "minecraft:water_bucket",
+                "Showers and lockers. Cosmetic for now.", "minecraft:cauldron", 2, "minecraft:iron_ingot", 4);
+        add("laundry", "Laundry", "Common", "storage", 4, 12, 4, 6, 1, 1, null, 0, 0, "minecraft:white_wool",
+                "Washing for uniforms and bedding. Cosmetic for now.", "minecraft:cauldron", 2, "minecraft:white_wool", 8);
+        // Research area
+        add("testing_chamber", "Testing Chamber", "Research", "lab", 7, 24, 4, 10, 2, 0, null, 1, 3, "minecraft:target",
+                "A sealed room for controlled tests. Cosmetic for now.", "projectredacted:reinforced_glass", 8, "minecraft:smooth_stone", 24);
+        add("sample_storage", "Sample Storage", "Research", "storage", 4, 12, 4, 6, 1, 0, null, 0, 2, "minecraft:glass_bottle",
+                "Shelves of labelled samples. Cosmetic for now.", "minecraft:barrel", 4, "minecraft:glass_bottle", 8);
+        add("equipment_workshop", "Equipment Workshop", "Research", "storage", 5, 16, 4, 8, 1, 0, null, 0, 2, "minecraft:smithing_table",
+                "Where research equipment is built and repaired. Cosmetic for now.", "minecraft:smithing_table", 1, "minecraft:iron_ingot", 8);
+        // Containment area (not cells, so nothing is contained in them)
+        add("safe_storage_chamber", "Safe Storage Chamber", "Research", "storage", 4, 12, 4, 6, 1, 0, null, 0, 3, "minecraft:iron_block",
+                "Lockers for Safe-class items. Cosmetic for now.", "minecraft:iron_block", 2, "minecraft:barrel", 4);
+        add("sample_vault", "Sample Vault", "Research", "storage", 4, 12, 4, 6, 1, 0, null, 1, 3, "minecraft:ender_chest",
+                "A vault for anomalous samples. Cosmetic for now.", "projectredacted:containment_concrete", 16, "minecraft:barrel", 2);
+        // Containment area, high security
+        add("security_station", "Security Station", "Security", "office", 5, 12, 4, 6, 1, 0, null, 1, 4, "minecraft:shield",
+                "Guards watching the heavy cells. Cosmetic for now.", "minecraft:iron_block", 2, "projectredacted:reinforced_glass", 4);
+        add("isolation_room", "Isolation Room", "Security", "medium_cell", 5, 12, 4, 8, 1, 0, null, 1, 4, "minecraft:tuff_bricks",
+                "A padded room for quarantine. Cosmetic for now.", "minecraft:tuff_bricks", 32, "projectredacted:reinforced_door", 1);
+        // Engineering area
+        add("ventilation", "Ventilation", "Engineering", "plain", 4, 16, 4, 8, 1, 0, null, 0, 1, "minecraft:iron_bars",
+                "Fans and ducts. Cosmetic for now.", "minecraft:iron_bars", 16, "minecraft:iron_ingot", 4);
+        add("server_room", "Server Room", "Engineering", "office", 5, 16, 4, 8, 2, 0, null, 1, 2, "minecraft:comparator",
+                "Racks of servers. Cosmetic for now.", "minecraft:iron_block", 2, "minecraft:redstone", 16);
+        add("maintenance_workshop", "Maintenance Workshop", "Engineering", "storage", 5, 16, 4, 8, 1, 0, null, 0, 1, "minecraft:anvil",
+                "Tools for the engineers. Cosmetic for now.", "minecraft:anvil", 1, "minecraft:crafting_table", 2);
+        add("waste_management", "Waste Management", "Engineering", "plain", 5, 16, 4, 8, 1, 1, null, 0, 1, "minecraft:composter",
+                "Where the site's waste goes. Cosmetic for now.", "minecraft:composter", 2, "minecraft:hopper", 2);
+        keys();
+    }
+
+    /** The key blocks of the built-in rooms (v4 §5.8). */
+    private static void keys() {
+        key("entrance", "reception_desk");
+        key("armory", "weapon_rack");
+        key("prison", "prisoner_bunk");
+        key("hallway_checkpoint", "checkpoint_desk");
+        key("transition_checkpoint", "blast_door_controller");
+        key("emergency_exit", "emergency_hatch");
+        key("loading_dock", "dock_control_panel");
+        key("admin_office", "filing_cabinet");
+        key("barracks", "bunk_bed");
+        key("single_bedroom", "personal_locker");
+        key("cafeteria", "serving_counter");
+        key("kitchen", "industrial_stove");
+        key("lounge", "arcade_cabinet");
+        key("bathroom", "shower_head");
+        key("medbay", "hospital_bed");
+        key("checkup_room", "examination_table");
+        key("waiting_room", "ticket_dispenser");
+        key("lab", "lab_bench");
+        key("researcher_office", "research_terminal");
+        key("light_cell", "cell_control_panel_light");
+        key("medium_cell", "cell_control_panel_medium");
+        key("heavy_cell", "cell_control_panel_heavy");
+        key("observation_room", "observation_console");
+        key("storage_room", "supply_shelf");
+        key("supply_depot", "depot_terminal");
+        key("directors_office", "site_director_computer");
+        key("water_pump", "water_pump");
+        key("generator", "generator_core");
+        key("circuit_breaker", "circuit_breaker");
+    }
+
+    private static void key(String room, String block) {
+        RoomType t = TYPES.get(ProjectRedacted.MOD_ID + ":" + room);
+        if (t != null) t.keyBlock = ProjectRedacted.MOD_ID + ":" + block;
     }
 
     private static void add(String path, String name, String category, String style, int minSide, int maxSide, int minHeight, int maxHeight,
@@ -139,6 +237,7 @@ public final class RoomTypes {
                 ProjectRedacted.LOG.warn("Couldn't load room type {}: {}", e.getKey(), ex.getMessage());
             }
         }
+        KeyBlocks.reset();
         if (loaded > 0) ProjectRedacted.LOG.info("Loaded {} custom room types from datapacks", loaded);
     }
 

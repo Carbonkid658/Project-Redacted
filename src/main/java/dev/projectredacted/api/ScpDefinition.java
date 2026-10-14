@@ -39,6 +39,11 @@ public class ScpDefinition {
     public int mcdPrice;
     /** Whether a sentient SCP will follow the Serpent's Hand out during a raid. */
     public boolean followsHand;
+    /**
+     * The SCP's containment unit block (site generation v4 §5.8): a closed space holding it becomes this SCP's
+     * containment room. Null for none.
+     */
+    public net.minecraft.world.level.block.Block keyBlock;
 
     public ScpDefinition(String id, String number, ObjectClass objectClass) {
         this.id = id;
@@ -68,6 +73,11 @@ public class ScpDefinition {
 
     public ScpDefinition mcdPrice(int dollars) {
         this.mcdPrice = dollars;
+        return this;
+    }
+
+    public ScpDefinition keyBlock(net.minecraft.world.level.block.Block block) {
+        this.keyBlock = block;
         return this;
     }
 

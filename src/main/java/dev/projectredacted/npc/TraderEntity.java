@@ -1,5 +1,9 @@
 package dev.projectredacted.npc;
 
+import dev.projectredacted.gui.Gui;
+import dev.projectredacted.gui.screen.LibrarianScreen;
+import dev.projectredacted.gui.screen.LibraryWayScreen;
+import dev.projectredacted.gui.screen.ShopScreen;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -87,9 +91,9 @@ public class TraderEntity extends PathfinderMob {
         if (level().isClientSide()) return InteractionResult.SUCCESS;
         ServerPlayer sp = (ServerPlayer) player;
         switch (kind()) {
-            case LIBRARY_ENTRANCE -> Library.enter(sp);
-            case LIBRARIAN -> LibraryGui.open(sp);
-            default -> ShopGui.open(sp, this);
+            case LIBRARY_ENTRANCE -> Gui.open(sp, new LibraryWayScreen(this));
+            case LIBRARIAN -> Gui.open(sp, new LibrarianScreen(this));
+            default -> Gui.open(sp, new ShopScreen(this));
         }
         return InteractionResult.SUCCESS;
     }

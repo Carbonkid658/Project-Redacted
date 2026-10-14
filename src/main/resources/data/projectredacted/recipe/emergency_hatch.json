@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "ITI",
+    "ILI"
+  ],
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "T": "minecraft:iron_trapdoor",
+    "L": "minecraft:ladder"
+  },
+  "result": {
+    "id": "projectredacted:emergency_hatch",
+    "count": 1
+  }
+}

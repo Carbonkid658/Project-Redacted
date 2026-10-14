@@ -13,6 +13,10 @@ public class Room {
     public int rotation;
     /** Extra door walls as a bitmask (1 north, 2 east, 4 south, 8 west), used by generated layouts. */
     public int extraDoors;
+    /** Exact door walls (same bits) for rooms built from site parts; -1 means the main door plus extraDoors. */
+    public int doors = -1;
+    /** Index of the site part this room belongs to, or -1 for rooms designated by hand. */
+    public int part = -1;
     public long seed;
     /** Added to the Circuit Breaker. */
     public boolean connected;
@@ -24,6 +28,21 @@ public class Room {
     public String scpLabel = "";
     /** Checkpoints and entrances get a name used by the clipboard. */
     public String name = "";
+    /** The area it's in, as "living-2" (v4 §2), its number within the area, and the area's name for labels. */
+    public String area;
+    public int areaNo;
+    public String areaName;
+    /** Where NPCs enter: a Room Entrance Marker (v4 §5.4) and the side it points out of; null to guess from the box. */
+    public BlockPos entrance;
+    public int entranceSide = -1;
+    /** The key block that makes this room (v4 §5.8); breaking it un-designates the room. Null for older rooms. */
+    public BlockPos key;
+    /**
+     * Companion rooms (v4 §5.5): rooms placed together share a group, the number of the group's first room (0 for
+     * none). An Observation Room linked to a cell watches that cell's room number (0 for none).
+     */
+    public int group;
+    public int watches;
     /** Freeform rooms are hand-built by the player and only registered, never constructed. */
     public boolean freeform;
 
@@ -31,6 +50,9 @@ public class Room {
     public transient boolean wateredNow;
     public transient int scpCount;
     public transient int beds = -1;
+    /** Containment cells: how much the walls slow a breakout (V27), worked out now and then. */
+    public transient double wallFactor = 1;
+    public transient long wallCheckedAt = -100000;
 
     public Room() {}
 
@@ -74,7 +96,7 @@ public class Room {
     }
 
     public Direction doorSide() {
-        return switch (rotation & 3) {
+        return switch ((entrance != null && entranceSide >= 0 ? entranceSide : rotation) & 3) {
             case 0 -> Direction.NORTH;
             case 1 -> Direction.EAST;
             case 2 -> Direction.SOUTH;
@@ -85,6 +107,7 @@ public class Room {
     /** The block just outside the main door, where security stands guard. */
     public BlockPos outsideDoor() {
         Direction d = doorSide();
+        if (entrance != null && entranceSide >= 0) return entrance.relative(d);
         int cx = (x1 + x2) / 2, cz = (z1 + z2) / 2;
         return switch (d) {
             case NORTH -> new BlockPos(cx, y1 + 1, z1 - 1);
@@ -101,11 +124,46 @@ public class Room {
         return t.waterDraw <= 0 || wateredNow;
     }
 
+    /** "Containment-04", or "#12" for a room without an area. */
+    public String label() {
+        if (area == null || areaNo <= 0) return "#" + number;
+        String name = areaName == null || areaName.isBlank() ? area : areaName;
+        return name + "-" + (areaNo < 10 ? "0" : "") + areaNo;
+    }
+
+    /**
+     * Finds a Room Entrance Marker inside the room (one with open space in front wins) and uses it as the room's
+     * entrance. Leaves the entrance alone if there's none.
+     */
+    public void findEntrance(net.minecraft.world.level.BlockGetter level) {
+        BlockPos best = null;
+        Direction bestFacing = null;
+        for (BlockPos p : BlockPos.betweenClosed(x1, y1, z1, x2, y2, z2)) {
+            var s = level.getBlockState(p);
+            if (!s.is(dev.projectredacted.registry.ModBlocks.ROOM_ENTRANCE_MARKER)) continue;
+            Direction f = s.getValue(dev.projectredacted.block.RoomEntranceMarkerBlock.FACING);
+            boolean open = level.getBlockState(p.relative(f)).getCollisionShape(level, p.relative(f)).isEmpty();
+            if (best == null || open) {
+                best = p.immutable();
+                bestFacing = f;
+                if (open) break;
+            }
+        }
+        if (best == null) return;
+        entrance = best;
+        entranceSide = switch (bestFacing) {
+            case NORTH -> 0;
+            case EAST -> 1;
+            case SOUTH -> 2;
+            default -> 3;
+        };
+    }
+
     public String displayName() {
         RoomType t = typeDef();
         String base = t == null ? type : t.name;
         if (!name.isEmpty()) return name;
-        if (!scpLabel.isEmpty()) return base + " #" + number + " (" + scpLabel + ")";
-        return base + " #" + number;
+        if (!scpLabel.isEmpty()) return base + " " + label() + " (" + scpLabel + ")";
+        return base + " " + label();
     }
 }

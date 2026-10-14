@@ -1,0 +1,29 @@
+{
+  "values": [
+    "projectredacted:reception_desk",
+    "projectredacted:weapon_rack",
+    "projectredacted:prisoner_bunk",
+    "projectredacted:checkpoint_desk",
+    "projectredacted:blast_door_controller",
+    "projectredacted:emergency_hatch",
+    "projectredacted:dock_control_panel",
+    "projectredacted:filing_cabinet",
+    "projectredacted:bunk_bed",
+    "projectredacted:personal_locker",
+    "projectredacted:serving_counter",
+    "projectredacted:industrial_stove",
+    "projectredacted:arcade_cabinet",
+    "projectredacted:shower_head",
+    "projectredacted:hospital_bed",
+    "projectredacted:examination_table",
+    "projectredacted:ticket_dispenser",
+    "projectredacted:lab_bench",
+    "projectredacted:research_terminal",
+    "projectredacted:cell_control_panel_light",
+    "projectredacted:cell_control_panel_medium",
+    "projectredacted:cell_control_panel_heavy",
+    "projectredacted:observation_console",
+    "projectredacted:supply_shelf",
+    "projectredacted:depot_terminal"
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "###",
+    "#D#",
+    "###"
+  ],
+  "key": {
+    "#": "projectredacted:facility_tile",
+    "D": "minecraft:green_dye"
+  },
+  "result": {
+    "id": "projectredacted:sage_green_tile",
+    "count": 8
+  }
+}

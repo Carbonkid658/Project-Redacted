@@ -153,7 +153,10 @@ public class StaffWorkGoal extends Goal {
             return switch (a.kind) {
                 case SCP -> {
                     if (r.role == StaffRole.RESEARCHER) {
-                        Room obs = nearestTo(site, room.center(), "projectredacted:observation_room");
+                        // The Observation Room linked to this cell (v4 §5.5), else the nearest one.
+                        Room obs = null;
+                        for (Room o : site.rooms) if (o.watches == room.number && o.working()) obs = o;
+                        if (obs == null) obs = nearestTo(site, room.center(), "projectredacted:observation_room");
                         yield obs != null && obs.working() ? obs.center() : room.outsideDoor();
                     }
                     yield room.outsideDoor();

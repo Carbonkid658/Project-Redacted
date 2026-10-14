@@ -1,8 +1,5 @@
 {
-  "parent": "minecraft:block/orientable",
   "textures": {
-    "front": "projectredacted:block/cassie_front",
-    "side": "projectredacted:block/cassie_side",
-    "top": "projectredacted:block/cassie_top"
+    "particle": "minecraft:block/cauldron_inner"
   }
 }

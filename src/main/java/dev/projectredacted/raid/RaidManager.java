@@ -395,6 +395,11 @@ public final class RaidManager {
         return moved;
     }
 
+    /** Ticks until the MTF can be called again, or 0. */
+    public static long mtfCooldown(Site site, long now) {
+        return Math.max(0, MTF_CALL_COOLDOWN.getOrDefault(site.id, 0L) - now);
+    }
+
     /** Terminal button: call the MTF after a breach. */
     public static String callMtf(ServerLevel level, Site site) {
         if (!site.hasUpgrade(Upgrade.MTF_CONTRACT)) return "You need the Mobile Task Force Contract upgrade.";

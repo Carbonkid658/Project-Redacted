@@ -1,7 +1,11 @@
 package dev.projectredacted.staff;
 
 import dev.projectredacted.ai.ScanTargetGoal;
-import dev.projectredacted.gui.ClipboardGui;
+import dev.projectredacted.gui.Gui;
+import dev.projectredacted.gui.screen.AssignScreen;
+import dev.projectredacted.gui.screen.RecruitScreen;
+import dev.projectredacted.gui.screen.StaffCardScreen;
+import dev.projectredacted.gui.screen.StaffViews;
 import dev.projectredacted.raid.ArmedNpcEntity;
 import dev.projectredacted.registry.ModItems;
 import dev.projectredacted.room.Room;
@@ -183,42 +187,21 @@ public class StaffEntity extends PathfinderMob {
     protected InteractionResult mobInteract(Player player, InteractionHand hand) {
         if (level().isClientSide()) return InteractionResult.SUCCESS;
         ServerPlayer sp = (ServerPlayer) player;
-        if (survivor) return tryRecruit(sp);
+        if (survivor) {
+            Gui.open(sp, new RecruitScreen(this));
+            return InteractionResult.SUCCESS;
+        }
         Site site = site();
         StaffRecord r = record();
         if (site == null || r == null) return InteractionResult.PASS;
-        ItemStack held = player.getItemInHand(hand);
-        if (held.is(ModItems.CLIPBOARD)) {
-            if (!site.isMember(player) || !site.canAssign(player)) {
-                Msg.send(player, r.name + " doesn't take orders from you.", ChatFormatting.RED);
-            } else if (site.clearance(player) < r.clearance) {
-                Msg.send(player, r.name + " outranks you. Your clearance must be at least Level " + r.clearance + ".", ChatFormatting.RED);
-            } else {
-                ClipboardGui.openAssign(sp, site, r);
-            }
+        if (player.getItemInHand(hand).is(ModItems.CLIPBOARD)) {
+            String blocker = StaffViews.orderBlocker(site, r, player);
+            if (blocker != null) Msg.actionBar(player, r.name + ": " + blocker, ChatFormatting.RED);
+            else Gui.open(sp, new AssignScreen(site, r));
             return InteractionResult.SUCCESS;
         }
-        if (player.isShiftKeyDown() && r.role == StaffRole.SECURITY && site.isMember(player) && site.clearance(player) >= r.clearance) {
-            if (r.assignment.kind == Assignment.Kind.FOLLOW && player.getUUID().equals(r.assignment.leader)) {
-                r.assignment = new Assignment();
-                Msg.send(player, r.name + " returns to their post.", ChatFormatting.AQUA);
-            } else {
-                r.assignment = new Assignment();
-                r.assignment.kind = Assignment.Kind.FOLLOW;
-                r.assignment.leader = player.getUUID();
-                Msg.send(player, r.name + " is following you.", ChatFormatting.AQUA);
-            }
-            return InteractionResult.SUCCESS;
-        }
-        describe(player, site, r);
+        Gui.open(sp, new StaffCardScreen(this));
         return InteractionResult.SUCCESS;
-    }
-
-    private void describe(Player player, Site site, StaffRecord r) {
-        Msg.send(player, r.fullName() + " (" + r.role.displayName + ", level " + r.level + ", clearance " + r.clearance + ")", r.named ? ChatFormatting.GOLD : ChatFormatting.WHITE);
-        if (r.skill != null) Msg.send(player, "  Skill: " + r.skill.displayName + ". " + r.skill.description, ChatFormatting.YELLOW);
-        Msg.send(player, String.format("  Morale %.0f  Food %.0f  Rest %.0f  Productivity %.0f%%", r.morale, r.hunger, r.energy, r.productivity * 100), ChatFormatting.GRAY);
-        Msg.send(player, "  Assignment: " + describeAssignment(site, r.assignment) + (r.bedIndex < 0 && r.role != StaffRole.DCLASS ? "  (NO BED!)" : ""), ChatFormatting.GRAY);
     }
 
     public static String describeAssignment(Site site, Assignment a) {
@@ -228,23 +211,45 @@ public class StaffEntity extends PathfinderMob {
         return room == null ? "a demolished room" : room.displayName();
     }
 
-    private InteractionResult tryRecruit(ServerPlayer player) {
+    // ---------------------------------------------------------------- recruiting
+
+    public String survivorName() {
+        return staffName;
+    }
+
+    public Skill survivorSkill() {
+        return skill;
+    }
+
+    public int recruitCost() {
+        return recruitCost;
+    }
+
+    /** Why this player can't recruit this survivor right now, or null. */
+    public String recruitBlocker(ServerPlayer player) {
         Site site = SiteManager.directedBy(player.getUUID());
-        if (site == null) {
-            Msg.send(player, staffName + ": \"A Foundation survivor? Come back when you have a site to take me to.\"", ChatFormatting.GRAY);
-            return InteractionResult.SUCCESS;
+        if (site == null) return "You need to direct a site first.";
+        if (role() != StaffRole.DCLASS && site.housedStaff() >= site.beds) return "No free bed at your site. Build more housing.";
+        if (recruitCost > 0 && !player.isCreative() && Cost.count(player, Items.DIAMOND) < recruitCost) {
+            return "Needs " + recruitCost + " diamond" + (recruitCost > 1 ? "s" : "") + ".";
         }
-        if (role() != StaffRole.DCLASS && site.housedStaff() >= site.beds) {
-            Msg.send(player, staffName + ": \"Where would I even sleep? Build more housing first.\" (" + site.beds + " beds, " + site.housedStaff() + " staff)", ChatFormatting.YELLOW);
-            return InteractionResult.SUCCESS;
-        }
-        if (recruitCost > 0 && !player.isCreative()) {
-            if (Cost.count(player, Items.DIAMOND) < recruitCost) {
-                Msg.send(player, staffName + ": \"Times are hard. " + recruitCost + " diamond" + (recruitCost > 1 ? "s" : "") + " and I'm yours.\"", ChatFormatting.YELLOW);
-                return InteractionResult.SUCCESS;
-            }
-            Cost.take(player, Items.DIAMOND, recruitCost);
-        }
+        return null;
+    }
+
+    /** What the survivor says, depending on whether the player can take them. */
+    public String recruitLine(ServerPlayer player) {
+        Site site = SiteManager.directedBy(player.getUUID());
+        if (site == null) return "A Foundation survivor? Come back when you have a site to take me to.";
+        if (role() != StaffRole.DCLASS && site.housedStaff() >= site.beds) return "Where would I even sleep? Build more housing first.";
+        if (recruitCost > 0) return "Times are hard. " + recruitCost + " diamond" + (recruitCost > 1 ? "s" : "") + " and I'm yours.";
+        return "Ready when you are, Director.";
+    }
+
+    /** Recruits the survivor for the player's site. Returns false (with nothing taken) if they can't. */
+    public boolean recruit(ServerPlayer player) {
+        if (!survivor || recruitBlocker(player) != null) return false;
+        Site site = SiteManager.directedBy(player.getUUID());
+        if (recruitCost > 0 && !player.isCreative()) Cost.take(player, Items.DIAMOND, recruitCost);
         StaffRecord r = new StaffRecord();
         r.id = getUUID();
         r.name = staffName;
@@ -261,7 +266,7 @@ public class StaffEntity extends PathfinderMob {
         if (overworld != null && level() == overworld) teleportTo(dest.getX() + 0.5, dest.getY(), dest.getZ() + 0.5);
         Msg.send(player, r.fullName() + " has joined your site.", ChatFormatting.GREEN);
         if (!Cassie.announce(site, "Welcome to the site, " + r.fullName() + ".")) site.log(r.fullName() + " joined the site.");
-        return InteractionResult.SUCCESS;
+        return true;
     }
 
     // ---------------------------------------------------------------- ticking

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "GBG",
+    "STS"
+  ],
+  "key": {
+    "G": "minecraft:glass",
+    "B": "minecraft:brewing_stand",
+    "S": "minecraft:smooth_stone",
+    "T": "minecraft:crafting_table"
+  },
+  "result": {
+    "id": "projectredacted:lab_bench",
+    "count": 1
+  }
+}

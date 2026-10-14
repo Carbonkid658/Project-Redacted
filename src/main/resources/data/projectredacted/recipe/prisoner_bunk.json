@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "I I",
+    "WWW",
+    "I I"
+  ],
+  "key": {
+    "I": "minecraft:iron_bars",
+    "W": "minecraft:white_wool"
+  },
+  "result": {
+    "id": "projectredacted:prisoner_bunk",
+    "count": 1
+  }
+}

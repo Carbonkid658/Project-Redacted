@@ -170,9 +170,14 @@ public final class RoomBuilder {
                 case "entrance" -> Blocks.DARK_OAK_DOOR;
                 default -> secured ? Blocks.IRON_DOOR : Blocks.OAK_DOOR;
             };
-            int mask = 1 << (r.rotation & 3);
-            mask |= remap(r.extraDoors);
-            if (t.isCheckpoint()) mask |= 1 << ((r.rotation + 2) & 3);
+            int mask;
+            if (r.doors >= 0) {
+                mask = r.doors & 15;
+            } else {
+                mask = 1 << (r.rotation & 3);
+                mask |= remap(r.extraDoors);
+                if (t.isCheckpoint()) mask |= 1 << ((r.rotation + 2) & 3);
+            }
             for (int side = 0; side < 4; side++) {
                 if ((mask & (1 << side)) == 0) continue;
                 Direction d = sideDir(side);
@@ -241,6 +246,11 @@ public final class RoomBuilder {
             BlockPos p = new BlockPos(x, y, z);
             plan.placements.add(new Placement(p, s, multipart, structural));
             placed.put(p.asLong(), s);
+        }
+
+        boolean isDoor(int x, int z) {
+            BlockState s = placed.get(BlockPos.asLong(x, fy, z));
+            return s != null && s.getBlock() instanceof DoorBlock;
         }
 
         boolean free(int x, int z) {
@@ -528,6 +538,7 @@ public final class RoomBuilder {
             Direction in = inward();
             for (int[] p : backWall()) {
                 int wx = p[0] + in.getStepX(), wz = p[1] + in.getStepZ();
+                if (isDoor(wx, wz)) continue; // a doorway in the back wall (rooms joined on several sides)
                 for (int y = r.y1 + 2; y < r.y2 - 1; y++) add(wx, y, wz, ModBlocks.REINFORCED_GLASS.defaultBlockState(), false, true);
                 put(p[0], p[1], topSlab(Blocks.SMOOTH_STONE_SLAB));
             }
@@ -553,7 +564,7 @@ public final class RoomBuilder {
                     default -> new BlockPos(r.x1, fy, cz);
                 };
                 BlockPos w = base.relative(along, -2);
-                for (int y = 0; y < 2; y++) add(w.getX(), fy + y, w.getZ(), ModBlocks.REINFORCED_GLASS.defaultBlockState(), false, true);
+                if (!isDoor(w.getX(), w.getZ())) for (int y = 0; y < 2; y++) add(w.getX(), fy + y, w.getZ(), ModBlocks.REINFORCED_GLASS.defaultBlockState(), false, true);
             }
         }
 

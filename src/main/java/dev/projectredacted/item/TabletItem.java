@@ -1,6 +1,7 @@
 package dev.projectredacted.item;
 
-import dev.projectredacted.gui.TerminalGui;
+import dev.projectredacted.gui.Gui;
+import dev.projectredacted.gui.screen.TerminalScreen;
 import dev.projectredacted.site.Site;
 import dev.projectredacted.site.SiteManager;
 import dev.projectredacted.site.Upgrade;
@@ -30,7 +31,7 @@ public class TabletItem extends Item {
         } else if (!site.mainframeOnline()) {
             Msg.send(player, "Connection lost: the Mainframe is offline.", ChatFormatting.RED);
         } else {
-            TerminalGui.openMain((ServerPlayer) player, site);
+            Gui.open((ServerPlayer) player, new TerminalScreen(site, null));
         }
         return InteractionResult.SUCCESS;
     }
