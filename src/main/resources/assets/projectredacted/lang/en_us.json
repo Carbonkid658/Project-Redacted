@@ -460,5 +460,6 @@
   "block.projectredacted.helipad_marking": "Helipad Marking",
   "block.projectredacted.front_company_sign": "Front Company Sign",
   "block.projectredacted.antenna_mast": "Antenna Mast",
-  "block.projectredacted.ventilation_stack": "Ventilation Stack"
+  "block.projectredacted.ventilation_stack": "Ventilation Stack",
+  "block.projectredacted.mainframe_top": "Mainframe"
 }

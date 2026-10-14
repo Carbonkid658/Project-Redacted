@@ -1,5 +1,6 @@
 package dev.projectredacted.block;
 
+import dev.projectredacted.blockentities.SiteDirectorComputerBlockEntity;
 import dev.projectredacted.gui.Gui;
 import dev.projectredacted.gui.screen.TerminalScreen;
 import dev.projectredacted.site.Site;
@@ -13,15 +14,34 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
-/** The Site Director's Computer: the Mainframe Terminal, the site's main interface. */
-public class TerminalBlock extends FacingBlock {
+/** The Site Director's Computer: the Mainframe Terminal, the site's main interface. Drawn by GeckoLib. */
+public class TerminalBlock extends FacingBlock implements EntityBlock {
+    // The desk is 13 pixels tall and nearly a full block wide; narrower front to back.
+    private static final VoxelShape NORTH_SOUTH = Block.box(0, 0, 1, 16, 13, 15);
+    private static final VoxelShape EAST_WEST = Block.box(1, 0, 0, 15, 13, 16);
 
     public TerminalBlock(Properties properties) {
         super(properties);
+    }
+
+    @Override
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new SiteDirectorComputerBlockEntity(pos, state);
+    }
+
+    @Override
+    protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        return state.getValue(FACING).getAxis() == Direction.Axis.Z ? NORTH_SOUTH : EAST_WEST;
     }
 
     @Override

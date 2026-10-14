@@ -2,7 +2,8 @@
 stonecutter recipes and tags. Run from the repo root:  python3 tools/deco/gen.py
 
 The block list lives in specs.py and the texture painters in paint.py. Generated textures are placeholders;
-replace a PNG under textures/block/deco/ and it won't be overwritten unless you pass --textures.
+textures are only drawn with --textures (and then only missing ones); put your own PNGs in textures/block/deco/
+under the names the models use.
 """
 import json
 import os
@@ -45,7 +46,7 @@ def paint_tex(name, painter):
         return
     written_tex.add(name)
     path = os.path.join(TEX_DIR, name + '.png')
-    if os.path.exists(path) and not FORCE_TEX:
+    if os.path.exists(path) or not FORCE_TEX:
         return
     os.makedirs(TEX_DIR, exist_ok=True)
     t = T(name)
@@ -497,7 +498,8 @@ def do_entry(e):
 def door_item_texture(id, own):
     os.makedirs(ITEM_TEX_DIR, exist_ok=True)
     path = os.path.join(ITEM_TEX_DIR, id + '.png')
-    if not os.path.exists(path) or FORCE_TEX:
+    sources = [os.path.join(TEX_DIR, own[k] + '.png') for k in ('top', 'bottom')]
+    if not os.path.exists(path) and all(os.path.exists(f) for f in sources):
         top = Image.open(os.path.join(TEX_DIR, own['top'] + '.png')).resize((8, 8), Image.NEAREST)
         bottom = Image.open(os.path.join(TEX_DIR, own['bottom'] + '.png')).resize((8, 8), Image.NEAREST)
         im = Image.new('RGBA', (16, 16), (0, 0, 0, 0))

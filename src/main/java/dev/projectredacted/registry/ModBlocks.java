@@ -19,6 +19,7 @@ import net.minecraft.world.level.block.TransparentBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.material.PushReaction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,11 +75,14 @@ public final class ModBlocks {
 
     // Site machines
     public static final Block MAINFRAME = register("mainframe", MainframeBlock::new,
-            props().mapColor(MapColor.COLOR_BLACK).strength(5f, 12f).sound(SoundType.METAL).requiresCorrectToolForDrops().lightLevel(s -> 6));
+            props().mapColor(MapColor.COLOR_BLACK).strength(5f, 12f).sound(SoundType.METAL).requiresCorrectToolForDrops().lightLevel(s -> 6).noOcclusion().pushReaction(PushReaction.BLOCK));
+    /** Invisible upper half of the Mainframe's two-block model; has no item. */
+    public static final Block MAINFRAME_TOP = registerBlockOnly("mainframe_top", MainframeTopBlock::new,
+            props().mapColor(MapColor.COLOR_BLACK).strength(5f, 12f).sound(SoundType.METAL).noLootTable().pushReaction(PushReaction.BLOCK));
     public static final Block RUINED_MAINFRAME = register("ruined_mainframe", RuinedMainframeBlock::new,
             props().mapColor(MapColor.COLOR_BLACK).strength(5f, 12f).sound(SoundType.METAL).requiresCorrectToolForDrops());
     public static final Block SITE_DIRECTOR_COMPUTER = register("site_director_computer", TerminalBlock::new,
-            props().mapColor(MapColor.SNOW).strength(2f, 6f).sound(SoundType.METAL).lightLevel(s -> 4));
+            props().mapColor(MapColor.SNOW).strength(2f, 6f).sound(SoundType.METAL).lightLevel(s -> 4).noOcclusion());
     public static final Block CASSIE = register("cassie", CassieBlock::new,
             props().mapColor(MapColor.COLOR_GRAY).strength(6f, 30f).sound(SoundType.METAL).requiresCorrectToolForDrops().lightLevel(s -> 8));
     public static final Block RUINED_CASSIE = register("ruined_cassie", RuinedCassieBlock::new,
@@ -111,6 +115,11 @@ public final class ModBlocks {
         Registry.register(BuiltInRegistries.ITEM, id, new BlockItem(block, itemProps));
         ALL.add(block);
         return block;
+    }
+
+    private static Block registerBlockOnly(String name, Function<BlockBehaviour.Properties, Block> factory, BlockBehaviour.Properties props) {
+        Identifier id = ProjectRedacted.id(name);
+        return Registry.register(BuiltInRegistries.BLOCK, id, factory.apply(props.setId(ResourceKey.create(Registries.BLOCK, id))));
     }
 
     private static Block registerDoor(String name, Function<BlockBehaviour.Properties, Block> factory, BlockBehaviour.Properties props) {

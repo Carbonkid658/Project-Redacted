@@ -1,6 +1,8 @@
 package dev.projectredacted.client;
 
 import dev.projectredacted.client.renderers.CassieRenderer;
+import dev.projectredacted.client.renderers.MainframeRenderer;
+import dev.projectredacted.client.renderers.SiteDirectorComputerRenderer;
 import dev.projectredacted.npc.TraderEntity;
 import dev.projectredacted.raid.ArmedNpcEntity;
 import dev.projectredacted.registry.ModBlocks;
@@ -24,6 +26,8 @@ public class ProjectRedactedClient implements ClientModInitializer {
                     ProjectRedactedBlockEntities.CASSIE_BLOCK_ENTITY,
                     context -> new CassieRenderer<>(context, ProjectRedactedBlockEntities.CASSIE_BLOCK_ENTITY)
             );
+            BlockEntityRenderers.register(ProjectRedactedBlockEntities.MAINFRAME_BLOCK_ENTITY, context -> new MainframeRenderer<>(context));
+            BlockEntityRenderers.register(ProjectRedactedBlockEntities.SITE_DIRECTOR_COMPUTER_BLOCK_ENTITY, context -> new SiteDirectorComputerRenderer<>(context));
     }
 
 }

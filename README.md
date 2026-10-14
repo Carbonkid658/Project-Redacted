@@ -81,9 +81,9 @@ Ruined sites are generated from the same kit as a world structure (`/locate stru
 
 About 380 decorative blocks (the list in `design/deco-blocks-list.md`, with their stairs, slabs, walls and panes) sit in their own
 **Decoration** creative tab and are cut from cheap materials on a stonecutter (iron, stone, planks, glass, wool, plastic, paper).
-They are generated: the list is `tools/deco/specs.py`, and `python3 tools/deco/gen.py` (needs Pillow) writes `registry/DecoBlocks.java`,
-the blockstates, models, loot, recipes, tags and lang. Textures under `textures/block/deco/` are only drawn when missing, so a
-hand-made PNG replaces a placeholder for good (`--textures` redraws them all).
+They are generated: the list is `tools/deco/specs.py`, and `python3 tools/deco/gen.py` writes `registry/DecoBlocks.java`,
+the blockstates, models, loot, recipes, tags and lang. Their textures go in `textures/block/deco/` (names in
+`design/deco-texture-names.md` in the project files); `gen.py --textures` draws simple placeholders for any that are missing.
 
 - Lights turn off with redstone; the Emergency Light, Amber Warning Light and similar alarm lights turn on with it.
 - Lockers, server racks, vending machines and other tall props are two blocks high. Rubble stacks in layers like snow.
