@@ -8,9 +8,17 @@ import dev.projectredacted.registry.ModEntities;
 import dev.projectredacted.registry.ProjectRedactedBlockEntities;
 import dev.projectredacted.staff.StaffEntity;
 import dev.projectredacted.client.screen.ClientGui;
+import dev.projectredacted.blockentities.DyedBlockEntity;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
+import net.minecraft.client.color.block.BlockTintSource;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
+
+import java.util.List;
 
 public class ProjectRedactedClient implements ClientModInitializer {
     @Override
@@ -31,6 +39,19 @@ public class ProjectRedactedClient implements ClientModInitializer {
             }
             return false;
         };
+
+        // Dyeable blocks take their color from their block entity. Registered once the game has its BlockColors.
+        ClientLifecycleEvents.CLIENT_STARTED.register(client -> client.getBlockColors().register(List.of(new BlockTintSource() {
+            @Override
+            public int color(BlockState state) {
+                return 0xFFFFFFFF;
+            }
+
+            @Override
+            public int colorInWorld(BlockState state, BlockAndTintGetter level, BlockPos pos) {
+                return level.getBlockEntity(pos) instanceof DyedBlockEntity dyed ? 0xFF000000 | dyed.color() : 0xFFFFFFFF;
+            }
+        }), ModBlocks.DYEABLE_BRICKS, ModBlocks.DYEABLE_FLOOR, ModBlocks.DYEABLE_TILE));
 
             BlockEntityRenderers.register(
                     ProjectRedactedBlockEntities.CASSIE_BLOCK_ENTITY,

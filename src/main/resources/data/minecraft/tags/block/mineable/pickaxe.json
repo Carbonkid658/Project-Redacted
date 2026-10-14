@@ -61,6 +61,10 @@
     "projectredacted:cell_control_panel_heavy",
     "projectredacted:observation_console",
     "projectredacted:supply_shelf",
-    "projectredacted:depot_terminal"
+    "projectredacted:depot_terminal",
+    "projectredacted:dyeable_bricks",
+    "projectredacted:dyeable_floor",
+    "projectredacted:dyeable_tile",
+    "projectredacted:dye_station"
   ]
 }

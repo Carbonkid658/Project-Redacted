@@ -47,6 +47,9 @@ public interface Ctx {
 
     void previewNext(String id, double value);
 
+    /** Sends mouse drags and the release to this node until the button is let go (the color wheel). */
+    void capture(Nodes.Node node);
+
     /** Resolves "tr:" translation keys. */
     String tr(String text);
 }

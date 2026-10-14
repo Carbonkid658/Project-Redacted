@@ -72,6 +72,14 @@ public final class ModBlocks {
     public static final Block SLIDING_DOOR = registerDoor("sliding_door", SlidingDoorBlock::new,
             props().mapColor(MapColor.METAL).strength(5f, 6f).sound(SoundType.METAL).requiresCorrectToolForDrops().noOcclusion());
 
+    // Dyeable blocks: grayscale, tinted with the dyed_color they're given at a Dye Station.
+    public static final Block DYEABLE_BRICKS = register("dyeable_bricks", DyeableBlock::new, facilityProps(MapColor.SNOW));
+    public static final Block DYEABLE_FLOOR = register("dyeable_floor", DyeableBlock::new, facilityProps(MapColor.SNOW));
+    public static final Block DYEABLE_TILE = register("dyeable_tile", DyeableBlock::new, facilityProps(MapColor.SNOW));
+    /** Dyes the blocks above (and leather) any color picked on a color wheel or typed as a hex code. */
+    public static final Block DYE_STATION = register("dye_station", DyeStationBlock::new,
+            props().mapColor(MapColor.SNOW).strength(2.5f, 6f).sound(SoundType.METAL).requiresCorrectToolForDrops());
+
     /** Invisible; marks where NPCs enter a room and where generated rooms join a hall (v4 §5.4). Creative only. */
     public static final Block ROOM_ENTRANCE_MARKER = register("room_entrance_marker", RoomEntranceMarkerBlock::new,
             props().strength(-1f, 3600000f).noCollision().noLootTable().noOcclusion().noTerrainParticles().isValidSpawn((s, l, p, e) -> false));

@@ -2,6 +2,8 @@ package dev.projectredacted.registry;
 
 import dev.projectredacted.ProjectRedacted;
 import dev.projectredacted.blockentities.CassieBlockEntity;
+import dev.projectredacted.blockentities.DyeStationBlockEntity;
+import dev.projectredacted.blockentities.DyedBlockEntity;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -19,6 +21,13 @@ public class ProjectRedactedBlockEntities {
                                 ModBlocks.RUINED_CASSIE
                         ).build()
                 );
+        public static final BlockEntityType<DyedBlockEntity> DYED_BLOCK = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE,
+                ProjectRedacted.id("dyed_block"),
+                FabricBlockEntityTypeBuilder.create(DyedBlockEntity::new, ModBlocks.DYEABLE_BRICKS, ModBlocks.DYEABLE_FLOOR, ModBlocks.DYEABLE_TILE).build());
+        public static final BlockEntityType<DyeStationBlockEntity> DYE_STATION = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE,
+                ProjectRedacted.id("dye_station"),
+                FabricBlockEntityTypeBuilder.create(DyeStationBlockEntity::new, ModBlocks.DYE_STATION).build());
+
     public static void register() {
     }
 }

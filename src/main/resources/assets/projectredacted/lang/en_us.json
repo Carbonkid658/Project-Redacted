@@ -106,5 +106,9 @@
   "block.projectredacted.observation_console": "Observation Console",
   "block.projectredacted.supply_shelf": "Supply Shelf",
   "block.projectredacted.depot_terminal": "Depot Terminal",
-  "block.projectredacted.area_hall_marker": "Area Hall Marker"
+  "block.projectredacted.area_hall_marker": "Area Hall Marker",
+  "block.projectredacted.dyeable_bricks": "Dyeable Bricks",
+  "block.projectredacted.dyeable_floor": "Dyeable Floor",
+  "block.projectredacted.dyeable_tile": "Dyeable Tile",
+  "block.projectredacted.dye_station": "Dye Station"
 }

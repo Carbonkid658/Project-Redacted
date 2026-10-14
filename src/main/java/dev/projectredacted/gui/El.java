@@ -2,8 +2,11 @@ package dev.projectredacted.gui;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.DyedItemColor;
 import net.minecraft.world.level.ItemLike;
 
 import java.util.Collection;
@@ -269,6 +272,19 @@ public class El {
         return new El("doc").set("title", title).set("body", body).set("stamp", stamp).fill();
     }
 
+    /**
+     * A color wheel with a brightness slider, a swatch row and a live preview of {@code previewItem} in the picked
+     * color. Dragging on the client sends {@code action} with {@code color} (0xRRGGBB) when the mouse is let go.
+     */
+    public static El colorWheel(String id, int rgb, String action, ItemLike previewItem, int... swatches) {
+        El e = new El("colorwheel").id(id).set("value", rgb & 0xFFFFFF).set("action", action);
+        if (previewItem != null) e.set("item", itemId(previewItem));
+        JsonArray a = new JsonArray();
+        for (int s : swatches) a.add(s & 0xFFFFFF);
+        e.o.add("swatches", a);
+        return e;
+    }
+
     public static Grid grid(int cols, String action) {
         return new Grid(cols, action);
     }
@@ -531,6 +547,14 @@ public class El {
             c.addProperty("count", count);
             c.addProperty("label", label);
             entries.add(c);
+            return c;
+        }
+
+        /** Like {@link #add}, keeping the stack's dye so the icon shows its color. */
+        public JsonObject add(String id, ItemStack stack, String label) {
+            JsonObject c = add(id, stack.getItem(), stack.getCount(), label);
+            DyedItemColor dyed = stack.get(DataComponents.DYED_COLOR);
+            if (dyed != null) c.addProperty("dye", dyed.rgb() & 0xFFFFFF);
             return c;
         }
     }
