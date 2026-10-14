@@ -1,7 +1,0 @@
-{
-  "parent": "minecraft:block/template_glass_pane_noside",
-  "textures": {
-    "pane": "projectredacted:block/deco/chain_link_fence",
-    "edge": "projectredacted:block/deco/chain_link_fence"
-  }
-}

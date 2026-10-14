@@ -1,8 +1,0 @@
-{
-  "type": "minecraft:stonecutting",
-  "ingredient": "projectredacted:facility_wall_trim_security",
-  "result": {
-    "id": "projectredacted:facility_wall_trim_security_stairs",
-    "count": 1
-  }
-}

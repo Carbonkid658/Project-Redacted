@@ -1,8 +1,0 @@
-{
-  "type": "minecraft:stonecutting",
-  "ingredient": "minecraft:paper",
-  "result": {
-    "id": "projectredacted:foundation_poster_1",
-    "count": 4
-  }
-}

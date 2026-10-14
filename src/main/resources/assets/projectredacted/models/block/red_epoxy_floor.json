@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:block/cube_all",
-  "textures": {
-    "all": "projectredacted:block/deco/red_epoxy_floor"
-  }
-}

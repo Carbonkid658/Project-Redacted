@@ -1,8 +1,0 @@
-{
-  "type": "minecraft:stonecutting",
-  "ingredient": "projectredacted:observation_window",
-  "result": {
-    "id": "projectredacted:observation_window_pane",
-    "count": 2
-  }
-}

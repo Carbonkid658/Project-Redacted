@@ -1,8 +1,0 @@
-{
-  "type": "minecraft:stonecutting",
-  "ingredient": "projectredacted:wood_panelling",
-  "result": {
-    "id": "projectredacted:wood_panelling_stairs",
-    "count": 1
-  }
-}

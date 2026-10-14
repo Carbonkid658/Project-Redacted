@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/slab",
-  "textures": {
-    "bottom": "projectredacted:block/deco/hazard_wall",
-    "top": "projectredacted:block/deco/hazard_wall",
-    "side": "projectredacted:block/deco/hazard_wall"
-  }
-}

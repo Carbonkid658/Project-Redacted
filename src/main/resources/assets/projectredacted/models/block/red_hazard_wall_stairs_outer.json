@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/outer_stairs",
-  "textures": {
-    "bottom": "projectredacted:block/deco/red_hazard_wall",
-    "top": "projectredacted:block/deco/red_hazard_wall",
-    "side": "projectredacted:block/deco/red_hazard_wall"
-  }
-}

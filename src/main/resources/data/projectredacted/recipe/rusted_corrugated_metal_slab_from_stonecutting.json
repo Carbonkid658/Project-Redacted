@@ -1,8 +1,0 @@
-{
-  "type": "minecraft:stonecutting",
-  "ingredient": "projectredacted:rusted_corrugated_metal",
-  "result": {
-    "id": "projectredacted:rusted_corrugated_metal_slab",
-    "count": 2
-  }
-}

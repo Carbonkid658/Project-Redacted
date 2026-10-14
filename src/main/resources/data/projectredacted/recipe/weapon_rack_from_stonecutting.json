@@ -1,8 +1,0 @@
-{
-  "type": "minecraft:stonecutting",
-  "ingredient": "minecraft:oak_planks",
-  "result": {
-    "id": "projectredacted:weapon_rack",
-    "count": 1
-  }
-}

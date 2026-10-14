@@ -1,8 +1,0 @@
-{
-  "type": "minecraft:stonecutting",
-  "ingredient": "minecraft:glowstone_dust",
-  "result": {
-    "id": "projectredacted:amber_beacon",
-    "count": 1
-  }
-}

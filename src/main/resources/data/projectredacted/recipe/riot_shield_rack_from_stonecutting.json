@@ -1,8 +1,0 @@
-{
-  "type": "minecraft:stonecutting",
-  "ingredient": "minecraft:iron_ingot",
-  "result": {
-    "id": "projectredacted:riot_shield_rack",
-    "count": 1
-  }
-}

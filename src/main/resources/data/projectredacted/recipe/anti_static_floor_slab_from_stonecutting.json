@@ -1,8 +1,0 @@
-{
-  "type": "minecraft:stonecutting",
-  "ingredient": "projectredacted:anti_static_floor",
-  "result": {
-    "id": "projectredacted:anti_static_floor_slab",
-    "count": 2
-  }
-}

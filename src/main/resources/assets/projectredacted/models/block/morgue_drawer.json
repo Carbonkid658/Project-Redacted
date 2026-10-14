@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/orientable",
-  "textures": {
-    "front": "projectredacted:block/deco/morgue_drawer_front",
-    "side": "projectredacted:block/deco/morgue_drawer_side",
-    "top": "projectredacted:block/deco/morgue_drawer_top"
-  }
-}

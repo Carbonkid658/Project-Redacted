@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/stairs",
-  "textures": {
-    "bottom": "projectredacted:block/deco/blue_cinder_block",
-    "top": "projectredacted:block/deco/blue_cinder_block",
-    "side": "projectredacted:block/deco/blue_cinder_block"
-  }
-}

@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/stairs",
-  "textures": {
-    "bottom": "projectredacted:block/deco/insulated_panel",
-    "top": "projectredacted:block/deco/insulated_panel",
-    "side": "projectredacted:block/deco/insulated_panel"
-  }
-}

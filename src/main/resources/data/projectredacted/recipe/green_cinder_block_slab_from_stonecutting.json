@@ -1,8 +1,0 @@
-{
-  "type": "minecraft:stonecutting",
-  "ingredient": "projectredacted:green_cinder_block",
-  "result": {
-    "id": "projectredacted:green_cinder_block_slab",
-    "count": 2
-  }
-}

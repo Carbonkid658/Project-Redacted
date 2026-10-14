@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/slab",
-  "textures": {
-    "bottom": "projectredacted:block/deco/reinforced_concrete",
-    "top": "projectredacted:block/deco/reinforced_concrete",
-    "side": "projectredacted:block/deco/reinforced_concrete"
-  }
-}

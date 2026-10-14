@@ -1,8 +1,0 @@
-{
-  "type": "minecraft:stonecutting",
-  "ingredient": "minecraft:gravel",
-  "result": {
-    "id": "projectredacted:rubble",
-    "count": 4
-  }
-}

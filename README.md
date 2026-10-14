@@ -77,20 +77,6 @@ then sneak-use inside a frame to name it and set its kind, room type, weight and
 
 Ruined sites are generated from the same kit as a world structure (`/locate structure projectredacted:ruined_site`), then decayed.
 
-### Decoration blocks
-
-About 380 decorative blocks (the list in `design/deco-blocks-list.md`, with their stairs, slabs, walls and panes) sit in their own
-**Decoration** creative tab and are cut from cheap materials on a stonecutter (iron, stone, planks, glass, wool, plastic, paper).
-They are generated: the list is `tools/deco/specs.py`, and `python3 tools/deco/gen.py` writes `registry/DecoBlocks.java`,
-the blockstates, models, loot, recipes, tags and lang. Their textures go in `textures/block/deco/` (names in
-`design/deco-texture-names.md` in the project files); `gen.py --textures` draws simple placeholders for any that are missing.
-
-- Lights turn off with redstone; the Emergency Light, Amber Warning Light and similar alarm lights turn on with it.
-- Lockers, server racks, vending machines and other tall props are two blocks high. Rubble stacks in layers like snow.
-- Barbed wire slows you like a cobweb; steam vents, sparking wires, showers and leaking pipes give off particles.
-- Not done yet: real storage in crates and cabinets, sitting on chairs, sleeping in bunks, editable sign text, multi-block
-  doors and moving cameras. Those props are decorative for now.
-
 ### Adding an SCP
 
 ```java

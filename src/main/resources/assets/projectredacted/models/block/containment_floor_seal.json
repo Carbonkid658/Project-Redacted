@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/cube_bottom_top",
-  "textures": {
-    "top": "projectredacted:block/deco/containment_floor_seal_top",
-    "side": "projectredacted:block/deco/containment_floor_seal_side",
-    "bottom": "projectredacted:block/deco/containment_floor_seal_bottom"
-  }
-}

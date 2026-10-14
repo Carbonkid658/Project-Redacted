@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/slab_top",
-  "textures": {
-    "bottom": "projectredacted:block/deco/asphalt",
-    "top": "projectredacted:block/deco/asphalt",
-    "side": "projectredacted:block/deco/asphalt"
-  }
-}

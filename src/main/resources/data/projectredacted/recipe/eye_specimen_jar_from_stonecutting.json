@@ -1,8 +1,0 @@
-{
-  "type": "minecraft:stonecutting",
-  "ingredient": "minecraft:glass",
-  "result": {
-    "id": "projectredacted:eye_specimen_jar",
-    "count": 1
-  }
-}

@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/slab",
-  "textures": {
-    "bottom": "projectredacted:block/deco/drywall",
-    "top": "projectredacted:block/deco/drywall",
-    "side": "projectredacted:block/deco/drywall"
-  }
-}

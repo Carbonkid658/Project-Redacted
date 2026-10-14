@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/stairs",
-  "textures": {
-    "bottom": "projectredacted:block/deco/sandbags",
-    "top": "projectredacted:block/deco/sandbags",
-    "side": "projectredacted:block/deco/sandbags"
-  }
-}

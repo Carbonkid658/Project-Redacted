@@ -1,8 +1,0 @@
-{
-  "type": "minecraft:stonecutting",
-  "ingredient": "minecraft:glowstone_dust",
-  "result": {
-    "id": "projectredacted:wall_terminal",
-    "count": 1
-  }
-}

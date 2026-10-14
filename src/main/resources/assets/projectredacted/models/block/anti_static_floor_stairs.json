@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/stairs",
-  "textures": {
-    "bottom": "projectredacted:block/deco/anti_static_floor",
-    "top": "projectredacted:block/deco/anti_static_floor",
-    "side": "projectredacted:block/deco/anti_static_floor"
-  }
-}

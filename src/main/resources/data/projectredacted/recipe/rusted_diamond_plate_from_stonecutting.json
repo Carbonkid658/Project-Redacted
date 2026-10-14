@@ -1,8 +1,0 @@
-{
-  "type": "minecraft:stonecutting",
-  "ingredient": "minecraft:iron_ingot",
-  "result": {
-    "id": "projectredacted:rusted_diamond_plate",
-    "count": 1
-  }
-}

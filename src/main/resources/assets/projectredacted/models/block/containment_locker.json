@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/orientable",
-  "textures": {
-    "front": "projectredacted:block/deco/containment_locker_front",
-    "side": "projectredacted:block/deco/containment_locker_side",
-    "top": "projectredacted:block/deco/containment_locker_top"
-  }
-}

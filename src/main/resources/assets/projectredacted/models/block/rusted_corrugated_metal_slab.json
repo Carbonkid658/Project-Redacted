@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/slab",
-  "textures": {
-    "bottom": "projectredacted:block/deco/rusted_corrugated_metal",
-    "top": "projectredacted:block/deco/rusted_corrugated_metal",
-    "side": "projectredacted:block/deco/rusted_corrugated_metal"
-  }
-}

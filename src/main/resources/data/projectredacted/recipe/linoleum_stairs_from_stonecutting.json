@@ -1,8 +1,0 @@
-{
-  "type": "minecraft:stonecutting",
-  "ingredient": "projectredacted:linoleum",
-  "result": {
-    "id": "projectredacted:linoleum_stairs",
-    "count": 1
-  }
-}

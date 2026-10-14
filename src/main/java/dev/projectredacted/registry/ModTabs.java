@@ -20,13 +20,6 @@ public final class ModTabs {
                     })
                     .build());
 
-    public static final CreativeModeTab DECO = Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, ProjectRedacted.id("deco"),
-            FabricCreativeModeTab.builder()
-                    .icon(() -> new ItemStack(DecoBlocks.HAZARD_WALL))
-                    .title(Component.translatable("itemGroup.projectredacted.deco"))
-                    .displayItems((params, output) -> DecoBlocks.ALL.forEach(output::accept))
-                    .build());
-
     public static void init() {}
 
     private ModTabs() {}

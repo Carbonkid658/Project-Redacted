@@ -1,8 +1,0 @@
-{
-  "type": "minecraft:stonecutting",
-  "ingredient": "projectredacted:diamond_plate",
-  "result": {
-    "id": "projectredacted:diamond_plate_stairs",
-    "count": 1
-  }
-}

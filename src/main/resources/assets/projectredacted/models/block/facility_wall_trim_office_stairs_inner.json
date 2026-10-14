@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/inner_stairs",
-  "textures": {
-    "bottom": "projectredacted:block/deco/facility_wall_trim_office",
-    "top": "projectredacted:block/deco/facility_wall_trim_office",
-    "side": "projectredacted:block/deco/facility_wall_trim_office"
-  }
-}

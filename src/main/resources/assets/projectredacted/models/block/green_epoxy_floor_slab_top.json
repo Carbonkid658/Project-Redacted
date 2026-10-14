@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/slab_top",
-  "textures": {
-    "bottom": "projectredacted:block/deco/green_epoxy_floor",
-    "top": "projectredacted:block/deco/green_epoxy_floor",
-    "side": "projectredacted:block/deco/green_epoxy_floor"
-  }
-}

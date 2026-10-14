@@ -1,8 +1,0 @@
-{
-  "type": "minecraft:stonecutting",
-  "ingredient": "minecraft:oak_planks",
-  "result": {
-    "id": "projectredacted:binder_shelf",
-    "count": 1
-  }
-}

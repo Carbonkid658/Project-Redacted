@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/stairs",
-  "textures": {
-    "bottom": "projectredacted:block/deco/catwalk",
-    "top": "projectredacted:block/deco/catwalk",
-    "side": "projectredacted:block/deco/catwalk"
-  }
-}

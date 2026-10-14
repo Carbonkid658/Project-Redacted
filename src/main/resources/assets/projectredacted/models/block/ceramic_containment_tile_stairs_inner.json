@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/inner_stairs",
-  "textures": {
-    "bottom": "projectredacted:block/deco/ceramic_containment_tile",
-    "top": "projectredacted:block/deco/ceramic_containment_tile",
-    "side": "projectredacted:block/deco/ceramic_containment_tile"
-  }
-}

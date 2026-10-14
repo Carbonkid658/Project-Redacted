@@ -1,8 +1,0 @@
-{
-  "type": "minecraft:stonecutting",
-  "ingredient": "projectredacted:padded_wall",
-  "result": {
-    "id": "projectredacted:padded_wall_stairs",
-    "count": 1
-  }
-}

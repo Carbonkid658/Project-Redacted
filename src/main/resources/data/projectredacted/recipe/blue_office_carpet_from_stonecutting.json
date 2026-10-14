@@ -1,8 +1,0 @@
-{
-  "type": "minecraft:stonecutting",
-  "ingredient": "minecraft:white_wool",
-  "result": {
-    "id": "projectredacted:blue_office_carpet",
-    "count": 3
-  }
-}

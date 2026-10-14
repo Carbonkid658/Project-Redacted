@@ -1,8 +1,0 @@
-{
-  "type": "minecraft:stonecutting",
-  "ingredient": "projectredacted:overgrown_facility_wall",
-  "result": {
-    "id": "projectredacted:overgrown_facility_wall_stairs",
-    "count": 1
-  }
-}

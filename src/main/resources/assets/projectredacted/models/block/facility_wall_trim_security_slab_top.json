@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/slab_top",
-  "textures": {
-    "bottom": "projectredacted:block/deco/facility_wall_trim_security",
-    "top": "projectredacted:block/deco/facility_wall_trim_security",
-    "side": "projectredacted:block/deco/facility_wall_trim_security"
-  }
-}

@@ -1,7 +1,0 @@
-{
-  "parent": "minecraft:block/template_glass_pane_side",
-  "textures": {
-    "pane": "projectredacted:block/deco/faraday_mesh",
-    "edge": "projectredacted:block/deco/faraday_mesh"
-  }
-}

@@ -1,8 +1,0 @@
-{
-  "type": "minecraft:stonecutting",
-  "ingredient": "projectredacted:metal_grate",
-  "result": {
-    "id": "projectredacted:metal_grate_slab",
-    "count": 2
-  }
-}

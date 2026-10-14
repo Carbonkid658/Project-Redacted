@@ -1,8 +1,0 @@
-{
-  "type": "minecraft:stonecutting",
-  "ingredient": "projectredacted:cinder_block",
-  "result": {
-    "id": "projectredacted:cinder_block_stairs",
-    "count": 1
-  }
-}

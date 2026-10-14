@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/slab_top",
-  "textures": {
-    "bottom": "projectredacted:block/deco/metal_grate",
-    "top": "projectredacted:block/deco/metal_grate",
-    "side": "projectredacted:block/deco/metal_grate"
-  }
-}

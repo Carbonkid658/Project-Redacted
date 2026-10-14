@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/outer_stairs",
-  "textures": {
-    "bottom": "projectredacted:block/deco/wood_panelling",
-    "top": "projectredacted:block/deco/wood_panelling",
-    "side": "projectredacted:block/deco/wood_panelling"
-  }
-}

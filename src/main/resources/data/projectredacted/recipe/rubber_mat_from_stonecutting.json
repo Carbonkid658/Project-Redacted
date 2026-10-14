@@ -1,8 +1,0 @@
-{
-  "type": "minecraft:stonecutting",
-  "ingredient": "minecraft:white_wool",
-  "result": {
-    "id": "projectredacted:rubber_mat",
-    "count": 3
-  }
-}

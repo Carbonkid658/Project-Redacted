@@ -1,8 +1,0 @@
-{
-  "type": "minecraft:stonecutting",
-  "ingredient": "projectredacted:catwalk",
-  "result": {
-    "id": "projectredacted:catwalk_slab",
-    "count": 2
-  }
-}

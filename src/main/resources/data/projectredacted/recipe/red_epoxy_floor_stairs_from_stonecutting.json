@@ -1,8 +1,0 @@
-{
-  "type": "minecraft:stonecutting",
-  "ingredient": "projectredacted:red_epoxy_floor",
-  "result": {
-    "id": "projectredacted:red_epoxy_floor_stairs",
-    "count": 1
-  }
-}

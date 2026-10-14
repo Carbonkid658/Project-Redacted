@@ -1,8 +1,0 @@
-{
-  "type": "minecraft:stonecutting",
-  "ingredient": "minecraft:glowstone_dust",
-  "result": {
-    "id": "projectredacted:red_light_strip",
-    "count": 1
-  }
-}

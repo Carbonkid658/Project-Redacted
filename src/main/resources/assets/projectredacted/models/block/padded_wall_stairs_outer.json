@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/outer_stairs",
-  "textures": {
-    "bottom": "projectredacted:block/deco/padded_wall",
-    "top": "projectredacted:block/deco/padded_wall",
-    "side": "projectredacted:block/deco/padded_wall"
-  }
-}

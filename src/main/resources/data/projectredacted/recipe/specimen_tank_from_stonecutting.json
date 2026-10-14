@@ -1,8 +1,0 @@
-{
-  "type": "minecraft:stonecutting",
-  "ingredient": "minecraft:glass",
-  "result": {
-    "id": "projectredacted:specimen_tank",
-    "count": 1
-  }
-}

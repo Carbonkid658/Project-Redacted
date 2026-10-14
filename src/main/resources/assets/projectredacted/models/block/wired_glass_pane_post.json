@@ -1,7 +1,0 @@
-{
-  "parent": "minecraft:block/template_glass_pane_post",
-  "textures": {
-    "pane": "projectredacted:block/deco/wired_glass",
-    "edge": "projectredacted:block/deco/wired_glass"
-  }
-}

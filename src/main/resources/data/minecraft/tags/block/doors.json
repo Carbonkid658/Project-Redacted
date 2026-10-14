@@ -1,9 +1,6 @@
 {
+  "replace": false,
   "values": [
-    "projectredacted:sliding_door",
-    "projectredacted:heavy_containment_door",
-    "projectredacted:blast_door",
-    "projectredacted:office_door",
-    "projectredacted:security_door"
+    "projectredacted:sliding_door"
   ]
 }

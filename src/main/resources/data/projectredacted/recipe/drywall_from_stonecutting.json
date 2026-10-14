@@ -1,8 +1,0 @@
-{
-  "type": "minecraft:stonecutting",
-  "ingredient": "projectredacted:plastic_block",
-  "result": {
-    "id": "projectredacted:drywall",
-    "count": 1
-  }
-}

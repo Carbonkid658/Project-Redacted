@@ -1,8 +1,0 @@
-{
-  "type": "minecraft:stonecutting",
-  "ingredient": "projectredacted:raised_floor_panel",
-  "result": {
-    "id": "projectredacted:raised_floor_panel_slab",
-    "count": 2
-  }
-}

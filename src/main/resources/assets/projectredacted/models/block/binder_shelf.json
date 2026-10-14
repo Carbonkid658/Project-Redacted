@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/orientable",
-  "textures": {
-    "front": "projectredacted:block/deco/binder_shelf_front",
-    "side": "projectredacted:block/deco/binder_shelf_side",
-    "top": "projectredacted:block/deco/binder_shelf_top"
-  }
-}

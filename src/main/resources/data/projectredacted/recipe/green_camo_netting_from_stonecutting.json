@@ -1,8 +1,0 @@
-{
-  "type": "minecraft:stonecutting",
-  "ingredient": "minecraft:white_wool",
-  "result": {
-    "id": "projectredacted:green_camo_netting",
-    "count": 1
-  }
-}

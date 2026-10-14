@@ -1,8 +1,0 @@
-{
-  "type": "minecraft:stonecutting",
-  "ingredient": "minecraft:iron_ingot",
-  "result": {
-    "id": "projectredacted:raised_floor_panel",
-    "count": 1
-  }
-}

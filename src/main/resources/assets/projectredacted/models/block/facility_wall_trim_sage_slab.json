@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/slab",
-  "textures": {
-    "bottom": "projectredacted:block/deco/facility_wall_trim_sage",
-    "top": "projectredacted:block/deco/facility_wall_trim_sage",
-    "side": "projectredacted:block/deco/facility_wall_trim_sage"
-  }
-}

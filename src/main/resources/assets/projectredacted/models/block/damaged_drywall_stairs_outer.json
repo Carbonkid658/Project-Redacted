@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/outer_stairs",
-  "textures": {
-    "bottom": "projectredacted:block/deco/damaged_drywall",
-    "top": "projectredacted:block/deco/damaged_drywall",
-    "side": "projectredacted:block/deco/damaged_drywall"
-  }
-}
