@@ -7,6 +7,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 
 public final class ModTabs {
@@ -15,7 +16,8 @@ public final class ModTabs {
                     .icon(() -> new ItemStack(ModBlocks.MAINFRAME))
                     .title(Component.translatable("itemGroup.projectredacted.main"))
                     .displayItems((params, output) -> {
-                        for (Block block : ModBlocks.ALL) output.accept(block);
+                        // A block without an item (like the top half of the Mainframe) would crash the tab.
+                        for (Block block : ModBlocks.ALL) if (block.asItem() != Items.AIR) output.accept(block);
                         ModItems.ALL.forEach(output::accept);
                     })
                     .build());
