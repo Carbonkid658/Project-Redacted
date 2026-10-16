@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "###",
+    "#D#",
+    "###"
+  ],
+  "key": {
+    "#": "projectredacted:facility_tile",
+    "D": "minecraft:blue_dye"
+  },
+  "result": {
+    "id": "projectredacted:blue_tile",
+    "count": 8
+  }
+}

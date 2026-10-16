@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    "projectredacted:facility_wall_slab",
+    "projectredacted:facility_tile_slab",
+    "projectredacted:facility_floor_slab",
+    "projectredacted:blue_tile_slab",
+    "projectredacted:security_tile_slab",
+    "projectredacted:office_tile_slab",
+    "projectredacted:sage_green_tile_slab"
+  ]
+}

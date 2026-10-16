@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "IPI",
+    "ICI"
+  ],
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "P": "minecraft:paper",
+    "C": "minecraft:chest"
+  },
+  "result": {
+    "id": "projectredacted:filing_cabinet",
+    "count": 1
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "front": "projectredacted:block/emergency_hatch_front",
+    "side": "projectredacted:block/emergency_hatch_side",
+    "top": "projectredacted:block/emergency_hatch_top"
+  }
+}

@@ -6,7 +6,7 @@ public final class StaffNames {
     private static final String[] FIRST = {"Alex", "Sam", "Jordan", "Morgan", "Casey", "Riley", "Taylor", "Jamie", "Avery", "Quinn",
             "Harper", "Rowan", "Elliot", "Dana", "Robin", "Kai", "Sasha", "Noel", "Blair", "Emerson", "Reese", "Skyler", "Charlie", "Frankie"};
     private static final String[] LAST = {"Reyes", "Kowalski", "Okafor", "Lindqvist", "Tanaka", "Moreau", "Hughes", "Petrov", "Nakamura",
-            "Bright", "Clef", "Gears", "Glass", "Kondraki", "Light", "Rights", "Crow", "King", "Mann", "Iceberg", "Sorts", "Everwood", "Talloran", "Vang"};
+            "Clef", "Gears", "Glass", "Kondraki", "Light", "Rights", "Crow", "King", "Mann", "Iceberg", "Sorts", "Everwood", "Talloran", "Vang"};
     /** Named staff are rarer and come with a special skill. */
     private static final String[] NAMED = {"\"Doc\" Halloway", "Agent Yoric", "Professor Marlowe", "Chief Brennan", "\"Sparks\" Delgado",
             "Dr. Amelia Vance", "Old Man Tuck", "Sergeant Okoye", "Nurse Ratchford", "Clerk Pemberton"};

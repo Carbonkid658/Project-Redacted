@@ -42,6 +42,12 @@ public final class Shops {
                 list.add(new Offer(new ItemStack(Items.TNT, 4), 5, -1));
                 list.add(new Offer(new ItemStack(ModItems.REPAIR_KIT, 2), 3, -1));
                 list.add(new Offer(new ItemStack(Items.SPYGLASS), 3, -1));
+                list.add(new Offer(new ItemStack(ModItems.PISTOL), 8, -1));
+                list.add(new Offer(new ItemStack(ModItems.RIFLE), 18, -1));
+                list.add(new Offer(new ItemStack(ModItems.SHOTGUN), 14, -1));
+                list.add(new Offer(new ItemStack(ModItems.PISTOL_AMMO, 16), 2, -1));
+                list.add(new Offer(new ItemStack(ModItems.RIFLE_AMMO, 16), 3, -1));
+                list.add(new Offer(new ItemStack(ModItems.SHOTGUN_SHELLS, 8), 3, -1));
             }
             case WONDERTAINMENT_REP -> {
                 // Stock is limited and restocks every in-game day.

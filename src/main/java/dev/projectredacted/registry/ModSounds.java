@@ -12,6 +12,10 @@ public final class ModSounds {
     public static final SoundEvent CASSIE_ANNOUNCE = register("cassie.announce");
     public static final SoundEvent SITE_ALARM = register("site.alarm");
     public static final SoundEvent WARHEAD_ALARM = register("site.warhead");
+    public static final SoundEvent GUN_PISTOL = register("gun.pistol");
+    public static final SoundEvent GUN_RIFLE = register("gun.rifle");
+    public static final SoundEvent GUN_SHOTGUN = register("gun.shotgun");
+    public static final SoundEvent GUN_RELOAD = register("gun.reload");
 
     private static SoundEvent register(String path) {
         Identifier id = ProjectRedacted.id(path);

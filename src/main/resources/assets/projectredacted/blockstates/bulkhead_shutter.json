@@ -1,0 +1,18 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "projectredacted:block/bulkhead_shutter"
+    },
+    "facing=east": {
+      "model": "projectredacted:block/bulkhead_shutter",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "projectredacted:block/bulkhead_shutter"
+    },
+    "facing=west": {
+      "model": "projectredacted:block/bulkhead_shutter",
+      "y": 90
+    }
+  }
+}

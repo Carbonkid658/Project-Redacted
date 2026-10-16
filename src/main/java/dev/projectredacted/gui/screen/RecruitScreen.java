@@ -37,11 +37,11 @@ public class RecruitScreen extends GuiScreen {
         StaffRole role = survivor.role();
         Skill skill = survivor.survivorSkill();
         String name = survivor.survivorName();
-        View v = new View(name + " · " + role.displayName).size("medium").face(Ui.staffSkin(role));
+        View v = new View(name + " · " + role.displayName).size("medium").face(Ui.staffSkin(role, survivor.skin()));
         List<String> lines = new ArrayList<>();
         lines.add(role.displayName + " · Foundation survivor");
         if (skill != null) lines.add("Skill: " + skill.displayName + " · " + skill.description);
-        v.add(El.portrait(Ui.staffSkin(role), (name + " · " + role.displayName).toUpperCase(), skill != null ? "NAMED" : null, lines));
+        v.add(El.portrait(Ui.staffSkin(role, survivor.skin()), (name + " · " + role.displayName).toUpperCase(), skill != null ? "NAMED" : null, lines));
         v.add(El.text("\"" + survivor.recruitLine(p) + "\"", "amber"));
         v.add(El.sep());
         v.add(El.text("Joins as: " + role.title(role.baseClearance) + " (CLR " + role.baseClearance + ")"));

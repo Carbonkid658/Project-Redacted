@@ -5,7 +5,6 @@ import dev.projectredacted.raid.Faction;
 import dev.projectredacted.raid.RaidManager;
 import dev.projectredacted.registry.ModBlocks;
 import dev.projectredacted.registry.ModItems;
-import dev.projectredacted.room.Construction;
 import dev.projectredacted.room.Room;
 import dev.projectredacted.room.RoomType;
 import dev.projectredacted.room.RoomTypes;
@@ -50,9 +49,9 @@ public class TerminalScreen extends GuiScreen {
     private int floor;
     private int cardLevel = 1;
     private String logFilter = "All";
-    /** The Level 0 plan waiting for the Director to build it or reroll (site generation §6). */
-    private dev.projectredacted.site.gen.SitePlan level0Plan;
-    private dev.projectredacted.site.gen.SiteGen.Survey level0Survey;
+    /** Field Ops tab: the team being put together and the trip length (NPC revamp §4.5). */
+    private final Set<UUID> team = new LinkedHashSet<>();
+    private dev.projectredacted.staff.Expedition.Length tripLength = dev.projectredacted.staff.Expedition.Length.SHORT;
 
     public TerminalScreen(Site site, BlockPos at) {
         this.site = site;
@@ -99,9 +98,11 @@ public class TerminalScreen extends GuiScreen {
         v.tab("upgrades", "Upgrades", Items.ANVIL, null);
         v.tab("personnel", "Personnel", Items.NAME_TAG, director ? null : "Director only");
         v.tab("security", "Security", Items.SHIELD, null);
+        v.tab("field", "Field Ops", Items.COMPASS, site.hasUpgrade(Upgrade.FIELD_OPERATIONS) ? null : "Needs the Field Operations upgrade");
         v.tab("site", "Site", Items.GRASS_BLOCK, null);
         v.tab("log", "Log", Items.WRITABLE_BOOK, null);
         if (!director && tab.equals("personnel")) tab = "overview";
+        if (tab.equals("field") && !site.hasUpgrade(Upgrade.FIELD_OPERATIONS)) tab = "overview";
         v.activeTab(tab);
         if (site.raid != null) {
             List<String> names = new ArrayList<>();
@@ -117,6 +118,7 @@ public class TerminalScreen extends GuiScreen {
             case "upgrades" -> upgrades(v, p);
             case "personnel" -> personnel(v, p);
             case "security" -> security(v, p);
+            case "field" -> field(v, p);
             case "site" -> siteTab(v, p);
             case "log" -> log(v);
             default -> overview(v, p);
@@ -125,7 +127,7 @@ public class TerminalScreen extends GuiScreen {
     }
 
     private void overview(View v, ServerPlayer p) {
-        v.add(El.heading("FACILITY LEVEL " + site.level + " · " + site.type.displayName + " · " + site.claimChunks() + "×" + site.claimChunks() + " chunks"));
+        v.add(El.heading("FACILITY LEVEL " + site.level + " · " + site.claimChunks() + "×" + site.claimChunks() + " chunks"));
         v.add(El.row(
                 El.text("Mainframe ● " + (site.mainframeOnline() ? "ONLINE" : "OFFLINE"), site.mainframeOnline() ? "green" : "red"),
                 El.text("C.A.S.S.I.E. ● " + (site.cassie == null ? "NOT INSTALLED" : site.cassieOperational() ? "ONLINE" : "OFFLINE"),
@@ -151,8 +153,10 @@ public class TerminalScreen extends GuiScreen {
 
     /** The site-founded checklist (GUI design §11.1); empty once every step is done. */
     static List<El> checklist(Site site) {
-        boolean[] done = {site.terminal != null, site.generated, site.generated, !site.staff.isEmpty()};
-        String[] steps = {"Place the Site Director's Computer", "Pick a site type", "Generate the facility", "Recruit staff from Foundation Bunkers"};
+        boolean[] done = {site.terminal != null, site.firstEntrance() != null, !site.rooms("projectredacted:barracks").isEmpty()
+                || !site.rooms("projectredacted:single_bedroom").isEmpty(), !site.staff.isEmpty()};
+        String[] steps = {"Place the Site Director's Computer in a closed room", "Build an Entrance (a closed room with a Reception Desk)",
+                "Build housing (a closed room with a Bunk Bed or Personal Locker)", "Recruit staff from Foundation Bunkers"};
         List<El> out = new ArrayList<>();
         boolean all = true;
         for (int i = 0; i < steps.length; i++) {
@@ -304,7 +308,7 @@ public class TerminalScreen extends GuiScreen {
                     .selected(r.number == room).search(t == null ? "" : t.category);
         }
         List<El> left = List.of(
-                El.chips("room_filter", roomFilter, List.of("All", "Working", "Dormant", "Damaged", "Building")),
+                El.chips("room_filter", roomFilter, List.of("All", "Working", "Dormant", "Damaged")),
                 El.chips("room_sort", roomSort, "Number", "No.", "Name", "Name", "Type", "Type"),
                 rows);
         v.add(El.cols(El.col(0.46, left), El.col(0.54, roomDetail(p))));
@@ -317,7 +321,7 @@ public class TerminalScreen extends GuiScreen {
         boolean canEdit = site.canBuild(p) && !offline();
         List<El> out = new ArrayList<>();
         out.add(El.heading(r.displayName()));
-        out.add(El.text("#" + r.number + " · " + (t == null ? "?" : t.category) + " · " + (r.x2 - r.x1 + 1) + "×" + (r.z2 - r.z1 + 1) + "×" + (r.y2 - r.y1 + 1), "gray"));
+        out.add(El.text(r.label() + (r.area != null ? " (#" + r.number + ", " + dev.projectredacted.site.gen.Areas.displayName(site, r.area) + " area)" : "") + " · " + (t == null ? "?" : t.category) + " · " + (r.x2 - r.x1 + 1) + "×" + (r.z2 - r.z1 + 1) + "×" + (r.y2 - r.y1 + 1), "gray"));
         out.add(El.text("From " + r.x1 + " " + r.y1 + " " + r.z1 + " to " + r.x2 + " " + r.y2 + " " + r.z2, "gray"));
         out.add(El.text(status(r), statusColor(r)));
         out.add(El.need("Integrity", r.integrity));
@@ -335,8 +339,20 @@ public class TerminalScreen extends GuiScreen {
         out.add(El.input("rename", "New name", El.button("Rename", "rename").disabled(canEdit ? null : "You need build rights.")));
         ServerLevel level = SiteManager.overworld();
         boolean scpInside = level != null && SiteLogic.hasScp(level, r);
-        out.add(El.button("Demolish", "demolish").style("danger").disabled(!canEdit ? "You need build rights." : scpInside ? "An SCP is inside." : null)
-                .confirm("Demolish " + r.displayName() + "? Its blocks will be cleared."));
+        String cantDemolish = !canEdit ? "You need build rights." : scpInside ? "An SCP is inside." : null;
+        List<Room> companions = site.companions(r);
+        if (!companions.isEmpty()) {
+            // Companion rooms (v4 §5.5): removing them too is the first choice.
+            List<String> names = new ArrayList<>();
+            for (Room c : companions) names.add(c.displayName());
+            out.add(El.button("Unregister with " + String.join(", ", names), "demolish_group").style("danger").disabled(cantDemolish)
+                    .confirm("Stop " + r.displayName() + " and " + String.join(", ", names) + " being rooms? Their blocks stay."));
+            out.add(El.button("Unregister only this room", "demolish").style("danger").disabled(cantDemolish)
+                    .confirm("Stop " + r.displayName() + " being a room and keep " + String.join(", ", names) + "? Its blocks stay."));
+        } else {
+            out.add(El.button("Unregister", "demolish").style("danger").disabled(cantDemolish)
+                    .confirm("Stop " + r.displayName() + " being a room? Its blocks stay; place the key block again to re-register it."));
+        }
         return out;
     }
 
@@ -557,6 +573,60 @@ public class TerminalScreen extends GuiScreen {
         v.add(El.box("Print keycard (up to your clearance)", card));
     }
 
+    private void field(View v, ServerPlayer p) {
+        long now = p.level().getGameTime();
+        team.removeIf(id -> {
+            StaffRecord r = site.staff.get(id);
+            return r == null || r.role != StaffRole.FIELD_AGENT || dev.projectredacted.staff.Expeditions.onTrip(site, id) != null;
+        });
+        if (dev.projectredacted.staff.Expeditions.operationsRoom(site) == null) {
+            v.banner("Build and power a Field Operations room before sending anyone out.", "amber");
+        }
+        List<El> pick = new ArrayList<>();
+        int agents = 0;
+        for (StaffRecord r : site.staff.values()) {
+            if (r.role != StaffRole.FIELD_AGENT) continue;
+            agents++;
+            var trip = dev.projectredacted.staff.Expeditions.onTrip(site, r.id);
+            if (trip != null) {
+                pick.add(El.text(r.fullName() + " · on expedition " + trip.id, "gray"));
+                continue;
+            }
+            boolean in = team.contains(r.id);
+            pick.add(El.button((in ? "☑ " : "☐ ") + r.fullName() + " · Lv " + r.level, "team_toggle").arg("id", r.id.toString())
+                    .disabled(!in && team.size() >= dev.projectredacted.staff.Expeditions.MAX_TEAM ? "A team is at most 4 agents." : null));
+        }
+        if (agents == 0) pick.add(El.text("No Field Agents yet. Recruit them from bunkers.", "gray"));
+        v.add(El.box("Team (1–4 Field Agents)", pick));
+
+        var len = tripLength;
+        int n = Math.max(1, team.size());
+        double f = len.teamFactor(n);
+        List<El> plan = new ArrayList<>();
+        plan.add(El.chips("trip_length", len.name(), "SHORT", "Short", "MEDIUM", "Medium", "LONG", "Long"));
+        plan.add(El.text("Away for about " + Ui.duration(len.ticks) + ".", "gray"));
+        plan.add(El.text("Expect about " + len.documents(n) + " research document" + (len.documents(n) == 1 ? "" : "s")
+                + " · " + Math.round(len.scpChance(n) * 100) + "% chance of an SCP", "green"));
+        plan.add(El.text("Each agent: " + Math.round(len.injury * f * 100) + "% hurt · " + Math.round(len.death * f * 100) + "% lost", "amber"));
+        String err = dev.projectredacted.staff.Expeditions.blocker(site, team);
+        if (err == null && !site.canAssign(p)) err = "You can't give staff orders here.";
+        plan.add(El.button("Send expedition", "send_expedition").style("confirm").disabled(err));
+        v.add(El.box("Trip", plan));
+
+        List<El> out = new ArrayList<>();
+        for (var e : site.expeditions) {
+            List<String> names = new ArrayList<>();
+            for (UUID id : e.agents) {
+                StaffRecord r = site.staff.get(id);
+                if (r != null) names.add(r.name);
+            }
+            String when = e.away() ? "back in " + Ui.duration(Math.max(0, e.returnTick - now)) : "heading out";
+            out.add(El.text("Expedition " + e.id + " · " + e.length.displayName + " · " + String.join(", ", names) + " · " + when));
+        }
+        if (out.isEmpty()) out.add(El.text("Nobody is out in the field.", "gray"));
+        v.add(El.box("Under way", out));
+    }
+
     private int raidersLeft() {
         ServerLevel level = SiteManager.overworld();
         if (level == null || site.raid == null) return 0;
@@ -584,62 +654,45 @@ public class TerminalScreen extends GuiScreen {
 
     private void siteTab(View v, ServerPlayer p) {
         boolean director = site.isDirector(p);
-        El.Cards cards = El.cards("site_type");
-        for (SiteType t : SiteType.values()) {
-            var c = cards.add(t.name(), switch (t) {
-                case UNDERGROUND -> Items.DEEPSLATE_BRICKS;
-                case SURFACE_FLAT -> Items.SMOOTH_STONE;
-                case SURFACE_TALL -> Items.QUARTZ_PILLAR;
-            }, t.displayName, t.description, site.type == t);
-            if (site.type == t) c.addProperty("tag", "CURRENT");
-            if (!director) c.addProperty("disabled", "Only the Site Director can change this.");
+        v.add(El.heading("BUILDING"));
+        v.add(El.text("Your facility is built by hand. Wall in a space, then place a room's key block inside it and the space becomes that room.", "white"));
+        v.add(El.text("Rooms must be closed (no gaps) and inside your claim. Some room types need staff, an upgrade or a Facility Level first.", "gray"));
+        El.ListEl keys = El.list("key_blocks", "").searchable().empty("No room types.");
+        for (RoomType t : RoomTypes.all()) {
+            String block = dev.projectredacted.room.KeyBlocks.name(t);
+            String locked = dev.projectredacted.room.RoomPlanner.lockedReason(site, t);
+            keys.add(t.id, t.name).icon(t.iconItem()).sub(block == null ? "No key block" : "Key block: " + block, block == null ? "gray" : "white")
+                    .badge(locked != null ? "LOCKED" : null, "amber").search(t.category + " " + (block == null ? "" : block));
         }
-        v.add(cards);
-        if (!site.generated) {
-            String blocked = director ? offline() ? "The Mainframe is offline." : null : "Only the Site Director can do this.";
-            if (level0Plan == null) {
-                v.add(El.button("Plan Level 0 Facility", "generate").style("confirm").disabled(blocked));
-            } else {
-                var plan = level0Plan;
-                v.add(El.text("Level 0 plan: " + plan.parts.size() + " parts (" + plan.count(dev.projectredacted.site.gen.SitePart.Kind.HALLWAY) + " hallway, "
-                        + plan.count(dev.projectredacted.site.gen.SitePart.Kind.STAIRWELL) + " stairwell). The outline shows where it goes.", "white"));
-                if (plan.overwrites > 0) v.add(El.text(plan.overwrites + " blocks you built are in the way and would be replaced.", "red"));
-                var build = El.button("Build it", "generate_build").style("confirm").disabled(blocked);
-                if (plan.overwrites > 0) build.style("danger").confirm("Replace " + plan.overwrites + " player-built blocks to build the Level 0 facility? "
-                        + "Chests in the way drop their items.");
-                v.add(El.row(build, El.button("Reroll", "generate").disabled(blocked), El.button("Cancel", "generate_cancel")));
-            }
-        } else {
-            v.add(El.text("Changing type only affects how you plan to grow (down or up).", "gray"));
-            addRoomSection(v, p);
-        }
+        v.add(El.box("Room types and their key blocks", keys));
+        areasSection(v, p);
         v.add(El.text("Site name: " + site.name(), "white"));
         v.add(El.input("site_name", "New site name", El.button("Rename", "rename_site").disabled(director ? null : "Only the Site Director can rename the site.")));
     }
 
-    /** Add Room (design §8.1): pick a room type and the mod finds a free spot joined to the facility. */
-    private void addRoomSection(View v, ServerPlayer p) {
-        v.add(El.heading("ADD ROOM"));
-        String blocked = site.canBuild(p) ? null : "You need build rights.";
-        var placing = dev.projectredacted.site.gen.AutoPlace.get(p);
-        if (placing != null && placing.site == site && placing.current() != null) {
-            v.add(El.row(El.text("Placing a " + placing.type().name + " (spot " + (placing.index + 1) + " of " + placing.spots.size() + ")", "white"),
-                    El.button("Continue", "add_room_continue").style("primary")));
-        }
-        List<El> row = new ArrayList<>();
-        row.add(El.text("Suggested:", "gray"));
-        for (RoomType t : dev.projectredacted.site.gen.AutoPlace.suggested(site)) row.add(El.button(t.name, "add_room").arg("id", t.id).disabled(blocked));
-        if (row.size() > 1) v.add(El.row(row));
-        v.add(El.row(El.button("Pick a room type…", "add_room_pick").disabled(blocked)
-                .tip("Pick any room type and size; the mod finds a free spot and shows it as an outline.")));
+    /** Areas: rooms, halls, clearance, names and lockdowns (v4 §2, D15). */
+    private void areasSection(View v, ServerPlayer p) {
         boolean director = site.isDirector(p);
-        var next = dev.projectredacted.site.gen.Expansion.next(site);
-        v.add(El.row(El.toggle("Auto-expand", site.autoExpand, "auto_expand"),
-                El.button("Priorities…", "expand_priorities").disabled(director ? null : "Only the Site Director can change this.")));
-        v.add(El.text(site.autoExpand
-                ? "The site orders its own rooms, paid from the Supply Depot and Storage Rooms. Next: " + (next == null ? "nothing needed" : next.name) + "."
-                : "Off. When on, the site orders the Suggested room by itself whenever the Supply Depot and Storage Rooms can pay.", "gray"));
-        if (site.autoExpand && site.expandStatus != null) v.add(El.text(site.expandStatus, "amber"));
+        String blocked = director ? null : "Only the Site Director can change areas.";
+        v.add(El.heading("AREAS"));
+        boolean any = false;
+        for (var e : site.areas.entrySet()) {
+            String key = e.getKey();
+            var as = e.getValue();
+            var def = dev.projectredacted.site.gen.Areas.get(as.kind);
+            int rooms = dev.projectredacted.site.gen.Areas.rooms(site, key);
+            if (rooms == 0) continue;
+            any = true;
+            boolean locked = site.lockdown.contains(key);
+            String name = dev.projectredacted.site.gen.Areas.displayName(site, key);
+            List<El> row = new ArrayList<>();
+            row.add(El.text(name + " · " + rooms + " room(s)" + (locked ? " · LOCKDOWN" : ""), locked ? "red" : def == null ? "white" : def.color));
+            if (locked) row.add(El.button("Lift lockdown", "lift_lockdown").arg("area", key).style("danger").disabled(blocked));
+            v.add(El.row(row));
+            if (director) v.add(El.input("area_name_" + key, "Rename " + name + " (blank for the default)", El.button("Rename", "rename_area").arg("area", key)));
+        }
+        if (!any) v.add(El.text("No areas yet. Each room you build joins the area of its kind (Living, Research, Containment...).", "gray"));
+        else v.add(El.text("A breach locks down its area: the doors of its rooms shut and their readers stop until you lift it.", "gray"));
     }
 
     // ---------------------------------------------------------------- log
@@ -707,7 +760,7 @@ public class TerminalScreen extends GuiScreen {
             case "select_room" -> room = parseInt(a.str("id"), -1);
             case "room_filter" -> roomFilter = a.str("id", "All");
             case "room_sort" -> roomSort = a.str("id", "Number");
-            case "power", "clear_label", "rename", "demolish" -> roomAction(p, action, a);
+            case "power", "clear_label", "rename", "demolish", "demolish_group" -> roomAction(p, action, a);
             // staff
             case "select_staff" -> staff = parseUuid(a.str("id"));
             case "staff_filter" -> staffFilter = a.str("id", "All");
@@ -744,6 +797,28 @@ public class TerminalScreen extends GuiScreen {
                 Gui.toast(p, err != null ? err : "The MTF are on their way.", err != null);
             }
             case "card_level" -> cardLevel = a.num("value", cardLevel);
+            // field ops
+            case "team_toggle" -> {
+                UUID id = parseUuid(a.str("id"));
+                if (id != null && !team.remove(id) && team.size() < dev.projectredacted.staff.Expeditions.MAX_TEAM) team.add(id);
+            }
+            case "trip_length" -> {
+                try {
+                    tripLength = dev.projectredacted.staff.Expedition.Length.valueOf(a.str("id", "SHORT"));
+                } catch (IllegalArgumentException ignored) {
+                }
+            }
+            case "send_expedition" -> {
+                String err = dev.projectredacted.staff.Expeditions.blocker(site, team);
+                if (err == null && !site.canAssign(p)) err = "You can't give staff orders here.";
+                if (err != null) {
+                    Gui.toast(p, err, true);
+                    return;
+                }
+                dev.projectredacted.staff.Expeditions.send((ServerLevel) p.level(), site, new ArrayList<>(team), tripLength);
+                team.clear();
+                Gui.toast(p, "The team is heading out.", false);
+            }
             case "print_card" -> {
                 if (offline()) return;
                 int lvl = Math.max(1, Math.min(cardLevel, site.clearance(p)));
@@ -756,69 +831,17 @@ public class TerminalScreen extends GuiScreen {
                 Gui.toast(p, "Printed a Level " + lvl + " keycard.", false);
             }
             // site
-            case "site_type" -> {
+            case "rename_area" -> {
                 if (!director) return;
-                try {
-                    site.type = SiteType.valueOf(a.str("id"));
-                } catch (IllegalArgumentException ignored) {
-                }
+                String key = a.str("area", "");
+                if (!site.areas.containsKey(key)) return;
+                String name = a.text();
+                site.areas.get(key).name = name.isEmpty() ? null : name.length() > 24 ? name.substring(0, 24) : name;
+                dev.projectredacted.site.gen.Areas.relabel(site);
+                Gui.toast(p, "Renamed to " + dev.projectredacted.site.gen.Areas.displayName(site, key) + ".", false);
             }
-            case "generate" -> {
-                if (!director || site.generated || offline()) return;
-                ServerLevel level = (ServerLevel) p.level();
-                long seed = level.getRandom().nextLong();
-                level0Survey = dev.projectredacted.site.gen.SiteGen.survey(level, site, seed);
-                level0Plan = dev.projectredacted.site.gen.SiteGen.planLevel0(level0Survey, site);
-                if (!level0Plan.ok()) {
-                    Gui.toast(p, level0Plan.error, true);
-                    level0Plan = null;
-                    level0Survey = null;
-                } else {
-                    dev.projectredacted.site.gen.PlanPreview.show(p, level0Plan);
-                }
-            }
-            case "add_room" -> {
-                RoomType t = RoomTypes.get(a.str("id"));
-                if (t == null || !site.canBuild(p)) return;
-                var placing = dev.projectredacted.site.gen.AutoPlace.start(p, site, t.id, 0);
-                placing.search(p);
-                Gui.openChild(p, new AutoPlaceScreen(placing));
-            }
-            case "auto_expand" -> {
-                if (!director) {
-                    Gui.toast(p, "Only the Site Director can switch auto-expand.", true);
-                    return;
-                }
-                site.autoExpand = !site.autoExpand;
-                site.nextExpandCheck = 0;
-                site.log("Auto-expand switched " + (site.autoExpand ? "on" : "off") + ".");
-            }
-            case "expand_priorities" -> {
-                if (director) Gui.openChild(p, new ExpandPriorityScreen(site));
-            }
-            case "add_room_continue" -> {
-                var placing = dev.projectredacted.site.gen.AutoPlace.get(p);
-                if (placing != null) Gui.openChild(p, new AutoPlaceScreen(placing));
-            }
-            case "add_room_pick" -> {
-                if (!site.canBuild(p)) return;
-                Gui.openChild(p, new RoomPickerScreen(site, dev.projectredacted.room.DesignSession.get(p), true));
-            }
-            case "generate_cancel" -> {
-                level0Plan = null;
-                level0Survey = null;
-                dev.projectredacted.site.gen.PlanPreview.clear(p);
-            }
-            case "generate_build" -> {
-                if (!director || site.generated || offline() || level0Plan == null) return;
-                Gui.close(p);
-                dev.projectredacted.site.gen.PlanPreview.clear(p);
-                dev.projectredacted.site.gen.SiteGen.commit((ServerLevel) p.level(), site, level0Plan, level0Survey, true);
-                site.generated = true;
-                site.log("Level 0 facility generation started (" + site.type.displayName + ", " + level0Plan.parts.size() + " parts).");
-                level0Plan = null;
-                level0Survey = null;
-                Msg.send(p, "The Level 0 facility is building itself. Then head out and recruit staff from Foundation Bunkers.", ChatFormatting.GOLD);
+            case "lift_lockdown" -> {
+                if (director) dev.projectredacted.site.gen.Areas.lift((ServerLevel) p.level(), site, a.str("area", ""));
             }
             case "rename_site" -> {
                 String name = a.text();
@@ -861,34 +884,33 @@ public class TerminalScreen extends GuiScreen {
                     return;
                 }
                 demolish(level, r);
-                Gui.toast(p, r.displayName() + " demolished.", false);
+                Gui.toast(p, r.displayName() + " is no longer a room.", false);
+                room = -1;
+            }
+            case "demolish_group" -> {
+                ServerLevel level = (ServerLevel) p.level();
+                if (SiteLogic.hasScp(level, r)) {
+                    Gui.toast(p, "An SCP is inside " + r.displayName() + ". Move it out first.", true);
+                    return;
+                }
+                List<String> kept = new ArrayList<>();
+                for (Room c : site.companions(r)) {
+                    // A cell with an SCP inside still can't be demolished.
+                    if (SiteLogic.hasScp(level, c)) kept.add(c.displayName());
+                    else demolish(level, c);
+                }
+                demolish(level, r);
+                Gui.toast(p, r.displayName() + " and its companions are no longer rooms." + (kept.isEmpty() ? "" : " Kept " + String.join(", ", kept) + ": an SCP is inside."), !kept.isEmpty());
                 room = -1;
             }
             default -> {}
         }
     }
 
+    /** Takes the room off the books. Its blocks stay: the player built them and takes them down by hand. */
     private void demolish(ServerLevel level, Room r) {
-        site.rooms.remove(r);
-        Construction.forget(site, r);
-        if (!r.freeform) {
-            for (BlockPos pos : BlockPos.betweenClosed(r.x1, r.y1 + 1, r.z1, r.x2, r.y2, r.z2)) {
-                if (pos.equals(site.mainframe) || pos.equals(site.terminal) || pos.equals(site.cassie)) continue;
-                level.setBlock(pos, Blocks.AIR.defaultBlockState(), 2 | 16);
-            }
-        }
-        for (StaffRecord s : site.staff.values()) if (s.assignment.room == r.number) s.assignment = new Assignment();
-        if (r.part >= 0 && r.part < site.parts.size()) {
-            // The part's space is free again once none of its rooms are left.
-            var part = site.parts.get(r.part);
-            part.rooms.remove((Integer) r.number);
-            if (part.rooms.isEmpty()) {
-                part.removed = true;
-                int index = r.part;
-                site.doorways.removeIf(d -> d.part == index);
-            }
-        }
-        site.log(r.displayName() + " demolished.");
+        site.removeRoom(r);
+        site.log(r.displayName() + " is no longer a room.");
     }
 
     private void memberAction(ServerPlayer p, String action, Args a) {

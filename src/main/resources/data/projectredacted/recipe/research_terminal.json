@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "IGI",
+    "IRI",
+    "IBI"
+  ],
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "G": "minecraft:glass_pane",
+    "R": "minecraft:redstone",
+    "B": "minecraft:book"
+  },
+  "result": {
+    "id": "projectredacted:research_terminal",
+    "count": 1
+  }
+}

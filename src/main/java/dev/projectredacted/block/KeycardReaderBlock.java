@@ -61,6 +61,11 @@ public class KeycardReaderBlock extends FacingBlock {
         if (!(stack.getItem() instanceof KeycardItem card)) return InteractionResult.TRY_WITH_EMPTY_HAND;
         if (level.isClientSide()) return InteractionResult.SUCCESS;
         SiteManager.addReader(pos);
+        if (DoorControl.locked(pos) && card.level() < 5) {
+            level.playSound(null, pos, SoundEvents.VILLAGER_NO, SoundSource.BLOCKS, 0.6f, 0.6f);
+            Msg.actionBar(player, "LOCKDOWN. Only a Level 5 keycard opens this until it's lifted.", ChatFormatting.RED);
+            return InteractionResult.SUCCESS;
+        }
         if (card.level() >= state.getValue(LEVEL)) {
             DoorControl.openNear(level, pos, 60);
             level.playSound(null, pos, SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.BLOCKS, 0.5f, 1.6f);

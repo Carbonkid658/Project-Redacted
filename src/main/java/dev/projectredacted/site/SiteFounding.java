@@ -152,7 +152,6 @@ public final class SiteFounding {
             dev.projectredacted.room.RoomPlanner.name(site, r, r.typeDef());
             site.rooms.add(r);
         }
-        site.generated = true;
         site.log("Moved into an abandoned facility.");
     }
 

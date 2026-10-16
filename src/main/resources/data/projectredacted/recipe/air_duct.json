@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "INI",
+    "N N",
+    "INI"
+  ],
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "N": "minecraft:iron_nugget"
+  },
+  "result": {
+    "id": "projectredacted:air_duct",
+    "count": 4
+  }
+}

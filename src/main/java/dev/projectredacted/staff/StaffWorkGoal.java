@@ -5,7 +5,9 @@ import dev.projectredacted.room.RoomType;
 import dev.projectredacted.site.Site;
 import dev.projectredacted.site.SiteLogic;
 import dev.projectredacted.util.Time;
+import dev.projectredacted.room.Stations;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -24,7 +26,6 @@ public class StaffWorkGoal extends Goal {
     private final Random random = new Random();
     private BlockPos target;
     private int recheck;
-    private int idleWander;
 
     public StaffWorkGoal(StaffEntity mob) {
         this.mob = mob;
@@ -61,6 +62,16 @@ public class StaffWorkGoal extends Goal {
         ServerLevel level = (ServerLevel) mob.level();
         boolean night = Time.night(level);
 
+        // Field Agents heading out on an expedition walk to the site entrance and leave (§4.5).
+        Expedition trip = r.role == StaffRole.FIELD_AGENT ? Expeditions.onTrip(site, mob.getUUID()) : null;
+        if (trip != null && trip.leaving.contains(mob.getUUID())) {
+            wake();
+            BlockPos gate = Expeditions.gate(site);
+            if (mob.blockPosition().distSqr(gate) <= 9) Expeditions.leftSite(mob, site);
+            else go(gate, 1.1);
+            return;
+        }
+
         // Following a player (security) or researcher (D-Class).
         if (r.assignment.kind == Assignment.Kind.FOLLOW && r.assignment.leader != null) {
             Entity leader = level.getEntity(r.assignment.leader);
@@ -77,7 +88,7 @@ public class StaffWorkGoal extends Goal {
             Room med = nearestWorking(site, "projectredacted:medbay", "projectredacted:waiting_room", "projectredacted:checkup_room");
             if (med != null) {
                 wake();
-                go(med.center(), 1.0);
+                goInto(level, site, med, null, 1.0);
                 return;
             }
         }
@@ -100,18 +111,55 @@ public class StaffWorkGoal extends Goal {
         if (mealtime && r.hunger < 70 && r.role != StaffRole.DCLASS) {
             Room caf = nearestWorking(site, "projectredacted:cafeteria");
             if (caf != null) {
-                go(caf.center(), 1.0);
+                goInto(level, site, caf, null, 1.0);
                 return;
             }
         }
 
-        BlockPos post = post(site, r);
+        Post post = post(site, r);
         if (post == null) return;
-        if (mob.blockPosition().distSqr(post) > 25) {
-            go(post, 1.0);
-        } else if (--idleWander <= 0) {
-            idleWander = 3 + random.nextInt(5);
-            go(post.offset(random.nextInt(7) - 3, 0, random.nextInt(7) - 3), 0.6);
+        if (post.room() == null) {
+            if (mob.blockPosition().distSqr(post.spot()) > 25) go(post.spot(), 1.0);
+            return;
+        }
+        goInto(level, site, post.room(), post, 1.0);
+    }
+
+    /** Where a staff member works: a room (null for a plain spot), and optionally a fixed spot and facing in it. */
+    private record Post(Room room, BlockPos spot, Direction face) {}
+
+    /**
+     * Into a room the proper way (NPC revamp §4.2): to its Room Entrance Marker first, then to a work station
+     * inside (or {@code post}'s fixed spot). Rooms without a marker are walked into directly.
+     */
+    private void goInto(ServerLevel level, Site site, Room room, Post post, double speed) {
+        BlockPos spot;
+        Stations.Station station = null;
+        if (post != null && post.spot() != null) {
+            spot = post.spot();
+        } else {
+            station = Stations.claim(level, site, room, mob.getUUID());
+            spot = station != null ? station.stand() : room.center();
+        }
+        Stations.release(site, mob.getUUID(), room.number);
+        boolean inside = room.contains(mob.blockPosition());
+        if (!inside && room.entrance != null && !spot.equals(room.entrance)) {
+            BlockPos door = room.outsideDoor();
+            if (mob.blockPosition().distSqr(door) > 4) {
+                go(door, speed);
+                return;
+            }
+        }
+        if (mob.blockPosition().distSqr(spot) > 2) {
+            go(spot, speed);
+            return;
+        }
+        // At the spot: face out of the doorway, or toward the station.
+        if (post != null && post.face() != null) {
+            BlockPos look = spot.relative(post.face(), 4);
+            mob.getLookControl().setLookAt(look.getX() + 0.5, mob.getEyeY(), look.getZ() + 0.5);
+        } else if (station != null && station.block() != null) {
+            mob.getLookControl().setLookAt(station.block().getX() + 0.5, station.block().getY() + 0.5, station.block().getZ() + 0.5);
         }
     }
 
@@ -146,20 +194,24 @@ public class StaffWorkGoal extends Goal {
     }
 
     /** The clipboard target, or a sensible default post for the role. */
-    private BlockPos post(Site site, StaffRecord r) {
+    private Post post(Site site, StaffRecord r) {
         Assignment a = r.assignment;
         Room room = a.kind == Assignment.Kind.NONE || a.kind == Assignment.Kind.FOLLOW ? null : site.room(a.room);
         if (room != null) {
             return switch (a.kind) {
                 case SCP -> {
                     if (r.role == StaffRole.RESEARCHER) {
-                        Room obs = nearestTo(site, room.center(), "projectredacted:observation_room");
-                        yield obs != null && obs.working() ? obs.center() : room.outsideDoor();
+                        // The Observation Room linked to this cell (v4 §5.5), else the nearest one.
+                        Room obs = null;
+                        for (Room o : site.rooms) if (o.watches == room.number && o.working()) obs = o;
+                        if (obs == null) obs = nearestTo(site, room.center(), "projectredacted:observation_room");
+                        if (obs != null && obs.working()) yield new Post(obs, null, null);
                     }
-                    yield room.outsideDoor();
+                    if (r.role == StaffRole.SECURITY) yield guard(room);
+                    yield new Post(null, room.outsideDoor(), null);
                 }
-                case ENTRANCE -> room.center();
-                default -> room.center();
+                case CHECKPOINT -> r.role == StaffRole.SECURITY ? guard(room) : new Post(room, null, null);
+                default -> new Post(room, null, null);
             };
         }
         Room fallback = switch (r.role) {
@@ -170,9 +222,19 @@ public class StaffWorkGoal extends Goal {
             case ADMINISTRATION -> firstOf(site, "projectredacted:admin_office", "projectredacted:directors_office");
             case MEDICAL -> firstOf(site, "projectredacted:medbay", "projectredacted:checkup_room");
             case DCLASS -> firstOf(site, "projectredacted:prison");
+            case FIELD_AGENT -> firstOf(site, "projectredacted:field_operations", "projectredacted:entrance");
         };
         if (fallback == null) fallback = firstOf(site, "projectredacted:directors_office");
-        return fallback == null ? null : fallback.center();
+        if (fallback == null) return null;
+        RoomType t = fallback.typeDef();
+        if (r.role == StaffRole.SECURITY && t != null && t.isCheckpoint()) return guard(fallback);
+        return new Post(fallback, null, null);
+    }
+
+    /** Security at a checkpoint or SCP cell stands on the entrance marker, facing out (§4.2). */
+    private static Post guard(Room room) {
+        if (room.entrance == null || room.entranceSide < 0) return new Post(null, room.outsideDoor(), null);
+        return new Post(room, room.entrance, room.doorSide());
     }
 
     private Room nearestWorking(Site site, String... types) {

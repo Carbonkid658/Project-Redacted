@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PXP",
+    "PPP"
+  ],
+  "key": {
+    "X": "minecraft:iron_sword",
+    "P": "minecraft:spruce_planks"
+  },
+  "result": {
+    "id": "projectredacted:weapon_rack",
+    "count": 1
+  }
+}

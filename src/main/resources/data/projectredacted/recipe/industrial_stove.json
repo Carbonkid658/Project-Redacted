@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "III",
+    "ISI"
+  ],
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "S": "minecraft:smoker"
+  },
+  "result": {
+    "id": "projectredacted:industrial_stove",
+    "count": 1
+  }
+}

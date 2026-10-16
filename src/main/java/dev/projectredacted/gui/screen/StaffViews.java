@@ -28,7 +28,7 @@ public final class StaffViews {
         List<String> lines = new ArrayList<>();
         lines.add(r.role.displayName + " · Level " + r.level + " · CLR " + r.clearance);
         if (r.skill != null) lines.add("Skill: " + r.skill.displayName + " · " + r.skill.description);
-        out.add(El.portrait(Ui.staffSkin(r.role), r.fullName().toUpperCase(), r.named ? "NAMED" : null, lines));
+        out.add(El.portrait(Ui.staffSkin(r.role, r.skin), r.fullName().toUpperCase(), r.named ? "NAMED" : null, lines));
         double floor = 40.0 * (r.level - 1) * (r.level - 1), next = 40.0 * r.level * r.level;
         out.add(r.level >= 10 ? El.progress("XP", 1, "MAX") : El.progress("XP", (r.xp - floor) / Math.max(1, next - floor), String.format("%.0f / %.0f", r.xp, next)));
         out.add(El.need("Morale", r.morale));
@@ -92,6 +92,7 @@ public final class StaffViews {
                     return true;
                 }
                 r.clearance++;
+                r.repickSkin();
                 refreshName(r);
                 Cassie.announce(site, r.name + " has been promoted to " + r.title() + ".");
                 Gui.toast(player, r.name + " promoted to " + r.title() + ".", false);

@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/outer_stairs",
+  "textures": {
+    "bottom": "projectredacted:block/facility_tile",
+    "top": "projectredacted:block/facility_tile",
+    "side": "projectredacted:block/facility_tile"
+  }
+}

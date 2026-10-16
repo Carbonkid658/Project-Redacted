@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "BWB",
+    "PPP"
+  ],
+  "key": {
+    "B": "minecraft:book",
+    "W": "minecraft:writable_book",
+    "P": "minecraft:dark_oak_planks"
+  },
+  "result": {
+    "id": "projectredacted:ethics_bench",
+    "count": 1
+  }
+}

@@ -30,8 +30,7 @@ public final class SiteCommand {
                                         IntegerArgumentType.getInteger(ctx, "level"))))))
                 .then(Commands.literal("transfer").then(Commands.argument("player", EntityArgument.player())
                         .executes(ctx -> transfer(ctx.getSource().getPlayerOrException(), EntityArgument.getPlayer(ctx, "player")))))
-                .then(Commands.literal("leave").executes(ctx -> leave(ctx.getSource().getPlayerOrException())))
-                .then(PartsCommand.node()));
+                .then(Commands.literal("leave").executes(ctx -> leave(ctx.getSource().getPlayerOrException()))));
     }
 
     private static Site directed(ServerPlayer player) {
@@ -46,7 +45,7 @@ public final class SiteCommand {
             Msg.send(player, "You aren't part of a site. Craft a Mainframe and place it to found one.", ChatFormatting.GRAY);
             return 0;
         }
-        Msg.send(player, "Site of Director " + site.directorName + " (Level " + site.level + ", " + site.type.displayName + ")", ChatFormatting.GOLD);
+        Msg.send(player, "Site of Director " + site.directorName + " (Level " + site.level + ")", ChatFormatting.GOLD);
         Msg.send(player, "Claim: " + site.claimChunks() + "x" + site.claimChunks() + " chunks around " + site.center().toShortString(), ChatFormatting.GRAY);
         Msg.send(player, "Mainframe " + (site.mainframeOnline() ? "online" : "OFFLINE") + ", power " + site.powerDemand + "/" + site.powerSupply
                 + ", water " + site.waterDemand + "/" + site.waterSupply, ChatFormatting.GRAY);

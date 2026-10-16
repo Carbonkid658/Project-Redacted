@@ -322,7 +322,9 @@ public final class BlockPanels {
             if (!p.isCreative()) Cost.take(p, ModItems.REPAIR_KIT, kits());
             BlockState old = level.getBlockState(pos);
             BlockState fresh = ModBlocks.CASSIE.defaultBlockState();
-            if (old.hasProperty(FacingBlock.FACING)) fresh = fresh.setValue(FacingBlock.FACING, old.getValue(FacingBlock.FACING));
+            // Keeps the way the ruined C.A.S.S.I.E. was turned.
+            if (old.hasProperty(dev.projectredacted.block.CassieBlock.ROTATION))
+                fresh = fresh.setValue(dev.projectredacted.block.CassieBlock.ROTATION, old.getValue(dev.projectredacted.block.CassieBlock.ROTATION));
             level.setBlock(pos, fresh, 3);
             site.cassie = pos.immutable();
             site.cassieHack = 0;

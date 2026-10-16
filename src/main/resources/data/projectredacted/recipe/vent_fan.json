@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "NBN",
+    "BRB",
+    "NBN"
+  ],
+  "key": {
+    "N": "minecraft:iron_nugget",
+    "B": "minecraft:iron_bars",
+    "R": "minecraft:redstone"
+  },
+  "result": {
+    "id": "projectredacted:vent_fan",
+    "count": 1
+  }
+}

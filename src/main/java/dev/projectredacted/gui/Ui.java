@@ -22,12 +22,13 @@ public final class Ui {
         return site == null ? null : "CLR " + site.clearance(player);
     }
 
-    public static String staffSkin(StaffRole role) {
-        return "projectredacted:textures/entity/staff/" + role.skin() + ".png";
+    /** A staff member's skin texture (NPC revamp §4.1); the pool's first skin when none was picked yet. */
+    public static String staffSkin(StaffRole role, String skin) {
+        return dev.projectredacted.npc.Skins.texture(dev.projectredacted.npc.Skins.STAFF, role.skin(), skin);
     }
 
     public static String traderSkin(TraderKind kind) {
-        return "projectredacted:textures/entity/trader/" + kind.skin + ".png";
+        return dev.projectredacted.npc.Skins.texture(dev.projectredacted.npc.Skins.TRADER, kind.skin, "");
     }
 
     /** Have/need per item, for the cost widget. Creative players count as having everything. */

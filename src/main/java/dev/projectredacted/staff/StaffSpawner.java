@@ -52,6 +52,7 @@ public final class StaffSpawner {
             e.setupSurvivor(role, name, skill, 0);
             e.snapTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, 0, 0);
             record.id = e.getUUID();
+            record.skin = e.skin();
             site.staff.put(record.id, record);
             e.joinSite(site);
             level.addFreshEntity(e);

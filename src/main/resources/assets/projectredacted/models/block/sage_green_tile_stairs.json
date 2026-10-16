@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/stairs",
+  "textures": {
+    "bottom": "projectredacted:block/sage_green_tile",
+    "top": "projectredacted:block/sage_green_tile",
+    "side": "projectredacted:block/sage_green_tile"
+  }
+}

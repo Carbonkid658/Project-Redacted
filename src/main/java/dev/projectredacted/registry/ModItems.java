@@ -20,21 +20,26 @@ public final class ModItems {
     public static final Item PLASTIC = register("plastic", Item::new, new Item.Properties());
     public static final Item COIN = register("coin", Item::new, new Item.Properties());
     public static final Item DOLLAR = register("dollar", Item::new, new Item.Properties());
+    public static final Item PHONE = register("phone", Item::new, new Item.Properties());
     public static final Item KEYCARD_1 = keycard(1);
     public static final Item KEYCARD_2 = keycard(2);
     public static final Item KEYCARD_3 = keycard(3);
     public static final Item KEYCARD_4 = keycard(4);
     public static final Item KEYCARD_5 = keycard(5);
     public static final Item CLIPBOARD = register("clipboard", ClipboardItem::new, new Item.Properties().stacksTo(1));
-    public static final Item ROOM_DESIGNATOR = register("room_designator", DesignatorItem::new, new Item.Properties().stacksTo(1));
-    /** Creative-only tool for framing hand-built site parts (site generation §7). */
-    public static final Item PART_FRAME = register("part_frame", PartFrameItem::new, new Item.Properties().stacksTo(1).rarity(Rarity.EPIC));
     public static final Item FACILITY_TABLET = register("facility_tablet", TabletItem::new, new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON));
     public static final Item RESEARCH_DOCUMENT = register("research_document", dev.projectredacted.item.ResearchDocumentItem::new, new Item.Properties());
     public static final Item REPAIR_KIT = register("repair_kit", RepairKitItem::new, new Item.Properties().stacksTo(16));
     public static final Item LIBRARY_TOME = register("library_tome", Item::new, new Item.Properties().rarity(Rarity.RARE));
     public static final Item LORE_DOCUMENT = register("lore_document", LoreDocumentItem::new, new Item.Properties().stacksTo(1));
     public static final Item DELIVERY_FLARE = register("delivery_flare", DeliveryFlareItem::new, new Item.Properties().stacksTo(1));
+    /** Firearms and their ammo (NPC revamp §4.3). */
+    public static final Item PISTOL = register("pistol", p -> new dev.projectredacted.combat.GunItem(dev.projectredacted.combat.GunType.PISTOL, p), new Item.Properties().stacksTo(1));
+    public static final Item RIFLE = register("rifle", p -> new dev.projectredacted.combat.GunItem(dev.projectredacted.combat.GunType.RIFLE, p), new Item.Properties().stacksTo(1));
+    public static final Item SHOTGUN = register("shotgun", p -> new dev.projectredacted.combat.GunItem(dev.projectredacted.combat.GunType.SHOTGUN, p), new Item.Properties().stacksTo(1));
+    public static final Item PISTOL_AMMO = register("pistol_ammo", Item::new, new Item.Properties());
+    public static final Item RIFLE_AMMO = register("rifle_ammo", Item::new, new Item.Properties());
+    public static final Item SHOTGUN_SHELLS = register("shotgun_shells", Item::new, new Item.Properties());
     /** Creative-only stand-in anomaly for testing containment before real SCPs exist. */
     public static final Item UNCLASSIFIED_ANOMALY = register("unclassified_anomaly", Item::new, new Item.Properties().stacksTo(1).rarity(Rarity.EPIC));
 

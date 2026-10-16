@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "projectredacted:block/security_tile_slab"
+    },
+    "type=double": {
+      "model": "projectredacted:block/security_tile"
+    },
+    "type=top": {
+      "model": "projectredacted:block/security_tile_slab_top"
+    }
+  }
+}

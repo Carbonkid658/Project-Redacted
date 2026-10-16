@@ -2,7 +2,6 @@ package dev.projectredacted;
 
 import dev.projectredacted.command.SiteCommand;
 import dev.projectredacted.gui.Gui;
-import dev.projectredacted.gui.screen.RoomPreviewScreen;
 import dev.projectredacted.net.ModNetwork;
 import dev.projectredacted.npc.WanderingContacts;
 import dev.projectredacted.registry.*;
@@ -10,9 +9,6 @@ import dev.projectredacted.room.RoomTypes;
 import dev.projectredacted.site.ClaimProtection;
 import dev.projectredacted.site.SiteEvents;
 import dev.projectredacted.site.SiteManager;
-import dev.projectredacted.site.gen.PartFrames;
-import dev.projectredacted.site.gen.PartKit;
-import dev.projectredacted.site.gen.SiteTypeRules;
 import dev.projectredacted.util.Scheduler;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -38,6 +34,7 @@ public class ProjectRedacted implements ModInitializer {
 
     @Override
     public void onInitialize() {
+        ProjectRedactedBlockEntities.register();
         ModSounds.init();
         ModComponents.init();
         ModBlocks.init();
@@ -46,7 +43,8 @@ public class ProjectRedacted implements ModInitializer {
         ModTabs.init();
         ModWorldgen.init();
         ModNetwork.init();
-        RoomPreviewScreen.registerKeys();
+        dev.projectredacted.util.ModConfig.load();
+        dev.projectredacted.room.KeyRooms.init();
 
         ClaimProtection.init();
         SiteEvents.init();
@@ -55,23 +53,19 @@ public class ProjectRedacted implements ModInitializer {
 
         ServerLifecycleEvents.SERVER_STARTED.register(server -> {
             RoomTypes.reload(server.getResourceManager());
-            SiteTypeRules.reload(server.getResourceManager());
-            PartKit.reload(server.getResourceManager());
+            dev.projectredacted.site.gen.Areas.reload(server.getResourceManager());
             SiteManager.load(server);
-            PartFrames.load(server);
             runAutotest(server);
         });
         ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, resourceManager, success) -> {
             if (success) {
                 RoomTypes.reload(server.getResourceManager());
-                SiteTypeRules.reload(server.getResourceManager());
-                PartKit.reload(server.getResourceManager());
+                dev.projectredacted.site.gen.Areas.reload(server.getResourceManager());
             }
         });
         ServerLifecycleEvents.SERVER_STOPPING.register(server -> SiteManager.save());
         ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
             SiteManager.unload();
-            PartFrames.unload();
             Gui.clear();
         });
 
@@ -91,7 +85,7 @@ public class ProjectRedacted implements ModInitializer {
 
     /**
      * CI hook: if the server folder has projectredacted-autotest.txt, runs each line as a console command once
-     * the server has started ("wait N" pauses N ticks), then stops the server. Used to test site generation.
+     * the server has started ("wait N" pauses N ticks), then stops the server. Used for testing in CI.
      */
     private static void runAutotest(net.minecraft.server.MinecraftServer server) {
         java.nio.file.Path file = java.nio.file.Path.of("projectredacted-autotest.txt");

@@ -35,9 +35,9 @@ public class StaffCardScreen extends GuiScreen {
     public View build(ServerPlayer p) {
         Site site = entity.site();
         StaffRecord r = entity.record();
-        View v = new View(r.fullName()).size("medium").face(Ui.staffSkin(r.role)).badge(Ui.clr(site, p));
+        View v = new View(r.fullName()).size("medium").face(Ui.staffSkin(r.role, r.skin)).badge(Ui.clr(site, p));
         if (!site.isMember(p)) {
-            v.add(El.portrait(Ui.staffSkin(r.role), r.fullName().toUpperCase(), r.named ? "NAMED" : null,
+            v.add(El.portrait(Ui.staffSkin(r.role, r.skin), r.fullName().toUpperCase(), r.named ? "NAMED" : null,
                     java.util.List.of(r.role.displayName, "Works for " + site.directorName + "'s site, " + site.name() + ".")));
             return v;
         }

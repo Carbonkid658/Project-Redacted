@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SBS",
+    "SBS"
+  ],
+  "key": {
+    "S": "minecraft:stick",
+    "B": "#minecraft:beds"
+  },
+  "result": {
+    "id": "projectredacted:bunk_bed",
+    "count": 1
+  }
+}

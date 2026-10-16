@@ -92,7 +92,7 @@ public class AssignScreen extends GuiScreen {
     public View build(ServerPlayer p) {
         List<Assignment.Kind> kinds = kinds();
         if (tab == null || !kinds.contains(tab)) tab = kinds.get(0);
-        View v = new View("ASSIGN · " + rec.name + " (" + rec.role.displayName + ", CLR " + rec.clearance + ")").face(Ui.staffSkin(rec.role)).badge(Ui.clr(site, p));
+        View v = new View("ASSIGN · " + rec.name + " (" + rec.role.displayName + ", CLR " + rec.clearance + ")").face(Ui.staffSkin(rec.role, rec.skin)).badge(Ui.clr(site, p));
         v.add(El.text("Current: " + StaffEntity.describeAssignment(site, rec.assignment), "amber"));
         String[] chips = new String[kinds.size() * 2];
         for (int i = 0; i < kinds.size(); i++) {
@@ -105,10 +105,12 @@ public class AssignScreen extends GuiScreen {
             RoomType t = room.typeDef();
             if (t == null || !room.built || kindFor(room, t) != tab) continue;
             String label = switch (tab) {
-                case SCP -> (room.scpLabel.isEmpty() ? "Empty cell" : room.scpLabel) + " · " + t.name + " #" + room.number;
+                case SCP -> (room.scpLabel.isEmpty() ? "Empty cell" : room.scpLabel) + " · " + t.name + " " + room.label();
                 case CHECKPOINT, ENTRANCE -> room.displayName();
                 default -> room.displayName();
             };
+            // Searchable by its area label (Containment-04) and by its plain number.
+            if (room.area != null) label += " · #" + room.number;
             String blocked = blocker(room, t, tab);
             list.add(String.valueOf(room.number), label).icon(t.iconItem()).sub(blocked != null ? blocked : hint(tab), blocked != null ? "red" : "gray")
                     .dim(blocked != null).selected(room.number == selected);

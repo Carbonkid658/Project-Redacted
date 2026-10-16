@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "GSG",
+    "IRI"
+  ],
+  "key": {
+    "G": "minecraft:glass_pane",
+    "S": "minecraft:spyglass",
+    "I": "minecraft:iron_ingot",
+    "R": "minecraft:redstone"
+  },
+  "result": {
+    "id": "projectredacted:observation_console",
+    "count": 1
+  }
+}

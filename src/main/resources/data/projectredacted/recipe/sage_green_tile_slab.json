@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "###"
+  ],
+  "key": {
+    "#": "projectredacted:sage_green_tile"
+  },
+  "result": {
+    "id": "projectredacted:sage_green_tile_slab",
+    "count": 6
+  }
+}

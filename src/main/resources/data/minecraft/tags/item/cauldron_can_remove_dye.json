@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "projectredacted:dyeable_bricks",
+    "projectredacted:dyeable_floor",
+    "projectredacted:dyeable_tile"
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "IBI",
+    "IRI"
+  ],
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "B": "minecraft:stone_button",
+    "R": "minecraft:redstone"
+  },
+  "result": {
+    "id": "projectredacted:blast_door_controller",
+    "count": 1
+  }
+}

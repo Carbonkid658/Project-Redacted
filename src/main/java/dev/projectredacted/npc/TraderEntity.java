@@ -29,6 +29,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 /** GOC quartermasters, the Wondertainment rep, MC&D contacts, the Librarian and Ways to the Library. */
 public class TraderEntity extends PathfinderMob {
     private static final EntityDataAccessor<String> KIND = SynchedEntityData.defineId(TraderEntity.class, EntityDataSerializers.STRING);
+    private static final EntityDataAccessor<String> SKIN = SynchedEntityData.defineId(TraderEntity.class, EntityDataSerializers.STRING);
 
     /** Game time this contact leaves, for roaming contacts and Ways. */
     public long leaveAt = Long.MAX_VALUE;
@@ -50,6 +51,7 @@ public class TraderEntity extends PathfinderMob {
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
         builder.define(KIND, TraderKind.GOC_QUARTERMASTER.name());
+        builder.define(SKIN, "");
     }
 
     @Override
@@ -67,6 +69,7 @@ public class TraderEntity extends PathfinderMob {
 
     public void setKind(TraderKind kind) {
         entityData.set(KIND, kind.name());
+        if (entityData.get(SKIN).isEmpty()) entityData.set(SKIN, Skins.pick(Skins.TRADER, kind.skin, 0, new java.util.Random()));
         setCustomName(Component.literal(kind.displayName));
         if (kind == TraderKind.LIBRARY_ENTRANCE) {
             setNoGravity(true);
@@ -82,8 +85,14 @@ public class TraderEntity extends PathfinderMob {
         }
     }
 
-    public String skinId() {
+    /** The skin pool (NPC revamp §4.1). */
+    public String skinPool() {
         return kind().skin;
+    }
+
+    /** The skin picked from the pool when it spawned. */
+    public String skin() {
+        return entityData.get(SKIN);
     }
 
     @Override
@@ -122,6 +131,7 @@ public class TraderEntity extends PathfinderMob {
     protected void addAdditionalSaveData(ValueOutput out) {
         super.addAdditionalSaveData(out);
         out.putString("TraderKind", kind().name());
+        out.putString("Skin", skin());
         out.putLong("LeaveAt", leaveAt);
         out.putLong("RestockDay", lastRestockDay);
     }
@@ -129,6 +139,7 @@ public class TraderEntity extends PathfinderMob {
     @Override
     protected void readAdditionalSaveData(ValueInput in) {
         super.readAdditionalSaveData(in);
+        entityData.set(SKIN, in.getStringOr("Skin", ""));
         try {
             setKind(TraderKind.valueOf(in.getStringOr("TraderKind", TraderKind.GOC_QUARTERMASTER.name())));
         } catch (IllegalArgumentException ignored) {

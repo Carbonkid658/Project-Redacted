@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    "#I",
+    "#I",
+    "#I"
+  ],
+  "key": {
+    "#": "projectredacted:facility_wall",
+    "I": "minecraft:iron_ingot"
+  },
+  "result": {
+    "id": "projectredacted:sliding_door",
+    "count": 3
+  }
+}

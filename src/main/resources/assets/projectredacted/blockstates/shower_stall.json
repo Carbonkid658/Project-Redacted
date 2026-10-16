@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "projectredacted:block/shower_stall"
+    },
+    "facing=east": {
+      "model": "projectredacted:block/shower_stall",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "projectredacted:block/shower_stall",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "projectredacted:block/shower_stall",
+      "y": 270
+    }
+  }
+}

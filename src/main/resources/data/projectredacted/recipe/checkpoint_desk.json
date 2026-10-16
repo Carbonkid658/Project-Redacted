@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "GGG",
+    "SKS"
+  ],
+  "key": {
+    "G": "minecraft:glass_pane",
+    "S": "minecraft:smooth_stone",
+    "K": "projectredacted:keycard_reader"
+  },
+  "result": {
+    "id": "projectredacted:checkpoint_desk",
+    "count": 1
+  }
+}

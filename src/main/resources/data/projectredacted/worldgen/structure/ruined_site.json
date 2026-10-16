@@ -1,7 +1,0 @@
-{
-  "type": "projectredacted:ruined_site",
-  "biomes": "#projectredacted:has_structure/ruined_site",
-  "step": "surface_structures",
-  "terrain_adaptation": "beard_thin",
-  "spawn_overrides": {}
-}

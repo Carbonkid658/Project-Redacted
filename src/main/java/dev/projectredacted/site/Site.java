@@ -24,32 +24,20 @@ public class Site {
     public BlockPos terminal;
     public BlockPos cassie;
     public int level;
-    public SiteType type = SiteType.SURFACE_FLAT;
-    public boolean generated;
     public boolean mainframeSabotaged;
     public boolean cassieDisabled;
     /** Hack progress on C.A.S.S.I.E.; every 30 points is one stage, up to 4. */
     public int cassieHack;
 
     public List<Room> rooms = new ArrayList<>();
-    /** Parts the facility is built from (site generation), in placement order. */
-    public List<dev.projectredacted.site.gen.PlacedPart> parts = new ArrayList<>();
-    /** Sealed doorways that growth can open up. */
-    public List<dev.projectredacted.site.gen.Doorway> doorways = new ArrayList<>();
-    /** Floor height of the Director's Office storey; storeys are 6 blocks from here. */
-    public Integer baseFloor;
-    public long genSeed;
-    /** Chunks kept loaded while Level 0 builds, released when it finishes. */
-    public List<Long> forcedChunks = new ArrayList<>();
-    /** From part markers: where raiders arrive and where security stands. */
-    public List<BlockPos> raiderEntries = new ArrayList<>();
-    public List<BlockPos> staffPosts = new ArrayList<>();
-    /** Auto-expand (Director only, off by default). */
-    public boolean autoExpand;
-    public List<String> expandPriority = new ArrayList<>();
-    public long nextExpandCheck;
-    /** What auto-expand is waiting on, shown in the Add Room section. */
-    public transient String expandStatus;
+    /** Area key ("living-2") -> name, clearance override, room numbering (v4 §2). */
+    public Map<String, dev.projectredacted.site.gen.Areas.AreaState> areas = new LinkedHashMap<>();
+    /** Areas in lockdown after a breach. */
+    public Set<String> lockdown = new TreeSet<>();
+    /** Inside readers of Emergency Exit hatches. */
+    public List<BlockPos> hatchReaders = new ArrayList<>();
+    /** Emergency Bulkheads in the site; they close during a lockdown of their area. */
+    public List<BlockPos> bulkheads = new ArrayList<>();
     public int nextRoomNumber = 1;
     public Map<UUID, Member> members = new LinkedHashMap<>();
     public Map<UUID, StaffRecord> staff = new LinkedHashMap<>();
@@ -69,6 +57,8 @@ public class Site {
     public int coinsOwed;
     /** Research Documents waiting to be collected when no lab barrel had room. */
     public int documentsOwed;
+    /** Field Agent teams out on trips (NPC revamp §4.5). */
+    public List<dev.projectredacted.staff.Expedition> expeditions = new ArrayList<>();
 
     // Recomputed every second by SiteLogic.
     public transient boolean mainframePresent = true;
@@ -146,6 +136,27 @@ public class Site {
     public Room roomAt(BlockPos pos) {
         for (Room r : rooms) if (r.contains(pos)) return r;
         return null;
+    }
+
+    /** The room made by the key block at {@code pos}, or null. */
+    public Room roomWithKey(BlockPos pos) {
+        for (Room r : rooms) if (pos.equals(r.key)) return r;
+        return null;
+    }
+
+    /** Takes a room off the books without touching its blocks: staff assigned to it are freed. */
+    public void removeRoom(Room r) {
+        rooms.remove(r);
+        for (StaffRecord s : staff.values()) if (s.assignment.room == r.number) s.assignment = new dev.projectredacted.staff.Assignment();
+        for (Room o : rooms) if (o.watches == r.number) o.watches = 0;
+    }
+
+    /** The other rooms placed together with this one (v4 §5.5), e.g. a Heavy Cell's Observation Room. */
+    public List<Room> companions(Room r) {
+        List<Room> out = new ArrayList<>();
+        if (r.group == 0) return out;
+        for (Room o : rooms) if (o != r && o.group == r.group) out.add(o);
+        return out;
     }
 
     public Room room(int number) {

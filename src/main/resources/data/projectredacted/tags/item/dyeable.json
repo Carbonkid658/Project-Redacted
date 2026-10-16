@@ -1,0 +1,8 @@
+{
+  "values": [
+    "projectredacted:dyeable_bricks",
+    "projectredacted:dyeable_floor",
+    "projectredacted:dyeable_tile",
+    "#minecraft:cauldron_can_remove_dye"
+  ]
+}

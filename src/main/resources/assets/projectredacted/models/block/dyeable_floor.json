@@ -1,0 +1,6 @@
+{
+  "parent": "projectredacted:block/dyeable_cube",
+  "textures": {
+    "all": "projectredacted:block/dyeable_floor"
+  }
+}

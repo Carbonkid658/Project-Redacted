@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "front": "projectredacted:block/industrial_stove_front",
+    "side": "projectredacted:block/industrial_stove_side",
+    "top": "projectredacted:block/industrial_stove_top"
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "multipart": [
+    {
+      "when": {
+        "axis": "x",
+        "up": "false"
+      },
+      "apply": {
+        "model": "projectredacted:block/wall_frame_up"
+      }
+    },
+    {
+      "when": {
+        "axis": "x",
+        "down": "false"
+      },
+      "apply": {
+        "model": "projectredacted:block/wall_frame_down"
+      }
+    },
+    {
+      "when": {
+        "axis": "x",
+        "west": "false"
+      },
+      "apply": {
+        "model": "projectredacted:block/wall_frame_west"
+      }
+    },
+    {
+      "when": {
+        "axis": "x",
+        "east": "false"
+      },
+      "apply": {
+        "model": "projectredacted:block/wall_frame_east"
+      }
+    },
+    {
+      "when": {
+        "axis": "z",
+        "up": "false"
+      },
+      "apply": {
+        "model": "projectredacted:block/wall_frame_up",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "axis": "z",
+        "down": "false"
+      },
+      "apply": {
+        "model": "projectredacted:block/wall_frame_down",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "axis": "z",
+        "west": "false"
+      },
+      "apply": {
+        "model": "projectredacted:block/wall_frame_west",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "axis": "z",
+        "east": "false"
+      },
+      "apply": {
+        "model": "projectredacted:block/wall_frame_east",
+        "y": 90
+      }
+    }
+  ]
+}

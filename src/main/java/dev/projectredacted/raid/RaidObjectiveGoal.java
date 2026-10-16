@@ -58,13 +58,24 @@ public class RaidObjectiveGoal extends Goal {
                 RaidManager.arrive(level, mob, objective);
                 return;
             }
-            mob.getNavigation().moveTo(objective.getX() + 0.5, objective.getY(), objective.getZ() + 0.5, 1.0);
+            // Into a room through its Room Entrance Marker (NPC revamp §4.2), then on to the objective.
+            BlockPos way = viaDoor(objective);
+            mob.getNavigation().moveTo(way.getX() + 0.5, way.getY(), way.getZ() + 0.5, 1.0);
             if (dist >= lastDist - 1) stuckTicks += 20;
             else stuckTicks = 0;
             lastDist = dist;
         }
         if (objective == null) return;
         if (stuckTicks >= 60 || mob.getNavigation().isDone()) breakThrough(level);
+    }
+
+    /** The room's doorway while outside a room the objective is in, else the objective itself. */
+    private BlockPos viaDoor(BlockPos target) {
+        var site = mob.site();
+        var room = site == null ? null : site.roomAt(target);
+        if (room == null || room.entrance == null || room.contains(mob.blockPosition())) return target;
+        BlockPos door = room.outsideDoor();
+        return mob.blockPosition().distSqr(door) > 4 ? door : target;
     }
 
     private void breakThrough(ServerLevel level) {

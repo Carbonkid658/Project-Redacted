@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "projectredacted:block/blast_door_controller"
+    },
+    "facing=east": {
+      "model": "projectredacted:block/blast_door_controller",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "projectredacted:block/blast_door_controller",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "projectredacted:block/blast_door_controller",
+      "y": 270
+    }
+  }
+}

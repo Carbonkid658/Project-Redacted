@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "CGC",
+    "CRC"
+  ],
+  "key": {
+    "C": "projectredacted:containment_concrete",
+    "G": "minecraft:glass_pane",
+    "R": "minecraft:redstone"
+  },
+  "result": {
+    "id": "projectredacted:cell_control_panel_heavy",
+    "count": 1
+  }
+}

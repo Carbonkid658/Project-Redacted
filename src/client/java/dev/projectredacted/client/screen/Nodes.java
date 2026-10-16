@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -13,6 +14,7 @@ import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.DyedItemColor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -96,6 +98,7 @@ public final class Nodes {
             case "portrait" -> new Portrait(o);
             case "cards" -> new Cards(o);
             case "doc" -> new Doc(o);
+            case "colorwheel" -> new ColorWheel(o);
             default -> new Space(new JsonObject());
         };
     }
@@ -135,6 +138,12 @@ public final class Nodes {
         boolean scroll(Ctx c, double mx, double my, double amount) {
             return false;
         }
+
+        /** The mouse moved with the button held, after this node called {@link Ctx#capture}. */
+        void drag(Ctx c, double mx, double my) {}
+
+        /** The button was let go after this node called {@link Ctx#capture}. */
+        void release(Ctx c, double mx, double my) {}
 
         boolean fill() {
             return bool(o, "fill");
@@ -1177,6 +1186,7 @@ public final class Nodes {
                 boolean hover = c.hovered(cx, cy, CW - 2, CH - 2);
                 Theme.sprite(g, bool(e, "selected") ? "slot_selected" : hover ? "slot_hover" : "slot", cx, cy, CW - 2, CH - 2);
                 ItemStack stack = item(str(e, "item")).copyWithCount(Math.max(1, (int) num(e, "count", 1)));
+                if (e.has("dye")) stack.set(DataComponents.DYED_COLOR, new DyedItemColor((int) num(e, "dye", 0xFFFFFF)));
                 g.item(stack, cx + 4, cy + 2);
                 g.itemDecorations(c.font(), stack, cx + 4, cy + 2);
                 String label = str(e, "label", "");
@@ -1363,6 +1373,227 @@ public final class Nodes {
             if (mx < x + 26) c.state().put("page", Math.max(0, page - 1));
             else if (mx > x + w - 26) c.state().put("page", Math.min(pages() - 1, page + 1));
             return true;
+        }
+    }
+
+    /**
+     * Hue around the wheel, saturation out from the middle, brightness on the slider beside it. The color being
+     * dragged lives in the screen state; letting go sends it. A new value from the server (a typed hex code,
+     * a swatch) replaces it.
+     */
+    static class ColorWheel extends Node {
+        static final int D = 64, SLIDER = 8, SWATCH = 9;
+        /** Full-brightness wheel colors per pixel, 0 outside the circle. */
+        private static int[] wheel;
+
+        ColorWheel(JsonObject o) {
+            super(o);
+        }
+
+        String key() {
+            return "wheel:" + str(o, "id", "");
+        }
+
+        /** {h, s, v} as floats 0-1, synced from the server value when that changes. */
+        float[] hsv(Ctx c) {
+            int server = (int) num(o, "value", 0xFFFFFF);
+            Object seen = c.state().get(key() + ":srv");
+            Object hsv = c.state().get(key());
+            if (!(hsv instanceof float[]) || !(seen instanceof Integer i) || i != server) {
+                c.state().put(key() + ":srv", server);
+                c.state().put(key() + ":rgb", server);
+                hsv = toHsv(server);
+                c.state().put(key(), hsv);
+            }
+            return (float[]) hsv;
+        }
+
+        int rgb(Ctx c) {
+            hsv(c);
+            Object v = c.state().get(key() + ":rgb");
+            return v instanceof Integer i ? i : 0xFFFFFF;
+        }
+
+        void set(Ctx c, float[] hsv) {
+            c.state().put(key(), hsv);
+            c.state().put(key() + ":rgb", toRgb(hsv[0], hsv[1], hsv[2]));
+        }
+
+        int swatchRows(int width) {
+            int n = arr(o, "swatches").size(), per = Math.max(1, (width + 1) / (SWATCH + 1));
+            return n == 0 ? 0 : (n + per - 1) / per;
+        }
+
+        @Override
+        int measure(Ctx c, int width) {
+            int rows = swatchRows(width);
+            return D + (rows > 0 ? 4 + rows * (SWATCH + 1) : 0);
+        }
+
+        static int[] wheel() {
+            if (wheel != null) return wheel;
+            int[] px = new int[D * D];
+            double r = D / 2.0;
+            for (int yy = 0; yy < D; yy++) {
+                for (int xx = 0; xx < D; xx++) {
+                    double dx = xx + 0.5 - r, dy = yy + 0.5 - r, dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist > r) continue;
+                    float hue = (float) ((Math.atan2(dy, dx) / (2 * Math.PI) + 1) % 1);
+                    px[yy * D + xx] = 0xFF000000 | toRgb(hue, (float) Math.min(1, dist / r), 1);
+                }
+            }
+            return wheel = px;
+        }
+
+        @Override
+        void render(Ctx c) {
+            GuiGraphicsExtractor g = c.g();
+            float[] hsv = hsv(c);
+            int[] px = wheel();
+            for (int yy = 0; yy < D; yy++) {
+                for (int xx = 0; xx < D; xx++) {
+                    int col = px[yy * D + xx];
+                    if (col == 0) continue;
+                    g.fill(x + xx, y + yy, x + xx + 1, y + yy + 1, 0xFF000000 | scale(col, hsv[2]));
+                }
+            }
+            // where the picked hue and saturation sit
+            double angle = hsv[0] * 2 * Math.PI, rad = hsv[1] * (D / 2.0 - 1);
+            int mx = x + D / 2 + (int) Math.round(Math.cos(angle) * rad), my = y + D / 2 + (int) Math.round(Math.sin(angle) * rad);
+            g.outline(mx - 2, my - 2, 5, 5, hsv[2] > 0.5f ? 0xFF000000 : 0xFFFFFFFF);
+
+            int sx = sliderX();
+            for (int yy = 0; yy < D; yy++) g.fill(sx, y + yy, sx + SLIDER, y + yy + 1, 0xFF000000 | toRgb(hsv[0], hsv[1], 1 - yy / (float) (D - 1)));
+            int vy = y + Math.round((1 - hsv[2]) * (D - 1));
+            g.outline(sx - 1, vy - 1, SLIDER + 2, 3, 0xFFFFFFFF);
+
+            // preview: the swatch, its hex code, and the item in that color
+            int rgb = rgb(c);
+            int px0 = sx + SLIDER + 6, pw = x + w - px0;
+            if (pw >= 30) {
+                g.fill(px0, y, px0 + pw, y + 24, 0xFF000000 | rgb);
+                g.outline(px0, y, pw, 24, Theme.shade(Theme.TEXT, 0.6f));
+                g.text(c.font(), String.format("#%06X", rgb), px0, y + 28, c.paper() ? Theme.INK : Theme.TEXT, false);
+                String id = str(o, "item");
+                if (id != null) {
+                    ItemStack stack = item(id).copy();
+                    stack.set(DataComponents.DYED_COLOR, new DyedItemColor(rgb));
+                    g.pose().pushMatrix();
+                    g.pose().translate(px0, y + 39);
+                    g.pose().scale(1.5f, 1.5f);
+                    g.item(stack, 0, 0);
+                    g.pose().popMatrix();
+                }
+            }
+
+            JsonArray sw = arr(o, "swatches");
+            int per = Math.max(1, (w + 1) / (SWATCH + 1));
+            for (int i = 0; i < sw.size(); i++) {
+                int bx = x + (i % per) * (SWATCH + 1), by = y + D + 4 + (i / per) * (SWATCH + 1);
+                int col = sw.get(i).getAsInt();
+                g.fill(bx, by, bx + SWATCH, by + SWATCH, 0xFF000000 | col);
+                boolean hover = c.hovered(bx, by, SWATCH, SWATCH);
+                if (hover || col == rgb) g.outline(bx - 1, by - 1, SWATCH + 2, SWATCH + 2, hover ? Theme.AMBER : 0xFFFFFFFF);
+                if (hover) c.tooltip(List.of(String.format("#%06X", col) + (col == 0xFFFFFF ? " (undyed)" : "")));
+            }
+            tip(c);
+        }
+
+        int sliderX() {
+            return x + D + 4;
+        }
+
+        /** Which part a point is on: 1 the wheel, 2 the slider, 0 neither. */
+        int part(double mx, double my) {
+            if (my < y || my >= y + D) return 0;
+            if (mx >= x && mx < x + D) {
+                double dx = mx - x - D / 2.0, dy = my - y - D / 2.0;
+                return dx * dx + dy * dy <= D * D / 4.0 ? 1 : 0;
+            }
+            return mx >= sliderX() - 2 && mx < sliderX() + SLIDER + 2 ? 2 : 0;
+        }
+
+        @Override
+        boolean click(Ctx c, double mx, double my, boolean shift) {
+            int part = part(mx, my);
+            if (part != 0) {
+                c.state().put(key() + ":part", part);
+                c.capture(this);
+                drag(c, mx, my);
+                return true;
+            }
+            JsonArray sw = arr(o, "swatches");
+            int per = Math.max(1, (w + 1) / (SWATCH + 1));
+            int col = (int) ((mx - x) / (SWATCH + 1)), row = (int) ((my - y - D - 4) / (SWATCH + 1));
+            int i = row * per + col;
+            if (my >= y + D + 4 && col < per && i >= 0 && i < sw.size()) {
+                int rgb = sw.get(i).getAsInt();
+                set(c, toHsv(rgb));
+                c.state().put(key() + ":rgb", rgb);
+                send(c, rgb);
+            }
+            return true;
+        }
+
+        @Override
+        void drag(Ctx c, double mx, double my) {
+            float[] hsv = hsv(c).clone();
+            Object part = c.state().get(key() + ":part");
+            if (Integer.valueOf(1).equals(part)) {
+                double dx = mx - x - D / 2.0, dy = my - y - D / 2.0;
+                hsv[0] = (float) ((Math.atan2(dy, dx) / (2 * Math.PI) + 1) % 1);
+                hsv[1] = (float) Math.min(1, Math.sqrt(dx * dx + dy * dy) / (D / 2.0));
+                if (hsv[2] < 0.05f) hsv[2] = 1; // picking a hue on a black wheel would do nothing visible
+            } else if (Integer.valueOf(2).equals(part)) {
+                hsv[2] = (float) Math.max(0, Math.min(1, 1 - (my - y) / (D - 1)));
+            }
+            set(c, hsv);
+        }
+
+        @Override
+        void release(Ctx c, double mx, double my) {
+            c.state().remove(key() + ":part");
+            send(c, rgb(c));
+        }
+
+        void send(Ctx c, int rgb) {
+            JsonObject args = new JsonObject();
+            args.addProperty("color", rgb);
+            c.send(str(o, "action", ""), args);
+        }
+
+        static int scale(int rgb, float v) {
+            int r = Math.round((rgb >> 16 & 0xFF) * v), gg = Math.round((rgb >> 8 & 0xFF) * v), b = Math.round((rgb & 0xFF) * v);
+            return r << 16 | gg << 8 | b;
+        }
+
+        static int toRgb(float h, float s, float v) {
+            float r, gg, b;
+            float hh = (h % 1 + 1) % 1 * 6;
+            int i = (int) Math.floor(hh);
+            float f = hh - i, p = v * (1 - s), q = v * (1 - s * f), t = v * (1 - s * (1 - f));
+            switch (i) {
+                case 0 -> { r = v; gg = t; b = p; }
+                case 1 -> { r = q; gg = v; b = p; }
+                case 2 -> { r = p; gg = v; b = t; }
+                case 3 -> { r = p; gg = q; b = v; }
+                case 4 -> { r = t; gg = p; b = v; }
+                default -> { r = v; gg = p; b = q; }
+            }
+            return Math.round(r * 255) << 16 | Math.round(gg * 255) << 8 | Math.round(b * 255);
+        }
+
+        static float[] toHsv(int rgb) {
+            float r = (rgb >> 16 & 0xFF) / 255f, gg = (rgb >> 8 & 0xFF) / 255f, b = (rgb & 0xFF) / 255f;
+            float max = Math.max(r, Math.max(gg, b)), min = Math.min(r, Math.min(gg, b)), d = max - min;
+            float h = 0;
+            if (d > 0) {
+                if (max == r) h = ((gg - b) / d) / 6f;
+                else if (max == gg) h = ((b - r) / d + 2) / 6f;
+                else h = ((r - gg) / d + 4) / 6f;
+                h = (h % 1 + 1) % 1;
+            }
+            return new float[]{h, max == 0 ? 0 : d / max, max};
         }
     }
 

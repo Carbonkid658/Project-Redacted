@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "projectredacted:block/isolation_panel"
+    },
+    "facing=east": {
+      "model": "projectredacted:block/isolation_panel",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "projectredacted:block/isolation_panel",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "projectredacted:block/isolation_panel",
+      "y": 270
+    }
+  }
+}

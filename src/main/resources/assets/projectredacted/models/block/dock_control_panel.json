@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "front": "projectredacted:block/dock_control_panel_front",
+    "side": "projectredacted:block/dock_control_panel_side",
+    "top": "projectredacted:block/dock_control_panel_top"
+  }
+}

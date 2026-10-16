@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "front": "projectredacted:block/dye_station_front",
+    "side": "projectredacted:block/dye_station_side",
+    "top": "projectredacted:block/dye_station_top"
+  }
+}

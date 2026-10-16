@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "front": "projectredacted:block/tool_bench_front",
+    "side": "projectredacted:block/tool_bench_side",
+    "top": "projectredacted:block/tool_bench_top"
+  }
+}

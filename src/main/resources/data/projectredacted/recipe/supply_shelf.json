@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SSS",
+    "B B",
+    "SSS"
+  ],
+  "key": {
+    "S": "minecraft:oak_slab",
+    "B": "minecraft:barrel"
+  },
+  "result": {
+    "id": "projectredacted:supply_shelf",
+    "count": 1
+  }
+}

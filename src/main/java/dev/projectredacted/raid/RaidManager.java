@@ -58,7 +58,7 @@ public final class RaidManager {
     }
 
     private static void maybeStart(ServerLevel level, Site site) {
-        if (!site.generated || level.getGameTime() < site.raidCooldownUntil) return;
+        if (site.firstEntrance() == null || level.getGameTime() < site.raidCooldownUntil) return;
         if (site.scpCount == 0 && site.housedStaff() == 0) return;
         if (Cassie.playersInSite(site).isEmpty()) return; // only raid while someone is there to defend
         if (RANDOM.nextDouble() < chancePerMinute(site)) start(level, site, null);

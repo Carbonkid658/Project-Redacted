@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "IPI",
+    "IRI"
+  ],
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "P": "minecraft:paper",
+    "R": "minecraft:redstone"
+  },
+  "result": {
+    "id": "projectredacted:ticket_dispenser",
+    "count": 1
+  }
+}

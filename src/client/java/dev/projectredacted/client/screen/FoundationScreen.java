@@ -59,6 +59,9 @@ public class FoundationScreen extends Screen implements Ctx {
     private String modalTyped, modalInfo;
     private boolean drawingModal;
 
+    /** The node dragging with the mouse, see {@link Ctx#capture}. */
+    private Nodes.Node captured;
+
     private String toast;
     private boolean toastError;
     private long toastUntil;
@@ -515,6 +518,11 @@ public class FoundationScreen extends Screen implements Ctx {
     }
 
     @Override
+    public void capture(Nodes.Node node) {
+        captured = node;
+    }
+
+    @Override
     public String tr(String text) {
         if (text == null) return "";
         return text.startsWith("tr:") ? I18n.get(text.substring(3)) : text;
@@ -587,6 +595,26 @@ public class FoundationScreen extends Screen implements Ctx {
             return true;
         }
         return super.mouseClicked(event, doubleClick);
+    }
+
+    @Override
+    public boolean mouseDragged(MouseButtonEvent event, double dragX, double dragY) {
+        if (captured != null && event.button() == InputConstants.MOUSE_BUTTON_LEFT) {
+            captured.drag(this, event.x(), event.y());
+            return true;
+        }
+        return super.mouseDragged(event, dragX, dragY);
+    }
+
+    @Override
+    public boolean mouseReleased(MouseButtonEvent event) {
+        if (captured != null && event.button() == InputConstants.MOUSE_BUTTON_LEFT) {
+            Nodes.Node node = captured;
+            captured = null;
+            node.release(this, event.x(), event.y());
+            return true;
+        }
+        return super.mouseReleased(event);
     }
 
     @Override

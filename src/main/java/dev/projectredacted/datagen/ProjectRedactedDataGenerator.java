@@ -9,7 +9,7 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
  */
 public class ProjectRedactedDataGenerator implements DataGeneratorEntrypoint {
     @Override
-    public void onInitializeDataGenerator(FabricDataGenerator generator) {
-        FabricDataGenerator.Pack pack = generator.createPack();
+    public void onInitializeDataGenerator(FabricDataGenerator fabricDataGenerator) {
+        FabricDataGenerator.Pack pack = fabricDataGenerator.createPack();
     }
 }

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "###",
+    "#W#",
+    "###"
+  ],
+  "key": {
+    "#": "minecraft:stone_bricks",
+    "W": "minecraft:white_dye"
+  },
+  "result": {
+    "id": "projectredacted:dyeable_bricks",
+    "count": 8
+  }
+}

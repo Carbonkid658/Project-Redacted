@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "projectredacted:block/ticket_dispenser"
+    },
+    "facing=east": {
+      "model": "projectredacted:block/ticket_dispenser",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "projectredacted:block/ticket_dispenser",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "projectredacted:block/ticket_dispenser",
+      "y": 270
+    }
+  }
+}

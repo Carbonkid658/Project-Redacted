@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "BB",
+    "BB"
+  ],
+  "key": {
+    "B": "minecraft:iron_bars"
+  },
+  "result": {
+    "id": "projectredacted:vent",
+    "count": 2
+  }
+}

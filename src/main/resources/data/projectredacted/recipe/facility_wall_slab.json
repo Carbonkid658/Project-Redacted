@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "###"
+  ],
+  "key": {
+    "#": "projectredacted:facility_wall"
+  },
+  "result": {
+    "id": "projectredacted:facility_wall_slab",
+    "count": 6
+  }
+}

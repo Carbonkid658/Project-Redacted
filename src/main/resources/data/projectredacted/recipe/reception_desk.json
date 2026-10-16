@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "  B",
+    "SSS",
+    "P P"
+  ],
+  "key": {
+    "B": "minecraft:bell",
+    "S": "minecraft:smooth_stone_slab",
+    "P": "minecraft:oak_planks"
+  },
+  "result": {
+    "id": "projectredacted:reception_desk",
+    "count": 1
+  }
+}

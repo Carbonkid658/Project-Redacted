@@ -1,0 +1,212 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "t": "projectredacted:block/mainframe",
+    "particle": "projectredacted:block/mainframe"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        32,
+        16
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            2.0,
+            2.0,
+            4.0,
+            6.0
+          ],
+          "texture": "#t"
+        },
+        "east": {
+          "uv": [
+            0.0,
+            2.0,
+            2.0,
+            6.0
+          ],
+          "texture": "#t"
+        },
+        "south": {
+          "uv": [
+            6.0,
+            2.0,
+            8.0,
+            6.0
+          ],
+          "texture": "#t"
+        },
+        "west": {
+          "uv": [
+            4.0,
+            2.0,
+            6.0,
+            6.0
+          ],
+          "texture": "#t"
+        },
+        "up": {
+          "uv": [
+            4.0,
+            2.0,
+            2.0,
+            0.0
+          ],
+          "texture": "#t"
+        },
+        "down": {
+          "uv": [
+            6.0,
+            0.0,
+            4.0,
+            2.0
+          ],
+          "texture": "#t"
+        }
+      }
+    },
+    {
+      "from": [
+        -0.1,
+        -0.1,
+        -0.1
+      ],
+      "to": [
+        16.1,
+        32,
+        16.1
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            2.025,
+            8.025,
+            4.05,
+            12.05
+          ],
+          "texture": "#t"
+        },
+        "east": {
+          "uv": [
+            0.0,
+            8.025,
+            2.025,
+            12.05
+          ],
+          "texture": "#t"
+        },
+        "south": {
+          "uv": [
+            6.074999999999999,
+            8.025,
+            8.1,
+            12.05
+          ],
+          "texture": "#t"
+        },
+        "west": {
+          "uv": [
+            4.05,
+            8.025,
+            6.074999999999999,
+            12.05
+          ],
+          "texture": "#t"
+        },
+        "up": {
+          "uv": [
+            4.05,
+            8.025,
+            2.025,
+            6.0
+          ],
+          "texture": "#t"
+        },
+        "down": {
+          "uv": [
+            6.074999999999999,
+            6.0,
+            4.05,
+            8.025
+          ],
+          "texture": "#t"
+        }
+      }
+    }
+  ],
+  "display": {
+    "gui": {
+      "rotation": [
+        30,
+        225,
+        0
+      ],
+      "translation": [
+        0,
+        -3,
+        0
+      ],
+      "scale": [
+        0.4,
+        0.4,
+        0.4
+      ]
+    },
+    "ground": {
+      "translation": [
+        0,
+        3,
+        0
+      ],
+      "scale": [
+        0.25,
+        0.25,
+        0.25
+      ]
+    },
+    "fixed": {
+      "scale": [
+        0.4,
+        0.4,
+        0.4
+      ]
+    },
+    "thirdperson_righthand": {
+      "rotation": [
+        75,
+        45,
+        0
+      ],
+      "translation": [
+        0,
+        2.5,
+        0
+      ],
+      "scale": [
+        0.3,
+        0.3,
+        0.3
+      ]
+    },
+    "firstperson_righthand": {
+      "rotation": [
+        0,
+        45,
+        0
+      ],
+      "scale": [
+        0.3,
+        0.3,
+        0.3
+      ]
+    }
+  }
+}

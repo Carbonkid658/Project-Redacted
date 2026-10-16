@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "condition": {
+        "type": "minecraft:survives_explosion"
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "projectredacted:dyeable_tile",
+          "modifier": {
+            "type": "minecraft:copy_components",
+            "include": [
+              "minecraft:dyed_color"
+            ],
+            "source": "block_entity"
+          }
+        }
+      ],
+      "rolls": 1
+    }
+  ],
+  "random_sequence": "projectredacted:blocks/dyeable_tile"
+}

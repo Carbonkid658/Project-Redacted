@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "projectredacted:block/cell_control_panel_heavy"
+    },
+    "facing=east": {
+      "model": "projectredacted:block/cell_control_panel_heavy",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "projectredacted:block/cell_control_panel_heavy",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "projectredacted:block/cell_control_panel_heavy",
+      "y": 270
+    }
+  }
+}

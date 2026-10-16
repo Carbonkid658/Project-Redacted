@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "RGB",
+    "PCP",
+    "PPP"
+  ],
+  "key": {
+    "R": "minecraft:red_dye",
+    "G": "minecraft:green_dye",
+    "B": "minecraft:blue_dye",
+    "P": "projectredacted:plastic",
+    "C": "minecraft:crafting_table"
+  },
+  "result": {
+    "id": "projectredacted:dye_station",
+    "count": 1
+  }
+}

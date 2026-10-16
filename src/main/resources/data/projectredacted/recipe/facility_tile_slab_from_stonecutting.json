@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "projectredacted:facility_tile",
+  "result": {
+    "id": "projectredacted:facility_tile_slab",
+    "count": 2
+  }
+}

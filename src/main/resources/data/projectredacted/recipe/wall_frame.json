@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "NNN",
+    "N N",
+    "NNN"
+  ],
+  "key": {
+    "N": "minecraft:iron_nugget"
+  },
+  "result": {
+    "id": "projectredacted:wall_frame",
+    "count": 8
+  }
+}

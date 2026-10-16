@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "III",
+    "SCS"
+  ],
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "S": "minecraft:stick",
+    "C": "minecraft:crafting_table"
+  },
+  "result": {
+    "id": "projectredacted:tool_bench",
+    "count": 1
+  }
+}

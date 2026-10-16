@@ -38,6 +38,7 @@ public final class SiteLogic {
         if (seconds % 30 == 0) countBeds(level, site);
         if (seconds % 60 == 0) checkContainment(level, site);
         finishUpgrades(level, site);
+        dev.projectredacted.staff.Expeditions.tick(level, site);
     }
 
     private static void computePower(Site site) {
@@ -167,7 +168,7 @@ public final class SiteLogic {
             int beds = 0;
             for (BlockPos p : BlockPos.betweenClosed(r.x1, r.y1, r.z1, r.x2, r.y2, r.z2)) {
                 BlockState s = level.getBlockState(p);
-                if (s.getBlock() instanceof BedBlock && s.getValue(BedBlock.PART) == BedPart.HEAD) beds++;
+                if (s.getBlock() instanceof BedBlock && s.getValue(BedBlock.PART) == BedPart.HEAD || dev.projectredacted.room.KeyBlocks.isBed(s)) beds++;
             }
             r.beds = beds;
             if (t.isHousing() && r.built) housing += beds;
@@ -185,6 +186,7 @@ public final class SiteLogic {
             for (BlockPos p : BlockPos.betweenClosed(r.x1, r.y1, r.z1, r.x2, r.y2, r.z2)) {
                 BlockState s = level.getBlockState(p);
                 if (s.getBlock() instanceof BedBlock && s.getValue(BedBlock.PART) == BedPart.HEAD) list.add(p.immutable());
+                else if (dev.projectredacted.room.KeyBlocks.isBed(s)) list.add(p.above().immutable()); // lie on top of a Bunk Bed
             }
         }
         return list;
@@ -200,11 +202,35 @@ public final class SiteLogic {
                 ScpDefinition def = ScpApi.forEntity(e.getType());
                 if (def == null) continue;
                 var unmet = def.unmet(new ContainmentContext(level, site, cell, e));
-                if (!unmet.isEmpty() && RANDOM.nextDouble() < def.breachChance * mult) {
+                if (!unmet.isEmpty() && RANDOM.nextDouble() < def.breachChance * mult * wallFactor(level, cell)) {
                     breach(level, site, cell, def, e, unmet.get(0).describe());
                 }
             }
         }
+    }
+
+    /**
+     * The cell's tier comes from its Cell Control Panel (V27); its walls only change how hard it is to break out:
+     * weak walls (wood, glass) make a breach half again as likely, blast-proof walls (Containment Concrete,
+     * Reinforced Glass, obsidian) halve it. Checked once a minute.
+     */
+    public static double wallFactor(ServerLevel level, Room cell) {
+        long now = level.getGameTime();
+        if (now - cell.wallCheckedAt < 1200) return cell.wallFactor;
+        cell.wallCheckedAt = now;
+        double total = 0;
+        int n = 0;
+        for (BlockPos p : BlockPos.betweenClosed(cell.x1, cell.y1, cell.z1, cell.x2, cell.y2, cell.z2)) {
+            boolean shell = p.getX() == cell.x1 || p.getX() == cell.x2 || p.getY() == cell.y1 || p.getY() == cell.y2 || p.getZ() == cell.z1 || p.getZ() == cell.z2;
+            if (!shell) continue;
+            BlockState s = level.getBlockState(p);
+            if (s.isAir()) continue;
+            total += Math.min(1200, s.getBlock().getExplosionResistance());
+            n++;
+        }
+        double avg = n == 0 ? 0 : total / n;
+        cell.wallFactor = avg < 5 ? 1.5 : avg >= 100 ? 0.5 : 1.0;
+        return cell.wallFactor;
     }
 
     public static void breach(ServerLevel level, Site site, Room cell, ScpDefinition def, Entity scp, String reason) {
@@ -213,6 +239,8 @@ public final class SiteLogic {
         if (!Cassie.announce(site, "Attention all personnel. " + def.number + " has breached containment. " + reason + ".")) {
             Cassie.alarm(site, def.number + " has breached containment!");
         }
+        // The breached area's checkpoint closes.
+        dev.projectredacted.site.gen.Areas.lockdown(level, site, cell.area);
         ScpApi.fireBreach(level, site, cell, def, scp);
     }
 
@@ -223,8 +251,8 @@ public final class SiteLogic {
         while (it.hasNext()) {
             Map.Entry<Upgrade, Long> e = it.next();
             if (e.getValue() > now) continue;
+            Upgrade u = e.getKey(); // an EnumMap entry can't be read after it's removed
             it.remove();
-            Upgrade u = e.getKey();
             site.upgrades.add(u);
             switch (u) {
                 case FACILITY_LEVEL_1 -> site.level = Math.max(site.level, 1);
@@ -269,6 +297,8 @@ public final class SiteLogic {
                 s.productivity = 1;
                 continue;
             }
+            // Field Agents on a trip are out of reach: no needs, no work.
+            if (s.role == StaffRole.FIELD_AGENT && dev.projectredacted.staff.Expeditions.away(site, s.id)) continue;
             s.bedIndex = bedIndex < site.beds ? bedIndex : -1;
             bedIndex++;
 
@@ -339,7 +369,7 @@ public final class SiteLogic {
                     s.addXp(0.2);
                 }
             }
-            case SECURITY, JANITOR, ADMINISTRATION, MEDICAL -> s.addXp(a.kind != Assignment.Kind.NONE ? 0.5 : 0.25);
+            case SECURITY, JANITOR, ADMINISTRATION, MEDICAL, FIELD_AGENT -> s.addXp(a.kind != Assignment.Kind.NONE ? 0.5 : 0.25);
             default -> {}
         }
     }
@@ -390,7 +420,9 @@ public final class SiteLogic {
         if (site.hasUpgrade(Upgrade.PERSONNEL_REPLACEMENT) && site.replacementsOwed > 0 && site.housedStaff() < site.beds) {
             Room entrance = site.firstEntrance();
             BlockPos at = entrance != null ? entrance.center() : site.mainframe.above();
-            StaffRecord r = StaffSpawner.spawnForSite(level, site, StaffSpawner.randomRole(RANDOM, false), at, RANDOM.nextInt(20) == 0);
+            StaffRole role = StaffSpawner.randomRole(RANDOM, false);
+            while (role == StaffRole.FIELD_AGENT && !site.hasUpgrade(Upgrade.FIELD_OPERATIONS)) role = StaffSpawner.randomRole(RANDOM, false);
+            StaffRecord r = StaffSpawner.spawnForSite(level, site, role, at, RANDOM.nextInt(20) == 0);
             site.replacementsOwed--;
             Cassie.announce(site, "Replacement personnel have arrived: " + r.fullName() + ".");
         }

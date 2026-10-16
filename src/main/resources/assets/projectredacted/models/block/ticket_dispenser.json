@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "front": "projectredacted:block/ticket_dispenser_front",
+    "side": "projectredacted:block/ticket_dispenser_side",
+    "top": "projectredacted:block/ticket_dispenser_top"
+  }
+}

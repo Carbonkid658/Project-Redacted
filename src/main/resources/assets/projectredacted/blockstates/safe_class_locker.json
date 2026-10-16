@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "projectredacted:block/safe_class_locker"
+    },
+    "facing=east": {
+      "model": "projectredacted:block/safe_class_locker",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "projectredacted:block/safe_class_locker",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "projectredacted:block/safe_class_locker",
+      "y": 270
+    }
+  }
+}

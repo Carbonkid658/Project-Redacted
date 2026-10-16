@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "BBB",
+    "IRI"
+  ],
+  "key": {
+    "B": "minecraft:iron_bars",
+    "I": "minecraft:iron_ingot",
+    "R": "minecraft:redstone"
+  },
+  "result": {
+    "id": "projectredacted:ventilation_fan",
+    "count": 1
+  }
+}

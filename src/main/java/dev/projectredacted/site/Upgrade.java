@@ -43,6 +43,8 @@ public enum Upgrade {
             () -> Cost.of(Items.PAPER, 64, Items.BOOK, 8), s -> s.countStaff(StaffRole.ADMINISTRATION) < 1 ? "Requires an Administrator" : null),
     PERSONNEL_REPLACEMENT(Category.ADMINISTRATION, "Personnel Replacement Program", "Staff who die or leave are replaced over time.", 6000, 40,
             () -> Cost.of(Items.PAPER, 64, Items.EMERALD, 8), s -> s.level < 2 ? "Requires Facility Level 2" : null),
+    FIELD_OPERATIONS(Category.RESEARCH, "Field Operations", "Lets you recruit Field Agents and build a Field Operations room to send them on expeditions.", 3600, 0,
+            () -> Cost.of(Items.MAP, 8, Items.COMPASS, 4, Items.IRON_BLOCK, 4, ModItems.RESEARCH_DOCUMENT, 2), s -> s.level < 1 ? "Requires Facility Level 1" : null),
     PORTABLE_TABLET(Category.ENGINEERING, "Portable Tablet", "Use the terminal from anywhere with a Facility Tablet.", 3600, 0,
             () -> Cost.of(ModItems.PLASTIC, 16, Items.GLASS_PANE, 8, Items.REDSTONE, 16, Items.GOLD_INGOT, 4), s -> s.level < 2 ? "Requires Facility Level 2" : null),
     ALPHA_WARHEAD(Category.SECURITY, "Alpha Warhead", "Arms the on-site nuke. It's your call.", 12000, 50,

@@ -50,6 +50,7 @@ import java.util.UUID;
  */
 public class StaffEntity extends PathfinderMob {
     private static final EntityDataAccessor<String> ROLE = SynchedEntityData.defineId(StaffEntity.class, EntityDataSerializers.STRING);
+    private static final EntityDataAccessor<String> SKIN = SynchedEntityData.defineId(StaffEntity.class, EntityDataSerializers.STRING);
 
     private boolean survivor = true;
     private String staffName = "";
@@ -74,12 +75,14 @@ public class StaffEntity extends PathfinderMob {
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
         builder.define(ROLE, StaffRole.RESEARCHER.name());
+        builder.define(SKIN, "");
     }
 
     @Override
     protected void registerGoals() {
         goalSelector.addGoal(0, new FloatGoal(this));
-        goalSelector.addGoal(1, new MeleeAttackGoal(this, 1.2, true) {
+        goalSelector.addGoal(1, new dev.projectredacted.combat.GunAttackGoal(this, () -> role() == StaffRole.SECURITY));
+        goalSelector.addGoal(2, new MeleeAttackGoal(this, 1.2, true) {
             @Override
             public boolean canUse() {
                 return role() == StaffRole.SECURITY && super.canUse();
@@ -121,9 +124,11 @@ public class StaffEntity extends PathfinderMob {
     }
 
     public void setRole(StaffRole role) {
+        boolean changed = !role.name().equals(entityData.get(ROLE));
         entityData.set(ROLE, role.name());
+        if (changed || skin().isEmpty()) setSkin(dev.projectredacted.npc.Skins.pick(dev.projectredacted.npc.Skins.STAFF, role.skin(), clearance(), new java.util.Random()));
         ItemStack weapon = switch (role) {
-            case SECURITY -> new ItemStack(Items.IRON_SWORD);
+            case SECURITY -> securityGun();
             case ENGINEER -> new ItemStack(Items.IRON_PICKAXE);
             case JANITOR -> new ItemStack(Items.BRUSH);
             case RESEARCHER -> new ItemStack(ModItems.CLIPBOARD);
@@ -135,6 +140,11 @@ public class StaffEntity extends PathfinderMob {
         setDropChance(EquipmentSlot.HEAD, 0f);
     }
 
+    /** Security carry a pistol, and a rifle from clearance 3 (NPC revamp §4.3). */
+    private ItemStack securityGun() {
+        return new ItemStack(clearance() >= 3 ? ModItems.RIFLE : ModItems.PISTOL);
+    }
+
     public StaffRole role() {
         try {
             return StaffRole.valueOf(entityData.get(ROLE));
@@ -143,9 +153,20 @@ public class StaffEntity extends PathfinderMob {
         }
     }
 
-    /** Texture name for the renderer. */
-    public String skinId() {
+    /** The skin pool (NPC revamp §4.1): the role's folder. */
+    public String skinPool() {
         return role().skin();
+    }
+
+    /** The skin picked from the pool ("researcher_2_slim", "rank3/..."); kept until a promotion. */
+    public String skin() {
+        return entityData.get(SKIN);
+    }
+
+    public void setSkin(String skin) {
+        entityData.set(SKIN, skin == null ? "" : skin);
+        StaffRecord r = record();
+        if (r != null) r.skin = skin();
     }
 
     public boolean isSurvivor() {
@@ -229,6 +250,7 @@ public class StaffEntity extends PathfinderMob {
     public String recruitBlocker(ServerPlayer player) {
         Site site = SiteManager.directedBy(player.getUUID());
         if (site == null) return "You need to direct a site first.";
+        if (role() == StaffRole.FIELD_AGENT && !site.hasUpgrade(dev.projectredacted.site.Upgrade.FIELD_OPERATIONS)) return "Needs the Field Operations upgrade.";
         if (role() != StaffRole.DCLASS && site.housedStaff() >= site.beds) return "No free bed at your site. Build more housing.";
         if (recruitCost > 0 && !player.isCreative() && Cost.count(player, Items.DIAMOND) < recruitCost) {
             return "Needs " + recruitCost + " diamond" + (recruitCost > 1 ? "s" : "") + ".";
@@ -240,6 +262,7 @@ public class StaffEntity extends PathfinderMob {
     public String recruitLine(ServerPlayer player) {
         Site site = SiteManager.directedBy(player.getUUID());
         if (site == null) return "A Foundation survivor? Come back when you have a site to take me to.";
+        if (role() == StaffRole.FIELD_AGENT && !site.hasUpgrade(dev.projectredacted.site.Upgrade.FIELD_OPERATIONS)) return "I work in the field. Get your site a Field Operations program and I'll sign on.";
         if (role() != StaffRole.DCLASS && site.housedStaff() >= site.beds) return "Where would I even sleep? Build more housing first.";
         if (recruitCost > 0) return "Times are hard. " + recruitCost + " diamond" + (recruitCost > 1 ? "s" : "") + " and I'm yours.";
         return "Ready when you are, Director.";
@@ -257,6 +280,7 @@ public class StaffEntity extends PathfinderMob {
         r.clearance = role().baseClearance;
         r.skill = skill;
         r.named = skill != null;
+        r.skin = skin();
         site.staff.put(r.id, r);
         joinSite(site);
         // The survivor heads to the site.
@@ -285,8 +309,18 @@ public class StaffEntity extends PathfinderMob {
             }
             return;
         }
+        // A stale copy of a Field Agent who is away on a trip (their chunk reloaded): the real one is in the field.
+        if (r.role == StaffRole.FIELD_AGENT && Expeditions.away(site, getUUID())) {
+            discard();
+            return;
+        }
         if (tickCount2 % 200 == 0) refreshName();
+        // The record's skin wins (a promotion re-picks it there); a record without one takes the entity's.
+        if (r.skin == null || r.skin.isEmpty()) r.skin = skin();
+        else if (!r.skin.equals(skin())) entityData.set(SKIN, r.skin);
         Room here = site.roomAt(blockPosition());
+        // A promotion to clearance 3 swaps the pistol for a rifle.
+        if (r.role == StaffRole.SECURITY && !ItemStack.isSameItem(getMainHandItem(), securityGun())) setItemSlot(EquipmentSlot.MAINHAND, securityGun());
         // Armory: boosts damage and armor of nearby security.
         if (r.role == StaffRole.SECURITY) {
             boolean armory = false;
@@ -325,6 +359,7 @@ public class StaffEntity extends PathfinderMob {
     protected void addAdditionalSaveData(ValueOutput out) {
         super.addAdditionalSaveData(out);
         out.putString("StaffRole", role().name());
+        out.putString("Skin", skin());
         out.putBoolean("Survivor", survivor);
         out.putString("StaffName", staffName);
         out.putString("Skill", skill == null ? "" : skill.name());
@@ -338,6 +373,8 @@ public class StaffEntity extends PathfinderMob {
             entityData.set(ROLE, StaffRole.valueOf(in.getStringOr("StaffRole", "RESEARCHER")).name());
         } catch (IllegalArgumentException ignored) {
         }
+        entityData.set(SKIN, in.getStringOr("Skin", ""));
+        if (skin().isEmpty()) entityData.set(SKIN, dev.projectredacted.npc.Skins.pick(dev.projectredacted.npc.Skins.STAFF, role().skin(), clearance(), new java.util.Random()));
         survivor = in.getBooleanOr("Survivor", true);
         staffName = in.getStringOr("StaffName", "");
         String s = in.getStringOr("Skill", "");

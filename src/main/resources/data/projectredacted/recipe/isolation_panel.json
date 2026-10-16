@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "TGT",
+    "TWT"
+  ],
+  "key": {
+    "T": "minecraft:tuff_bricks",
+    "G": "minecraft:glass_pane",
+    "W": "minecraft:white_wool"
+  },
+  "result": {
+    "id": "projectredacted:isolation_panel",
+    "count": 1
+  }
+}

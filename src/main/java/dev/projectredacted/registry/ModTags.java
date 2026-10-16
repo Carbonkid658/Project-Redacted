@@ -13,5 +13,8 @@ public final class ModTags {
     /** Item-type SCPs Dr. Wondertainment's rep may stock. */
     public static final TagKey<Item> WONDERTAINMENT_SCPS = TagKey.create(Registries.ITEM, ProjectRedacted.id("wondertainment_scps"));
 
+    /** What a Dye Station accepts: the dyeable blocks and anything else that takes dyed_color, like leather. */
+    public static final TagKey<Item> DYEABLE = TagKey.create(Registries.ITEM, ProjectRedacted.id("dyeable"));
+
     private ModTags() {}
 }

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "IGI",
+    "ICI"
+  ],
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "G": "minecraft:glass_pane",
+    "C": "minecraft:chest"
+  },
+  "result": {
+    "id": "projectredacted:depot_terminal",
+    "count": 1
+  }
+}

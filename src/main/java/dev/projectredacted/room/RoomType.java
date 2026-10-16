@@ -1,5 +1,6 @@
 package dev.projectredacted.room;
 
+import com.google.gson.annotations.SerializedName;
 import dev.projectredacted.staff.StaffRole;
 import dev.projectredacted.util.Cost;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -34,9 +35,36 @@ public class RoomType {
     /** Keycard level for the room's door reader (0 means a plain door). */
     public int clearance = 0;
     public String icon = "minecraft:bricks";
+    /** Area kind (v4 §2), e.g. "living"; null to use the area lists. */
+    public String area;
     public Map<String, Integer> cost = new LinkedHashMap<>();
+    /**
+     * The block that makes a closed space this room (v4 §5.8), e.g. "projectredacted:bunk_bed". Datapack rooms
+     * name it as "key_block" and can use any block. Null for a room type without one.
+     */
+    @SerializedName("key_block")
+    public String keyBlock;
+
+    /**
+     * Blocks staff work at inside the room (NPC revamp §4.2), as block ids or "#tag" ids, e.g. a lab bench in a
+     * Lab or a bed in Barracks. The key block always counts. One NPC per station.
+     */
+    public java.util.List<String> stations = new java.util.ArrayList<>();
+    /** A site upgrade the room needs before it can be built (the Field Operations room), as the upgrade's name. */
+    @SerializedName("required_upgrade")
+    public String requiredUpgrade;
 
     public transient boolean builtIn;
+
+    /** The site upgrade this room type needs ({@code required_upgrade}), or null. */
+    public dev.projectredacted.site.Upgrade upgrade() {
+        if (requiredUpgrade == null || requiredUpgrade.isEmpty()) return null;
+        try {
+            return dev.projectredacted.site.Upgrade.valueOf(requiredUpgrade.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
+    }
 
     public StaffRole role() {
         if (requiredRole == null || requiredRole.isEmpty()) return null;
@@ -49,6 +77,13 @@ public class RoomType {
 
     public Cost cost() {
         return Cost.parse(cost);
+    }
+
+    /** The key block, or null when there's none (or it isn't registered). */
+    public net.minecraft.world.level.block.Block keyBlockDef() {
+        Identifier rl = keyBlock == null ? null : Identifier.tryParse(keyBlock);
+        if (rl == null) return null;
+        return BuiltInRegistries.BLOCK.getOptional(rl).orElse(null);
     }
 
     public Item iconItem() {

@@ -4,8 +4,6 @@ import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import dev.projectredacted.ProjectRedacted;
 import dev.projectredacted.raid.RaidManager;
-import dev.projectredacted.room.Construction;
-import dev.projectredacted.room.DesignSession;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -84,18 +82,24 @@ public final class SiteManager {
         s.pendingUpgrades.remove(null);
         if (s.scpHomes == null) s.scpHomes = new HashMap<>();
         if (s.logLines == null) s.logLines = new ArrayList<>();
-        if (s.type == null) s.type = SiteType.SURFACE_FLAT;
-        if (s.parts == null) s.parts = new ArrayList<>();
-        if (s.doorways == null) s.doorways = new ArrayList<>();
-        s.doorways.removeIf(d -> d == null || d.pos == null || d.facing == null || d.type == null);
-        if (s.forcedChunks == null) s.forcedChunks = new ArrayList<>();
-        if (s.raiderEntries == null) s.raiderEntries = new ArrayList<>();
-        if (s.staffPosts == null) s.staffPosts = new ArrayList<>();
-        if (s.expandPriority == null) s.expandPriority = new ArrayList<>();
-        for (var part : s.parts) {
-            if (part.rooms == null) part.rooms = new ArrayList<>();
-            if (part.reopen == null) part.reopen = new ArrayList<>();
+        if (s.expeditions == null) s.expeditions = new ArrayList<>();
+        s.expeditions.removeIf(e -> e == null || e.agents == null || e.length == null);
+        for (var e : s.expeditions) if (e.leaving == null) e.leaving = new ArrayList<>();
+        // v4: existing sites keep their rooms; each room joins an area of its kind.
+        if (s.areas == null) s.areas = new LinkedHashMap<>();
+        s.areas.values().removeIf(java.util.Objects::isNull);
+        for (var e : s.areas.entrySet()) {
+            if (e.getValue().kind == null) e.getValue().kind = dev.projectredacted.site.gen.Areas.kindOf(e.getKey());
+            if (e.getValue().number <= 0) e.getValue().number = dev.projectredacted.site.gen.Areas.numberOf(e.getKey());
         }
+        if (s.lockdown == null) s.lockdown = new java.util.TreeSet<>();
+        s.lockdown.removeIf(k -> !s.areas.containsKey(k));
+        if (s.hatchReaders == null) s.hatchReaders = new ArrayList<>();
+        if (s.bulkheads == null) s.bulkheads = new ArrayList<>();
+        s.rooms.removeIf(java.util.Objects::isNull);
+        for (var r : s.rooms) if (r.type != null) dev.projectredacted.site.gen.Areas.assign(s, r);
+        dev.projectredacted.site.gen.Areas.relabel(s);
+        dev.projectredacted.site.gen.Areas.registerGates(s);
         s.staff.values().removeIf(r -> r.role == null);
         for (var r : s.staff.values()) if (r.assignment == null) r.assignment = new dev.projectredacted.staff.Assignment();
     }
@@ -119,9 +123,7 @@ public final class SiteManager {
         server = null;
         file = null;
         data = new Data();
-        DesignSession.clear();
-        dev.projectredacted.site.gen.PlanPreview.clearAll();
-        dev.projectredacted.site.gen.AutoPlace.clear();
+        DoorControl.clear();
     }
 
     public static MinecraftServer server() {
@@ -138,19 +140,13 @@ public final class SiteManager {
         drainRuins();
         ServerLevel level = srv.overworld();
         for (Site site : new ArrayList<>(data.sites.values())) {
-            Construction.tick(level, site);
             if (tickCounter % 20 == 0) SiteLogic.tickSecond(level, site);
             if (tickCounter % 100 == 0) SiteLogic.tickStaff(level, site);
-            if (tickCounter % 100 == 50) dev.projectredacted.site.gen.Expansion.restock(level, site);
-            dev.projectredacted.site.gen.Expansion.tick(level, site);
             RaidManager.tick(level, site, tickCounter);
             Warhead.tick(level, site);
         }
         if (tickCounter % 10 == 0) DoorControl.tick(level, data.readers);
-        if (tickCounter % 10 == 0) DesignSession.tickPreviews(srv);
-        if (tickCounter % 10 == 5) dev.projectredacted.site.gen.PlanPreview.tick(srv);
-        if (tickCounter % 20 == 7) dev.projectredacted.site.gen.AutoPlace.tickHud(srv);
-        if (tickCounter % 10 == 3) dev.projectredacted.site.gen.PartFrames.tickOutlines(srv);
+        if (tickCounter % 20 == 13) dev.projectredacted.room.KeyRooms.tickHud(srv);
         if (tickCounter % 6000 == 0) save();
     }
 
@@ -213,6 +209,13 @@ public final class SiteManager {
     public static Site staffSite(UUID staffId) {
         for (Site s : data.sites.values()) if (s.staff.containsKey(staffId)) return s;
         return null;
+    }
+
+    /** Every keycard reader the door control knows about. */
+    public static List<BlockPos> readers() {
+        List<BlockPos> out = new ArrayList<>();
+        for (long l : data.readers) out.add(BlockPos.of(l));
+        return out;
     }
 
     public static void addReader(BlockPos pos) {

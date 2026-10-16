@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/inner_stairs",
+  "textures": {
+    "bottom": "projectredacted:block/security_tile",
+    "top": "projectredacted:block/security_tile",
+    "side": "projectredacted:block/security_tile"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "RTR",
+    "III"
+  ],
+  "key": {
+    "R": "minecraft:redstone",
+    "T": "minecraft:target",
+    "I": "minecraft:iron_ingot"
+  },
+  "result": {
+    "id": "projectredacted:test_control_panel",
+    "count": 1
+  }
+}

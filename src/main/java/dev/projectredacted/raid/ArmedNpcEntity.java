@@ -29,6 +29,7 @@ import java.util.List;
 /** Raiders (GOC, Serpent's Hand, Chaos Insurgency) and Foundation MTF. Not saved: they only exist during a raid. */
 public class ArmedNpcEntity extends PathfinderMob {
     private static final EntityDataAccessor<String> FACTION = SynchedEntityData.defineId(ArmedNpcEntity.class, EntityDataSerializers.STRING);
+    private static final EntityDataAccessor<String> SKIN = SynchedEntityData.defineId(ArmedNpcEntity.class, EntityDataSerializers.STRING);
 
     public String siteId;
     /** SCP items a Serpent's Hand member is carrying off. Dropped on death for recontainment. */
@@ -54,14 +55,16 @@ public class ArmedNpcEntity extends PathfinderMob {
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
         builder.define(FACTION, Faction.CHAOS_INSURGENCY.name());
+        builder.define(SKIN, "");
     }
 
     @Override
     protected void registerGoals() {
         goalSelector.addGoal(0, new FloatGoal(this));
-        goalSelector.addGoal(1, new MeleeAttackGoal(this, 1.15, true));
-        goalSelector.addGoal(2, new RaidObjectiveGoal(this));
-        goalSelector.addGoal(3, new OpenDoorGoal(this, false));
+        goalSelector.addGoal(1, new dev.projectredacted.combat.GunAttackGoal(this, () -> true));
+        goalSelector.addGoal(2, new MeleeAttackGoal(this, 1.15, true));
+        goalSelector.addGoal(3, new RaidObjectiveGoal(this));
+        goalSelector.addGoal(4, new OpenDoorGoal(this, false));
         goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8f));
         goalSelector.addGoal(7, new RandomLookAroundGoal(this));
         targetSelector.addGoal(1, new HurtByTargetGoal(this));
@@ -70,8 +73,9 @@ public class ArmedNpcEntity extends PathfinderMob {
 
     public void setup(Faction faction, Site site) {
         entityData.set(FACTION, faction.name());
+        entityData.set(SKIN, dev.projectredacted.npc.Skins.pick(dev.projectredacted.npc.Skins.FACTION, faction.skin, 0, new java.util.Random()));
         this.siteId = site == null ? null : site.id;
-        setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(faction.weapon));
+        setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(faction.guns[getRandom().nextInt(faction.guns.length)].item()));
         setItemSlot(EquipmentSlot.HEAD, new ItemStack(switch (faction) {
             case GOC -> Items.IRON_HELMET;
             case MTF -> Items.DIAMOND_HELMET;
@@ -91,8 +95,13 @@ public class ArmedNpcEntity extends PathfinderMob {
         }
     }
 
-    public String skinId() {
+    /** The skin pool (NPC revamp §4.1). */
+    public String skinPool() {
         return faction().skin;
+    }
+
+    public String skin() {
+        return entityData.get(SKIN);
     }
 
     public Site site() {

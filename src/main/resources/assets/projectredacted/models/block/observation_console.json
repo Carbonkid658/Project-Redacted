@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "front": "projectredacted:block/observation_console_front",
+    "side": "projectredacted:block/observation_console_side",
+    "top": "projectredacted:block/observation_console_top"
+  }
+}

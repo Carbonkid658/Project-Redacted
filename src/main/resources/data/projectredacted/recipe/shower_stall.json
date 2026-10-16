@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "CCC",
+    "CBC",
+    "C C"
+  ],
+  "key": {
+    "C": "minecraft:copper_ingot",
+    "B": "minecraft:bucket"
+  },
+  "result": {
+    "id": "projectredacted:shower_stall",
+    "count": 1
+  }
+}

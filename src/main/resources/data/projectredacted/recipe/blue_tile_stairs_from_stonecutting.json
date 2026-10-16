@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "projectredacted:blue_tile",
+  "result": {
+    "id": "projectredacted:blue_tile_stairs",
+    "count": 1
+  }
+}

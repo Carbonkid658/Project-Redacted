@@ -1,0 +1,30 @@
+{
+  "variants": {
+    "facing=up": {
+      "model": "projectredacted:block/vent_fan"
+    },
+    "facing=down": {
+      "model": "projectredacted:block/vent_fan",
+      "x": 180
+    },
+    "facing=north": {
+      "model": "projectredacted:block/vent_fan",
+      "x": 90
+    },
+    "facing=south": {
+      "model": "projectredacted:block/vent_fan",
+      "x": 90,
+      "y": 180
+    },
+    "facing=east": {
+      "model": "projectredacted:block/vent_fan",
+      "x": 90,
+      "y": 90
+    },
+    "facing=west": {
+      "model": "projectredacted:block/vent_fan",
+      "x": 90,
+      "y": 270
+    }
+  }
+}

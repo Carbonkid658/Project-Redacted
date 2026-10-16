@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "projectredacted:block/facility_tile_slab"
+    },
+    "type=double": {
+      "model": "projectredacted:block/facility_tile"
+    },
+    "type=top": {
+      "model": "projectredacted:block/facility_tile_slab_top"
+    }
+  }
+}

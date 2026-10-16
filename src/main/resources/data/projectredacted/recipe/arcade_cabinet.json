@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "BGB",
+    "BRB"
+  ],
+  "key": {
+    "B": "minecraft:black_concrete",
+    "G": "minecraft:glass_pane",
+    "R": "minecraft:redstone"
+  },
+  "result": {
+    "id": "projectredacted:arcade_cabinet",
+    "count": 1
+  }
+}

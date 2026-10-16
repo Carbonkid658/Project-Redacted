@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "projectredacted:block/vault_door_panel"
+    },
+    "facing=east": {
+      "model": "projectredacted:block/vault_door_panel",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "projectredacted:block/vault_door_panel",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "projectredacted:block/vault_door_panel",
+      "y": 270
+    }
+  }
+}
