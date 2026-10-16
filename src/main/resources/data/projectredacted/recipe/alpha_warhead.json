@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "TNT",
+    "NRN",
+    "TNT"
+  ],
+  "key": {
+    "T": "minecraft:tnt",
+    "N": "minecraft:netherite_ingot",
+    "R": "minecraft:redstone_block"
+  },
+  "result": {
+    "id": "projectredacted:alpha_warhead",
+    "count": 1
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PBP",
+    "PCP"
+  ],
+  "key": {
+    "P": "minecraft:spruce_planks",
+    "B": "minecraft:book",
+    "C": "minecraft:chest"
+  },
+  "result": {
+    "id": "projectredacted:archive_cabinet",
+    "count": 1
+  }
+}

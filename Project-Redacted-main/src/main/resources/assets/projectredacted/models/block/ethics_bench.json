@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "front": "projectredacted:block/ethics_bench_front",
+    "side": "projectredacted:block/ethics_bench_side",
+    "top": "projectredacted:block/ethics_bench_top"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "TGT",
+    "TRT"
+  ],
+  "key": {
+    "T": "minecraft:tuff_bricks",
+    "G": "minecraft:glass_pane",
+    "R": "minecraft:redstone"
+  },
+  "result": {
+    "id": "projectredacted:cell_control_panel_medium",
+    "count": 1
+  }
+}

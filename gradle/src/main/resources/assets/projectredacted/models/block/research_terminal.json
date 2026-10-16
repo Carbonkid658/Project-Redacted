@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "front": "projectredacted:block/research_terminal_front",
+    "side": "projectredacted:block/research_terminal_side",
+    "top": "projectredacted:block/research_terminal_top"
+  }
+}

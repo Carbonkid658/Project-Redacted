@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:crafting_dye",
+  "dye": "#minecraft:dyes",
+  "group": "dyed_blocks",
+  "result": {
+    "id": "projectredacted:dyeable_floor"
+  },
+  "target": "projectredacted:dyeable_floor"
+}

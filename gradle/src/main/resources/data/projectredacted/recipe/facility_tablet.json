@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "PGP",
+    "PRP",
+    "PPP"
+  ],
+  "key": {
+    "P": "projectredacted:plastic",
+    "G": "minecraft:glass",
+    "R": "minecraft:gold_ingot"
+  },
+  "result": {
+    "id": "projectredacted:facility_tablet",
+    "count": 1
+  }
+}

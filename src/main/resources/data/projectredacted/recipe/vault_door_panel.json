@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "CIC",
+    "CRC"
+  ],
+  "key": {
+    "C": "projectredacted:containment_concrete",
+    "I": "minecraft:iron_block",
+    "R": "minecraft:redstone"
+  },
+  "result": {
+    "id": "projectredacted:vault_door_panel",
+    "count": 1
+  }
+}

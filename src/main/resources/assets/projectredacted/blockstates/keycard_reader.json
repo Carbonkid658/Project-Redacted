@@ -1,0 +1,79 @@
+{
+  "variants": {
+    "facing=north,level=1": {
+      "model": "projectredacted:block/keycard_reader"
+    },
+    "facing=north,level=2": {
+      "model": "projectredacted:block/keycard_reader"
+    },
+    "facing=north,level=3": {
+      "model": "projectredacted:block/keycard_reader"
+    },
+    "facing=north,level=4": {
+      "model": "projectredacted:block/keycard_reader"
+    },
+    "facing=north,level=5": {
+      "model": "projectredacted:block/keycard_reader"
+    },
+    "facing=east,level=1": {
+      "model": "projectredacted:block/keycard_reader",
+      "y": 90
+    },
+    "facing=east,level=2": {
+      "model": "projectredacted:block/keycard_reader",
+      "y": 90
+    },
+    "facing=east,level=3": {
+      "model": "projectredacted:block/keycard_reader",
+      "y": 90
+    },
+    "facing=east,level=4": {
+      "model": "projectredacted:block/keycard_reader",
+      "y": 90
+    },
+    "facing=east,level=5": {
+      "model": "projectredacted:block/keycard_reader",
+      "y": 90
+    },
+    "facing=south,level=1": {
+      "model": "projectredacted:block/keycard_reader",
+      "y": 180
+    },
+    "facing=south,level=2": {
+      "model": "projectredacted:block/keycard_reader",
+      "y": 180
+    },
+    "facing=south,level=3": {
+      "model": "projectredacted:block/keycard_reader",
+      "y": 180
+    },
+    "facing=south,level=4": {
+      "model": "projectredacted:block/keycard_reader",
+      "y": 180
+    },
+    "facing=south,level=5": {
+      "model": "projectredacted:block/keycard_reader",
+      "y": 180
+    },
+    "facing=west,level=1": {
+      "model": "projectredacted:block/keycard_reader",
+      "y": 270
+    },
+    "facing=west,level=2": {
+      "model": "projectredacted:block/keycard_reader",
+      "y": 270
+    },
+    "facing=west,level=3": {
+      "model": "projectredacted:block/keycard_reader",
+      "y": 270
+    },
+    "facing=west,level=4": {
+      "model": "projectredacted:block/keycard_reader",
+      "y": 270
+    },
+    "facing=west,level=5": {
+      "model": "projectredacted:block/keycard_reader",
+      "y": 270
+    }
+  }
+}

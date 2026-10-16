@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "projectredacted:block/emergency_bulkhead_side",
+    "north": "projectredacted:block/emergency_bulkhead_side",
+    "south": "projectredacted:block/emergency_bulkhead_side",
+    "east": "projectredacted:block/emergency_bulkhead_side",
+    "west": "projectredacted:block/emergency_bulkhead_side",
+    "up": "projectredacted:block/emergency_bulkhead_top",
+    "down": "projectredacted:block/emergency_bulkhead_bottom"
+  }
+}

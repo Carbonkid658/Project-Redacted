@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "NWN",
+    "SSS"
+  ],
+  "key": {
+    "N": "minecraft:paper",
+    "W": "minecraft:writable_book",
+    "S": "minecraft:smooth_quartz_slab"
+  },
+  "result": {
+    "id": "projectredacted:hr_desk",
+    "count": 1
+  }
+}

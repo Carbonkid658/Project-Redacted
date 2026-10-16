@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "IRI",
+    "ILI",
+    "IRI"
+  ],
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "R": "minecraft:redstone",
+    "L": "minecraft:lever"
+  },
+  "result": {
+    "id": "projectredacted:circuit_breaker",
+    "count": 1
+  }
+}

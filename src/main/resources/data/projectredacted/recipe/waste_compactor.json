@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "IHI",
+    "ICI"
+  ],
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "H": "minecraft:hopper",
+    "C": "minecraft:composter"
+  },
+  "result": {
+    "id": "projectredacted:waste_compactor",
+    "count": 1
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "variants": {
+    "closed=true,facing=north,powered=true": {
+      "model": "projectredacted:block/emergency_bulkhead"
+    },
+    "closed=true,facing=north,powered=false": {
+      "model": "projectredacted:block/emergency_bulkhead"
+    },
+    "closed=false,facing=north,powered=true": {
+      "model": "projectredacted:block/emergency_bulkhead"
+    },
+    "closed=false,facing=north,powered=false": {
+      "model": "projectredacted:block/emergency_bulkhead"
+    },
+    "closed=true,facing=east,powered=true": {
+      "model": "projectredacted:block/emergency_bulkhead",
+      "y": 90
+    },
+    "closed=true,facing=east,powered=false": {
+      "model": "projectredacted:block/emergency_bulkhead",
+      "y": 90
+    },
+    "closed=false,facing=east,powered=true": {
+      "model": "projectredacted:block/emergency_bulkhead",
+      "y": 90
+    },
+    "closed=false,facing=east,powered=false": {
+      "model": "projectredacted:block/emergency_bulkhead",
+      "y": 90
+    },
+    "closed=true,facing=south,powered=true": {
+      "model": "projectredacted:block/emergency_bulkhead",
+      "y": 180
+    },
+    "closed=true,facing=south,powered=false": {
+      "model": "projectredacted:block/emergency_bulkhead",
+      "y": 180
+    },
+    "closed=false,facing=south,powered=true": {
+      "model": "projectredacted:block/emergency_bulkhead",
+      "y": 180
+    },
+    "closed=false,facing=south,powered=false": {
+      "model": "projectredacted:block/emergency_bulkhead",
+      "y": 180
+    },
+    "closed=true,facing=west,powered=true": {
+      "model": "projectredacted:block/emergency_bulkhead",
+      "y": 270
+    },
+    "closed=true,facing=west,powered=false": {
+      "model": "projectredacted:block/emergency_bulkhead",
+      "y": 270
+    },
+    "closed=false,facing=west,powered=true": {
+      "model": "projectredacted:block/emergency_bulkhead",
+      "y": 270
+    },
+    "closed=false,facing=west,powered=false": {
+      "model": "projectredacted:block/emergency_bulkhead",
+      "y": 270
+    }
+  }
+}

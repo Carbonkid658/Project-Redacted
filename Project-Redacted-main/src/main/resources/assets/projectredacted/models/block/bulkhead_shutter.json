@@ -1,0 +1,77 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "projectredacted:block/bulkhead_shutter",
+    "t": "projectredacted:block/bulkhead_shutter"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        6
+      ],
+      "to": [
+        16,
+        16,
+        10
+      ],
+      "faces": {
+        "north": {
+          "texture": "#t",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        },
+        "south": {
+          "texture": "#t",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        },
+        "east": {
+          "texture": "#t",
+          "uv": [
+            6,
+            0,
+            10,
+            16
+          ]
+        },
+        "west": {
+          "texture": "#t",
+          "uv": [
+            6,
+            0,
+            10,
+            16
+          ]
+        },
+        "up": {
+          "texture": "#t",
+          "uv": [
+            0,
+            6,
+            16,
+            10
+          ]
+        },
+        "down": {
+          "texture": "#t",
+          "uv": [
+            0,
+            6,
+            16,
+            10
+          ]
+        }
+      }
+    }
+  ]
+}

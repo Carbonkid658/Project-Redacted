@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "front": "projectredacted:block/isolation_panel_front",
+    "side": "projectredacted:block/isolation_panel_side",
+    "top": "projectredacted:block/isolation_panel_top"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "projectredacted:block/security_monitor"
+    },
+    "facing=east": {
+      "model": "projectredacted:block/security_monitor",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "projectredacted:block/security_monitor",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "projectredacted:block/security_monitor",
+      "y": 270
+    }
+  }
+}

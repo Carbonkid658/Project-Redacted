@@ -1,0 +1,20 @@
+{
+  "name": "Server Room",
+  "category": "Engineering",
+  "description": "Racks of humming servers. An example datapack room.",
+  "style": "plain",
+  "minSide": 5,
+  "maxSide": 16,
+  "minHeight": 4,
+  "maxHeight": 8,
+  "powerDraw": 3,
+  "waterDraw": 0,
+  "requiredRole": "ENGINEER",
+  "requiredLevel": 1,
+  "clearance": 2,
+  "icon": "projectredacted:mainframe",
+  "cost": {
+    "projectredacted:plastic_block": 16,
+    "minecraft:redstone_block": 2
+  }
+}

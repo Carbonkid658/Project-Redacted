@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "ISI",
+    "IRI",
+    "I I"
+  ],
+  "key": {
+    "S": "minecraft:spyglass",
+    "I": "minecraft:iron_ingot",
+    "R": "minecraft:redstone"
+  },
+  "result": {
+    "id": "projectredacted:visitor_scanner",
+    "count": 1
+  }
+}

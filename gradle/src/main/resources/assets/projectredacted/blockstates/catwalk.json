@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "half=bottom": {
+      "model": "projectredacted:block/catwalk_bottom"
+    },
+    "half=top": {
+      "model": "projectredacted:block/catwalk_top"
+    }
+  }
+}

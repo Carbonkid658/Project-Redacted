@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "GOG",
+    "IRI"
+  ],
+  "key": {
+    "G": "minecraft:glass_pane",
+    "O": "minecraft:observer",
+    "I": "minecraft:iron_ingot",
+    "R": "minecraft:redstone"
+  },
+  "result": {
+    "id": "projectredacted:security_monitor",
+    "count": 1
+  }
+}

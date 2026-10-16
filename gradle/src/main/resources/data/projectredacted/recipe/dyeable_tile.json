@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "###",
+    "#W#",
+    "###"
+  ],
+  "key": {
+    "#": "projectredacted:facility_tile",
+    "W": "minecraft:white_dye"
+  },
+  "result": {
+    "id": "projectredacted:dyeable_tile",
+    "count": 8
+  }
+}

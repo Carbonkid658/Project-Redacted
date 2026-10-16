@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "GHG",
+    "IRI"
+  ],
+  "key": {
+    "G": "minecraft:glass_pane",
+    "H": "minecraft:shield",
+    "I": "minecraft:iron_ingot",
+    "R": "minecraft:redstone"
+  },
+  "result": {
+    "id": "projectredacted:guard_console",
+    "count": 1
+  }
+}

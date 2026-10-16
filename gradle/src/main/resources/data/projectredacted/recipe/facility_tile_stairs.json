@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "#  ",
+    "## ",
+    "###"
+  ],
+  "key": {
+    "#": "projectredacted:facility_tile"
+  },
+  "result": {
+    "id": "projectredacted:facility_tile_stairs",
+    "count": 4
+  }
+}

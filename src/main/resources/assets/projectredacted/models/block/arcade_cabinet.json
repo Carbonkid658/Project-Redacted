@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "front": "projectredacted:block/arcade_cabinet_front",
+    "side": "projectredacted:block/arcade_cabinet_side",
+    "top": "projectredacted:block/arcade_cabinet_top"
+  }
+}

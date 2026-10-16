@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "minecraft:iron_ingot",
+    "minecraft:iron_nugget",
+    "minecraft:iron_nugget",
+    "minecraft:iron_nugget",
+    "minecraft:iron_nugget"
+  ],
+  "result": {
+    "id": "projectredacted:plastic",
+    "count": 4
+  }
+}

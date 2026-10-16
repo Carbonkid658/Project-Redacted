@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "IHI",
+    "IPI",
+    "IRI"
+  ],
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "H": "projectredacted:hazard_block",
+    "P": "minecraft:piston",
+    "R": "minecraft:redstone"
+  },
+  "result": {
+    "id": "projectredacted:emergency_bulkhead",
+    "count": 1
+  }
+}

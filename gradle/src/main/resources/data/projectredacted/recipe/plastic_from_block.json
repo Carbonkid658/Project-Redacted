@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "projectredacted:plastic_block"
+  ],
+  "result": {
+    "id": "projectredacted:plastic",
+    "count": 9
+  }
+}

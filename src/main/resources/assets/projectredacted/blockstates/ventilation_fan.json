@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "projectredacted:block/ventilation_fan"
+    },
+    "facing=east": {
+      "model": "projectredacted:block/ventilation_fan",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "projectredacted:block/ventilation_fan",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "projectredacted:block/ventilation_fan",
+      "y": 270
+    }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "front": "projectredacted:block/visitor_scanner_front",
+    "side": "projectredacted:block/visitor_scanner_side",
+    "top": "projectredacted:block/visitor_scanner_top"
+  }
+}

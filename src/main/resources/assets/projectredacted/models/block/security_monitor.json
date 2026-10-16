@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "front": "projectredacted:block/security_monitor_front",
+    "side": "projectredacted:block/security_monitor_side",
+    "top": "projectredacted:block/security_monitor_top"
+  }
+}

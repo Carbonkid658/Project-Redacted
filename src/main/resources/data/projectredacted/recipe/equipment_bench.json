@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "III",
+    "PCP"
+  ],
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "P": "minecraft:oak_planks",
+    "C": "minecraft:crafting_table"
+  },
+  "result": {
+    "id": "projectredacted:equipment_bench",
+    "count": 1
+  }
+}

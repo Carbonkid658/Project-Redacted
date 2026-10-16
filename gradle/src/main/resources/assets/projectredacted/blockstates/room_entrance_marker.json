@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "projectredacted:block/room_entrance_marker"
+    },
+    "facing=east": {
+      "model": "projectredacted:block/room_entrance_marker"
+    },
+    "facing=south": {
+      "model": "projectredacted:block/room_entrance_marker"
+    },
+    "facing=west": {
+      "model": "projectredacted:block/room_entrance_marker"
+    }
+  }
+}

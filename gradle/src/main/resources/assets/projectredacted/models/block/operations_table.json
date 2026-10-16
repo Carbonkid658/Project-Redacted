@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "front": "projectredacted:block/operations_table_front",
+    "side": "projectredacted:block/operations_table_side",
+    "top": "projectredacted:block/operations_table_top"
+  }
+}

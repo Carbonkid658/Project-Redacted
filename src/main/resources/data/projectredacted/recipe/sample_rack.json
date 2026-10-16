@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "GGG",
+    "SSS"
+  ],
+  "key": {
+    "G": "minecraft:glass_bottle",
+    "S": "minecraft:oak_slab"
+  },
+  "result": {
+    "id": "projectredacted:sample_rack",
+    "count": 1
+  }
+}

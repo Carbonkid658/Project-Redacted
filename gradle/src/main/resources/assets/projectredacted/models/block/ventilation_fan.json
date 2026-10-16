@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "front": "projectredacted:block/ventilation_fan_front",
+    "side": "projectredacted:block/ventilation_fan_side",
+    "top": "projectredacted:block/ventilation_fan_top"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "projectredacted:block/sage_green_tile_slab"
+    },
+    "type=double": {
+      "model": "projectredacted:block/sage_green_tile"
+    },
+    "type=top": {
+      "model": "projectredacted:block/sage_green_tile_slab_top"
+    }
+  }
+}

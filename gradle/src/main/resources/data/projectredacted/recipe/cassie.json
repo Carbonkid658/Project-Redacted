@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "DND",
+    "PRP",
+    "DMD"
+  ],
+  "key": {
+    "D": "minecraft:diamond_block",
+    "N": "minecraft:note_block",
+    "P": "projectredacted:plastic_block",
+    "R": "minecraft:redstone_block",
+    "M": "minecraft:netherite_ingot"
+  },
+  "result": {
+    "id": "projectredacted:cassie",
+    "count": 1
+  }
+}

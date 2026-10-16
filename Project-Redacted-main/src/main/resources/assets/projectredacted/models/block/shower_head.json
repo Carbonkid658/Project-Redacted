@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "front": "projectredacted:block/shower_head_front",
+    "side": "projectredacted:block/shower_head_side",
+    "top": "projectredacted:block/shower_head_top"
+  }
+}

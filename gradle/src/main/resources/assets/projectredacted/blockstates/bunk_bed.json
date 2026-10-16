@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "projectredacted:block/bunk_bed"
+    },
+    "facing=east": {
+      "model": "projectredacted:block/bunk_bed",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "projectredacted:block/bunk_bed",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "projectredacted:block/bunk_bed",
+      "y": 270
+    }
+  }
+}

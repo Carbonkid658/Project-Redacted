@@ -1,0 +1,77 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "projectredacted:block/wall_frame",
+    "t": "projectredacted:block/wall_frame"
+  },
+  "elements": [
+    {
+      "from": [
+        14,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "north": {
+          "texture": "#t",
+          "uv": [
+            0,
+            0,
+            2,
+            16
+          ]
+        },
+        "south": {
+          "texture": "#t",
+          "uv": [
+            14,
+            0,
+            16,
+            16
+          ]
+        },
+        "east": {
+          "texture": "#t",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        },
+        "west": {
+          "texture": "#t",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        },
+        "up": {
+          "texture": "#t",
+          "uv": [
+            14,
+            0,
+            16,
+            16
+          ]
+        },
+        "down": {
+          "texture": "#t",
+          "uv": [
+            14,
+            0,
+            16,
+            16
+          ]
+        }
+      }
+    }
+  ]
+}

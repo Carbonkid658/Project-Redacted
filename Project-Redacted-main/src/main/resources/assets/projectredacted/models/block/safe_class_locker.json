@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "front": "projectredacted:block/safe_class_locker_front",
+    "side": "projectredacted:block/safe_class_locker_side",
+    "top": "projectredacted:block/safe_class_locker_top"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SGS",
+    "SRS"
+  ],
+  "key": {
+    "S": "minecraft:smooth_stone",
+    "G": "minecraft:glass_pane",
+    "R": "minecraft:redstone"
+  },
+  "result": {
+    "id": "projectredacted:cell_control_panel_light",
+    "count": 1
+  }
+}

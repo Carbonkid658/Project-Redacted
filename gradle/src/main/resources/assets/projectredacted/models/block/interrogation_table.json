@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "front": "projectredacted:block/interrogation_table_front",
+    "side": "projectredacted:block/interrogation_table_side",
+    "top": "projectredacted:block/interrogation_table_top"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "front": "projectredacted:block/hospital_bed_front",
+    "side": "projectredacted:block/hospital_bed_side",
+    "top": "projectredacted:block/hospital_bed_top"
+  }
+}

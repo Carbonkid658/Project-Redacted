@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "IPI",
+    "RCR"
+  ],
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "P": "projectredacted:plastic",
+    "R": "minecraft:redstone",
+    "C": "minecraft:copper_ingot"
+  },
+  "result": {
+    "id": "projectredacted:repair_kit",
+    "count": 2
+  }
+}

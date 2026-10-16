@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab_top",
+  "textures": {
+    "bottom": "projectredacted:block/blue_tile",
+    "top": "projectredacted:block/blue_tile",
+    "side": "projectredacted:block/blue_tile"
+  }
+}

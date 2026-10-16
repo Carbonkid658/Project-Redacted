@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "IPI",
+    "IRI",
+    "IPI"
+  ],
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "P": "projectredacted:plastic",
+    "R": "minecraft:redstone"
+  },
+  "result": {
+    "id": "projectredacted:keycard_reader",
+    "count": 1
+  }
+}

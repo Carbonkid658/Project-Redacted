@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "projectredacted:block/circuit_breaker"
+    },
+    "facing=east": {
+      "model": "projectredacted:block/circuit_breaker",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "projectredacted:block/circuit_breaker",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "projectredacted:block/circuit_breaker",
+      "y": 270
+    }
+  }
+}

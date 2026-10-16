@@ -1,0 +1,81 @@
+{
+  "cassie.chime": {
+    "sounds": [
+      {
+        "name": "minecraft:block.bell.use",
+        "type": "event"
+      }
+    ],
+    "subtitle": "subtitles.projectredacted.cassie"
+  },
+  "cassie.announce": {
+    "sounds": [
+      {
+        "name": "minecraft:block.note_block.pling",
+        "pitch": 0.7,
+        "type": "event"
+      }
+    ],
+    "subtitle": "subtitles.projectredacted.cassie"
+  },
+  "site.alarm": {
+    "sounds": [
+      {
+        "name": "minecraft:entity.elder_guardian.curse",
+        "pitch": 0.6,
+        "type": "event"
+      }
+    ],
+    "subtitle": "subtitles.projectredacted.alarm"
+  },
+  "site.warhead": {
+    "sounds": [
+      {
+        "name": "minecraft:block.bell.use",
+        "pitch": 0.5,
+        "type": "event"
+      }
+    ],
+    "subtitle": "subtitles.projectredacted.warhead"
+  },
+  "gun.pistol": {
+    "sounds": [
+      {
+        "name": "minecraft:entity.firework_rocket.blast",
+        "pitch": 1.4,
+        "type": "event"
+      }
+    ],
+    "subtitle": "subtitles.projectredacted.gunshot"
+  },
+  "gun.rifle": {
+    "sounds": [
+      {
+        "name": "minecraft:entity.firework_rocket.large_blast",
+        "pitch": 1.2,
+        "type": "event"
+      }
+    ],
+    "subtitle": "subtitles.projectredacted.gunshot"
+  },
+  "gun.shotgun": {
+    "sounds": [
+      {
+        "name": "minecraft:entity.generic.explode",
+        "pitch": 1.6,
+        "type": "event"
+      }
+    ],
+    "subtitle": "subtitles.projectredacted.gunshot"
+  },
+  "gun.reload": {
+    "sounds": [
+      {
+        "name": "minecraft:item.crossbow.loading_end",
+        "pitch": 1.0,
+        "type": "event"
+      }
+    ],
+    "subtitle": "subtitles.projectredacted.reload"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CBC",
+    "CPC",
+    "CBC"
+  ],
+  "key": {
+    "C": "minecraft:copper_ingot",
+    "B": "minecraft:bucket",
+    "P": "minecraft:piston"
+  },
+  "result": {
+    "id": "projectredacted:water_pump",
+    "count": 1
+  }
+}

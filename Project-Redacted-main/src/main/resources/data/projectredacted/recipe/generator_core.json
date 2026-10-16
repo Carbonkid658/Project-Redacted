@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "IRI",
+    "RCR",
+    "IRI"
+  ],
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "R": "minecraft:redstone_block",
+    "C": "minecraft:coal_block"
+  },
+  "result": {
+    "id": "projectredacted:generator_core",
+    "count": 1
+  }
+}

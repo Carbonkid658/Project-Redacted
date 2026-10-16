@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "front": "projectredacted:block/serving_counter_front",
+    "side": "projectredacted:block/serving_counter_side",
+    "top": "projectredacted:block/serving_counter_top"
+  }
+}

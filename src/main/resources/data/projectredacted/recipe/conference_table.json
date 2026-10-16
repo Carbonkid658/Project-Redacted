@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SSS",
+    "F F"
+  ],
+  "key": {
+    "S": "minecraft:dark_oak_slab",
+    "F": "minecraft:dark_oak_fence"
+  },
+  "result": {
+    "id": "projectredacted:conference_table",
+    "count": 1
+  }
+}

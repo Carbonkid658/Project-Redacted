@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "projectredacted:block/water_pump"
+    },
+    "facing=east": {
+      "model": "projectredacted:block/water_pump",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "projectredacted:block/water_pump",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "projectredacted:block/water_pump",
+      "y": 270
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "###",
+    "#D#",
+    "###"
+  ],
+  "key": {
+    "#": "projectredacted:facility_tile",
+    "D": "minecraft:light_gray_dye"
+  },
+  "result": {
+    "id": "projectredacted:office_tile",
+    "count": 8
+  }
+}

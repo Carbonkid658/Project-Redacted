@@ -1,0 +1,1 @@
+# API lookups for CI (find:<regex>, class:<fqcn>[:<line regex>], code:<fqcn>:<regex>); empty means skip.

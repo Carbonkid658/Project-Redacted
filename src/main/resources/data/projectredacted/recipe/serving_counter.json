@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "GBG",
+    "SSS"
+  ],
+  "key": {
+    "G": "minecraft:glass_pane",
+    "B": "minecraft:bowl",
+    "S": "minecraft:smooth_stone"
+  },
+  "result": {
+    "id": "projectredacted:serving_counter",
+    "count": 1
+  }
+}
