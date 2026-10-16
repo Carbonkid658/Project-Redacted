@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "projectredacted:block/mainframe"
+    "model": "projectredacted:item/mainframe"
   }
 }

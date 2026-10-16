@@ -137,7 +137,8 @@ public class RuinPiece extends StructurePiece {
         if (job.mainframeSpot != null && chunkBox.isInside(job.mainframeSpot)) {
             level.setBlock(job.mainframeSpot, ModBlocks.RUINED_MAINFRAME.defaultBlockState().setValue(FacingBlock.FACING, Direction.SOUTH), 2);
             if (job.terminalSpot != null && Math.floorMod(seed, 3) == 0)
-                level.setBlock(job.terminalSpot, ModBlocks.RUINED_CASSIE.defaultBlockState().setValue(FacingBlock.FACING, Direction.SOUTH), 2);
+                level.setBlock(job.terminalSpot, ModBlocks.RUINED_CASSIE.defaultBlockState().setValue(dev.projectredacted.block.CassieBlock.ROTATION,
+                        net.minecraft.world.level.block.state.properties.RotationSegment.convertToSegment(Direction.SOUTH)), 2);
             BlockPos chest = new BlockPos(b.x2() - 1, b.y1() + 1, b.z1() + 1);
             if (chunkBox.isInside(chest) && !chest.equals(job.mainframeSpot) && !chest.equals(job.terminalSpot))
                 GenUtil.lootChest(level, chest, RandomSource.create(seed), true);

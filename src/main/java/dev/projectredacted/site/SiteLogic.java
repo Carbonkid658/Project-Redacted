@@ -213,6 +213,8 @@ public final class SiteLogic {
         if (!Cassie.announce(site, "Attention all personnel. " + def.number + " has breached containment. " + reason + ".")) {
             Cassie.alarm(site, def.number + " has breached containment!");
         }
+        // The breached wing's gate and section doors close (§4A.3).
+        dev.projectredacted.site.gen.Wings.lockdown(level, site, cell.wing);
         ScpApi.fireBreach(level, site, cell, def, scp);
     }
 
@@ -223,8 +225,8 @@ public final class SiteLogic {
         while (it.hasNext()) {
             Map.Entry<Upgrade, Long> e = it.next();
             if (e.getValue() > now) continue;
+            Upgrade u = e.getKey(); // an EnumMap entry can't be read after it's removed
             it.remove();
-            Upgrade u = e.getKey();
             site.upgrades.add(u);
             switch (u) {
                 case FACILITY_LEVEL_1 -> site.level = Math.max(site.level, 1);

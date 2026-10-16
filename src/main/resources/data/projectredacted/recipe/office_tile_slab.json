@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "###"
+  ],
+  "key": {
+    "#": "projectredacted:office_tile"
+  },
+  "result": {
+    "id": "projectredacted:office_tile_slab",
+    "count": 6
+  }
+}

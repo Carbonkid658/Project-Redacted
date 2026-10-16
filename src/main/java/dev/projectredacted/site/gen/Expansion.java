@@ -64,6 +64,8 @@ public final class Expansion {
 
     private static boolean available(Site site, RoomType t) {
         if (t.id.equals(RoomTypes.ENTRANCE) || t.id.equals(RoomTypes.DIRECTORS_OFFICE)) return false;
+        // The player decides where emergency exits go (D12).
+        if (t.id.equals(RoomTypes.EMERGENCY_EXIT)) return false;
         return RoomPlanner.lockedReason(site, t) == null;
     }
 
@@ -182,7 +184,7 @@ public final class Expansion {
         if (sizes.isEmpty()) return;
         SiteGen.Survey survey = SiteGen.survey(level, site, level.getRandom().nextLong());
         survey.input().exitOk = (p, d) -> true;
-        SitePlan plan = SiteGen.addRoom(site, survey.input(), type.id, sizes.get(0));
+        SitePlan plan = SiteGen.addRoom(site, survey, type.id, sizes.get(0));
         if (!plan.ok()) {
             site.expandStatus = plan.error;
             return;

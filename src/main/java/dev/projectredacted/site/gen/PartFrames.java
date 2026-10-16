@@ -32,6 +32,10 @@ public final class PartFrames {
         public String kind = "room";
         public String roomType;
         public int weight = 10;
+        /** Wing letter for wing-themed parts, or null (§4A.6). */
+        public String wing;
+        /** section, transition, spine, tunnel. */
+        public List<String> tags = new ArrayList<>();
         public int[] min, max;
         public List<FrameRoom> rooms = new ArrayList<>();
 
@@ -57,6 +61,12 @@ public final class PartFrames {
             o.addProperty("kind", kind);
             if (roomType != null) o.addProperty("room_type", roomType);
             o.addProperty("weight", weight);
+            if (wing != null) o.addProperty("wing", wing);
+            if (!tags.isEmpty()) {
+                JsonArray t = new JsonArray();
+                tags.forEach(t::add);
+                o.add("tags", t);
+            }
             if (!rooms.isEmpty()) {
                 JsonArray arr = new JsonArray();
                 for (FrameRoom r : rooms) {
@@ -130,6 +140,7 @@ public final class PartFrames {
                 for (Frame f : list) {
                     if (f == null || f.id == null || f.min == null || f.max == null) continue;
                     if (f.rooms == null) f.rooms = new ArrayList<>();
+                    if (f.tags == null) f.tags = new ArrayList<>();
                     FRAMES.add(f);
                 }
             }

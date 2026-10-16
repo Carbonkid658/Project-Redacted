@@ -134,6 +134,8 @@ public final class Construction {
         PLANS.remove(key(site, room));
         for (BlockPos r : plan.readers) SiteManager.addReader(r);
         if (type.structure != null && !type.structure.isEmpty()) placeStructure(level, room, type);
+        if (RoomTypes.EMERGENCY_EXIT.equals(type.id)) dev.projectredacted.site.EmergencyExit.build(level, site, room);
+        dev.projectredacted.site.gen.Wings.applyReaders(level, site);
         String msg = "Construction of " + room.displayName() + " complete."
                 + (type.powerDraw > 0 && !room.connected ? " Add it to the Circuit Breaker to power it." : "");
         if (!Cassie.announce(site, msg)) Cassie.broadcast(site, Component.literal(msg).withStyle(ChatFormatting.GREEN), false);

@@ -1,8 +1,5 @@
 {
-  "parent": "minecraft:block/orientable",
   "textures": {
-    "front": "projectredacted:block/site_director_computer_front",
-    "side": "projectredacted:block/site_director_computer_side",
-    "top": "projectredacted:block/site_director_computer_top"
+    "particle": "projectredacted:block/site_director_computer"
   }
 }

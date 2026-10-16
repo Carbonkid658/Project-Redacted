@@ -34,6 +34,8 @@ public class AutoPlace {
     public int index;
     public long seed = RANDOM.nextLong();
     public boolean nearMe;
+    /** "Put it anywhere": any doorway, ignoring wings (§4A.5). */
+    public boolean anywhere;
     public String error;
     private SiteGen.Survey survey;
 
@@ -105,16 +107,7 @@ public class AutoPlace {
         Assembler.Input in = survey.input();
         in.near = nearMe ? player.blockPosition() : null;
         in.exitOk = (p, d) -> true;
-        Integer storey = SiteGen.preferredStorey(site, in);
-        if (storey != null && !nearMe) spots.addAll(Assembler.spots(in, new Assembler.Goal(typeId, false, storey, part), MAX_SPOTS));
-        if (spots.size() < MAX_SPOTS) {
-            java.util.Set<String> have = new java.util.HashSet<>();
-            for (SitePlan p : spots) have.add(p.key());
-            for (SitePlan p : Assembler.spots(in, new Assembler.Goal(typeId, false, null, part), MAX_SPOTS)) {
-                if (spots.size() >= MAX_SPOTS) break;
-                if (have.add(p.key())) spots.add(p);
-            }
-        }
+        spots.addAll(Skeleton.spots(site, survey, typeId, part, MAX_SPOTS, anywhere));
         if (spots.isEmpty()) {
             error = "No free space joined to the facility for a " + sizeLabel(part) + " " + type().name
                     + ". Try a smaller size, or upgrade the facility level for a bigger claim.";
@@ -150,6 +143,8 @@ public class AutoPlace {
         return switch (part.kind) {
             case HALLWAY -> Cost.of(Items.STONE_BRICKS, Math.max(4, part.sx * part.sz / 3), Items.IRON_INGOT, 1);
             case STAIRWELL -> Cost.of(Items.STONE_BRICKS, Math.max(6, part.sx * part.sz / 2), Items.LADDER, 6, Items.IRON_INGOT, 1);
+            case HUB -> Cost.of(Items.STONE_BRICKS, Math.max(8, part.sx * part.sz / 3), Items.IRON_INGOT, 2);
+            case GATE -> Cost.of(Items.STONE_BRICKS, Math.max(6, part.sx * part.sz / 3), Items.IRON_INGOT, 4, Items.REDSTONE, 4);
             default -> {
                 Cost c = new Cost();
                 for (String t : part.roomTypes()) {
@@ -173,7 +168,7 @@ public class AutoPlace {
     }
 
     public int hallways(SitePlan plan) {
-        return plan.count(SitePart.Kind.HALLWAY) + plan.count(SitePart.Kind.STAIRWELL);
+        return plan.count(SitePart.Kind.HALLWAY) + plan.count(SitePart.Kind.STAIRWELL) + plan.count(SitePart.Kind.HUB) + plan.count(SitePart.Kind.GATE);
     }
 
     /** Why the current spot can't be built now, or null. */
@@ -213,7 +208,8 @@ public class AutoPlace {
             }
         }
         SiteGen.commit((ServerLevel) player.level(), site, plan, survey, false);
-        String msg = "Construction of a " + type().name + " has begun" + (hallways(plan) > 0 ? " with " + hallways(plan) + " connecting part(s)." : ".");
+        String where = plan.wing == null || anywhere ? "" : plan.newWing ? ", founding " + Wings.title(plan.wing) : " in " + Wings.title(plan.wing);
+        String msg = "Construction of a " + type().name + where + " has begun" + (hallways(plan) > 0 ? " with " + hallways(plan) + " connecting part(s)." : ".");
         if (!Cassie.announce(site, msg)) Cassie.broadcast(site, Component.literal(msg).withStyle(ChatFormatting.GREEN), false);
         stop(player);
         return null;

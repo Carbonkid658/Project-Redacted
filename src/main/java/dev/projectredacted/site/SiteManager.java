@@ -96,6 +96,15 @@ public final class SiteManager {
             if (part.rooms == null) part.rooms = new ArrayList<>();
             if (part.reopen == null) part.reopen = new ArrayList<>();
         }
+        // v3 (§4A.5): existing sites keep their rooms; each room joins its type's wing.
+        if (s.wings == null) s.wings = new LinkedHashMap<>();
+        s.wings.values().removeIf(java.util.Objects::isNull);
+        for (var w : s.wings.values()) if (w.sections == null) w.sections = new ArrayList<>();
+        if (s.lockdown == null) s.lockdown = new java.util.TreeSet<>();
+        if (s.hatchReaders == null) s.hatchReaders = new ArrayList<>();
+        s.rooms.removeIf(java.util.Objects::isNull);
+        for (var r : s.rooms) if (r.type != null) dev.projectredacted.site.gen.Wings.assign(s, r);
+        dev.projectredacted.site.gen.Wings.registerGates(s);
         s.staff.values().removeIf(r -> r.role == null);
         for (var r : s.staff.values()) if (r.assignment == null) r.assignment = new dev.projectredacted.staff.Assignment();
     }
@@ -122,6 +131,7 @@ public final class SiteManager {
         DesignSession.clear();
         dev.projectredacted.site.gen.PlanPreview.clearAll();
         dev.projectredacted.site.gen.AutoPlace.clear();
+        DoorControl.clear();
     }
 
     public static MinecraftServer server() {

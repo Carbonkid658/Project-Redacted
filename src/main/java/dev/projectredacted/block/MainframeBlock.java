@@ -1,6 +1,8 @@
 package dev.projectredacted.block;
 
+import dev.projectredacted.blockentities.MainframeBlockEntity;
 import dev.projectredacted.gui.Gui;
+import dev.projectredacted.registry.ModBlocks;
 import dev.projectredacted.gui.screen.BlockPanels;
 import dev.projectredacted.site.Site;
 import dev.projectredacted.site.SiteFounding;
@@ -17,14 +19,35 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
-/** The heart of a site. Placing one founds the player's site; while it is offline the site stops running. */
-public class MainframeBlock extends FacingBlock {
+/**
+ * The heart of a site. Placing one founds the player's site; while it is offline the site stops running.
+ * Drawn by GeckoLib (geckolib/models/mainframe.geo.json). The model is two blocks tall, so an invisible
+ * {@link MainframeTopBlock} fills the space above it.
+ */
+public class MainframeBlock extends FacingBlock implements EntityBlock {
 
     public MainframeBlock(Properties properties) {
         super(properties);
+    }
+
+    @Override
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new MainframeBlockEntity(pos, state);
+    }
+
+    @Override
+    protected void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
+        super.onPlace(state, level, pos, oldState, movedByPiston);
+        // Site generation places Mainframes with setBlock, so the top goes in here rather than in setPlacedBy.
+        BlockPos above = pos.above();
+        if (!level.isClientSide() && !oldState.is(this) && level.getBlockState(above).canBeReplaced()) {
+            level.setBlock(above, ModBlocks.MAINFRAME_TOP.defaultBlockState(), Block.UPDATE_ALL);
+        }
     }
 
     @Override

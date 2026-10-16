@@ -16,7 +16,11 @@ public class SitePart {
     public static final int STOREY = 6;
 
     public enum Kind {
-        ROOM, HALLWAY, STAIRWELL, ENTRANCE;
+        ROOM, HALLWAY, STAIRWELL, ENTRANCE,
+        /** A central lobby joining hallway arms (§4A.4). */
+        HUB,
+        /** A checkpoint between two areas: wing gate, section door or transition checkpoint (§4A.3). */
+        GATE;
 
         public static Kind parse(String s) {
             try {
@@ -30,6 +34,10 @@ public class SitePart {
             return name().charAt(0) + name().substring(1).toLowerCase(Locale.ROOT);
         }
     }
+
+    /** Part tags (§4A.6). */
+    public static final String TAG_SECTION = "section", TAG_TRANSITION = "transition", TAG_SPINE = "spine", TAG_TUNNEL = "tunnel";
+    public static final List<String> TAGS = List.of(TAG_SECTION, TAG_TRANSITION, TAG_SPINE, TAG_TUNNEL);
 
     /** Connector types (§3.1). */
     public static final String DOOR = "door", HALL = "hall", STAIR_UP = "stair_up", STAIR_DOWN = "stair_down", SURFACE_EXIT = "surface_exit";
@@ -74,6 +82,10 @@ public class SitePart {
     /** For room parts whose whole box is one room. */
     public String roomType;
     public int weight = 10;
+    /** Wing letter for wing-themed parts (only used inside that wing), or null for anywhere (§4A.6). */
+    public String wing;
+    /** section, transition, spine, tunnel (§4A.6). */
+    public final java.util.Set<String> tags = new java.util.TreeSet<>();
     public int sx, sy, sz;
     public final List<Connector> connectors = new ArrayList<>();
     public final List<PartRoom> rooms = new ArrayList<>();
@@ -100,6 +112,10 @@ public class SitePart {
         if (roomType != null) out.add(roomType);
         for (PartRoom r : rooms) if (!out.contains(r.type())) out.add(r.type());
         return out;
+    }
+
+    public boolean tagged(String tag) {
+        return tags.contains(tag);
     }
 
     public boolean has(String connectorType) {

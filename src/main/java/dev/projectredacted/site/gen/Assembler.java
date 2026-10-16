@@ -34,17 +34,77 @@ public final class Assembler {
         public int budget = 25000;
         /** Try doorways nearest this spot first ("Near me"). */
         public BlockPos near;
+        /** Surface-Flat sites with their containment layer one storey down (D14). */
+        public boolean basement;
     }
 
-    /** What to place: a room type (optionally one size) or the Entrance, on a storey (null = any allowed). */
-    public record Goal(String roomType, boolean entrance, Integer storey, SitePart only) {
+    /**
+     * A part that must come on the way to the goal (§4A.5), in order: e.g. a wing gate, then a corridor, then a
+     * section door. Parts placed after it get {@code after} as their role.
+     */
+    public record Step(SitePart.Kind kind, String tag, String role, Integer storey, String after) {}
+
+    /**
+     * What to place: a room type (optionally one size), the Entrance or a part kind, on a storey (null = any
+     * allowed), optionally through some {@link Step}s first.
+     */
+    public static final class Goal {
+        private final String roomType;
+        private final boolean entrance;
+        private final Integer storey;
+        private final SitePart only;
+        /** Target a part kind (a hub) instead of a room. */
+        public SitePart.Kind kind;
+        /** Wing whose themed hallways may be used. */
+        public String wing;
+        public final List<Step> via = new ArrayList<>();
+        /** Role of the target part, and of in-between parts before the first step. */
+        public String role = Wings.ROLE_ROOM, startRole = Wings.ROLE_LINK;
+
+        public Goal(String roomType, boolean entrance, Integer storey, SitePart only) {
+            this.roomType = roomType;
+            this.entrance = entrance;
+            this.storey = storey;
+            this.only = only;
+        }
+
+        public static Goal of(SitePart.Kind kind, Integer storey, String role) {
+            Goal g = new Goal(null, false, storey, null);
+            g.kind = kind;
+            g.role = role;
+            return g;
+        }
+
+        public String roomType() {
+            return roomType;
+        }
+
+        public boolean entrance() {
+            return entrance;
+        }
+
+        public Integer storey() {
+            return storey;
+        }
+
+        public SitePart only() {
+            return only;
+        }
+
+        public Goal then(SitePart.Kind kind, String tag, String role, Integer storey, String after) {
+            via.add(new Step(kind, tag, role, storey, after));
+            return this;
+        }
+
         boolean met(SitePart p) {
             if (only != null) return p == only;
+            if (kind != null) return p.kind == kind;
             if (entrance) return p.kind == SitePart.Kind.ENTRANCE;
             return p.kind != SitePart.Kind.ENTRANCE && p.roomTypes().contains(roomType);
         }
 
         String label() {
+            if (kind != null) return "a " + kind.label();
             if (entrance) return "an Entrance";
             var t = RoomTypes.get(roomType);
             return t == null ? roomType : "a " + t.name;
@@ -83,12 +143,15 @@ public final class Assembler {
                 error = "No room in the claim for the Director's Office (" + a.reject + ").";
                 continue;
             }
-            if (!a.attach(new Goal(RoomTypes.BARRACKS, false, 0, null), 3)) {
+            // The outpost hub (§4A.2): the Barracks and Entrance hang off it. Without room for one, they join the office.
+            boolean hub = a.attach(Goal.of(SitePart.Kind.HUB, 0, Wings.ROLE_HUB), 2, null);
+            String prefer = hub ? Wings.ROLE_HUB : null;
+            if (!a.attach(new Goal(RoomTypes.BARRACKS, false, 0, null), 3, prefer)) {
                 error = "No room left in the claim for a Barracks. Upgrade the facility level for more space.";
                 continue;
             }
             int surface = SiteTypeRules.surfaceStorey(in.type);
-            if (!a.attach(new Goal(null, true, surface, null), surface + 4)) {
+            if (!a.attach(new Goal(null, true, surface, null), surface + 4, prefer)) {
                 error = in.type == SiteType.UNDERGROUND ? "Couldn't reach the surface for the Entrance from here." : "No room left in the claim for the Entrance.";
                 continue;
             }
@@ -114,18 +177,29 @@ public final class Assembler {
 
     /** Up to {@code max} different spots for a room, one per doorway it can grow from. */
     public static List<SitePlan> spots(Input in, Goal goal, int max) {
+        return spots(in, goal, max, null, null, 0, goal.storey() != null ? 5 : 3);
+    }
+
+    /**
+     * Spots growing only from the doorways in {@code starts} (null for all), trying those nearest
+     * {@code toward} first (or {@link Input#near}), with {@code tries} doorways at most (0 for no limit).
+     */
+    public static List<SitePlan> spots(Input in, Goal goal, int max, Collection<Integer> starts, BlockPos toward, int tries, int depth) {
         List<SitePlan> out = new ArrayList<>();
         Set<String> seen = new HashSet<>();
         List<Integer> order = new ArrayList<>();
-        for (int i = 0; i < in.doorways.size(); i++) order.add(i);
+        for (int i = 0; i < in.doorways.size(); i++) if (starts == null || starts.contains(i)) order.add(i);
         Collections.shuffle(order, new Random(in.seed));
-        if (in.near != null) order.sort(Comparator.comparingDouble(i -> in.doorways.get(i).pos().distSqr(in.near)));
+        BlockPos near = in.near != null ? in.near : toward;
+        if (near != null) order.sort(Comparator.comparingDouble(i -> in.doorways.get(i).pos().distSqr(near)));
+        if (tries > 0 && order.size() > tries) order = new ArrayList<>(order.subList(0, tries));
+        int per = Math.max(goal.via.isEmpty() ? 800 : 3000, in.budget / Math.max(1, Math.min(order.size(), 12)));
         for (int i : order) {
             if (out.size() >= max) break;
             Assembler a = new Assembler(in, in.seed ^ (i * 0x632BE59BD9B4E019L));
-            a.budget = Math.max(800, in.budget / Math.max(1, Math.min(order.size(), 12)));
+            a.budget = per;
             Open start = a.open.get(i);
-            if (!a.chain(start, goal, goal.storey() != null ? 5 : 3)) continue;
+            if (!a.chain(start, goal, depth, 0, goal.startRole)) continue;
             SitePlan plan = a.result(in.seed);
             if (seen.add(plan.key())) out.add(plan);
         }
@@ -142,7 +216,9 @@ public final class Assembler {
                 BlockPos min = new BlockPos(center.getX() - (atZero.width() - 1) / 2, floor, center.getZ() - (atZero.length() - 1) / 2);
                 BlockPos origin = office.originFor(min, rot);
                 if (fits(office, origin, rot, 0) == null) continue;
-                placed.add(new SitePlan.PlanPart(office, origin, rot, 0));
+                SitePlan.PlanPart pp = new SitePlan.PlanPart(office, origin, rot, 0);
+                pp.role = Wings.ROLE_ROOM;
+                placed.add(pp);
                 addOpens(placed.size() - 1);
                 return true;
             }
@@ -150,24 +226,33 @@ public final class Assembler {
         return false;
     }
 
-    /** Attaches the goal to any open doorway, through up to {@code depth} hallways or stairwells. */
-    private boolean attach(Goal goal, int depth) {
+    /**
+     * Attaches the goal to any open doorway, through up to {@code depth} hallways or stairwells, trying doorways
+     * of parts with the {@code prefer} role first.
+     */
+    private boolean attach(Goal goal, int depth, String prefer) {
         List<Open> starts = new ArrayList<>(open);
         Collections.shuffle(starts, random);
+        if (prefer != null) starts.sort(Comparator.comparingInt(o -> o.part >= 0 && prefer.equals(placed.get(o.part).role) ? 0 : 1));
         for (Open o : starts) {
             if (budget <= 0) return false;
             if (!open.contains(o)) continue;
-            if (chain(o, goal, depth)) return true;
+            if (chain(o, goal, depth, 0, goal.startRole)) return true;
         }
         return false;
     }
 
-    private boolean chain(Open from, Goal goal, int depth) {
+    /**
+     * Places parts from {@code from} until the goal is met: the goal's steps in order (they don't use up
+     * {@code depth}), with up to {@code depth} hallways or stairwells in between.
+     */
+    private boolean chain(Open from, Goal goal, int depth, int step, String fillerRole) {
         int storey = storeyOf(from.c);
-        Integer target = goal.storey();
+        Step pending = step < goal.via.size() ? goal.via.get(step) : null;
+        Integer target = pending != null && pending.storey() != null ? pending.storey() : goal.storey();
         int delta = target == null ? 0 : target - storey;
         if (Math.abs(delta) > depth) return false;
-        for (SitePart p : candidates(goal, depth, delta, from.c)) {
+        for (SitePart p : candidates(goal, pending, depth, delta, from.c, fillerRole)) {
             for (int rot : rotations()) {
                 for (int ci = 0; ci < p.connectors.size(); ci++) {
                     if (--budget <= 0) return false;
@@ -179,10 +264,14 @@ public final class Assembler {
                     BlockPos origin = target2.subtract(local.pos());
                     Integer partStorey = fits(p, origin, rot, -1);
                     if (partStorey == null) continue;
-                    if (!p.kind.equals(SitePart.Kind.HALLWAY) && !p.kind.equals(SitePart.Kind.STAIRWELL) && !goal.met(p)) continue;
-                    if (goal.met(p) && target != null && partStorey != target.intValue()) continue;
+                    boolean isStep = pending != null && stepMet(pending, p, goal) && (pending.storey() == null || partStorey == pending.storey().intValue());
+                    boolean isTarget = pending == null && goal.met(p) && (target == null || partStorey == target.intValue());
+                    boolean isFiller = depth > 0 && filler(p, goal, fillerRole);
+                    if (!isStep && !isTarget && !isFiller) continue;
                     SitePlan.PlanPart pp = new SitePlan.PlanPart(p, origin, rot, partStorey);
                     pp.used = 1 << ci;
+                    pp.entry = ci;
+                    pp.role = isTarget ? goal.role : isStep ? pending.role() : p.kind == SitePart.Kind.STAIRWELL && Wings.ROLE_SPINE.equals(fillerRole) ? Wings.ROLE_LINK : fillerRole;
                     int mark = open.size();
                     open.remove(from);
                     placed.add(pp);
@@ -190,12 +279,14 @@ public final class Assembler {
                     addOpens(idx);
                     if (from.part >= 0) placed.get(from.part).used |= 1 << from.conn;
                     else usedDoorways.add(from.doorway);
-                    if (goal.met(p)) return true;
-                    if (depth > 0) {
+                    if (isTarget) return true;
+                    if (isStep || depth > 0) {
                         List<Open> next = new ArrayList<>();
                         for (Open o : open) if (o.part == idx) next.add(o);
                         sortForStorey(next, delta);
-                        for (Open o : next) if (chain(o, goal, depth - 1)) return true;
+                        for (Open o : next) {
+                            if (isStep ? chain(o, goal, depth, step + 1, pending.after()) : chain(o, goal, depth - 1, step, fillerRole)) return true;
+                        }
                     }
                     // undo
                     open.removeIf(o -> o.part == idx);
@@ -210,15 +301,22 @@ public final class Assembler {
         return false;
     }
 
-    private List<SitePart> candidates(Goal goal, int depth, int delta, SitePart.Connector from) {
+    private List<SitePart> candidates(Goal goal, Step pending, int depth, int delta, SitePart.Connector from, String fillerRole) {
         List<SitePart> out = new ArrayList<>();
         if (delta == 0) {
-            if (goal.only() != null) out.add(goal.only());
+            if (pending != null) {
+                if (pending.kind() == SitePart.Kind.HALLWAY && pending.tag() == null) out.addAll(weighted(in.kit.fillers(SitePart.Kind.HALLWAY, goal.wing, false)));
+                else out.addAll(weighted(in.kit.matching(pending.kind(), pending.tag(), goal.wing)));
+            } else if (goal.only() != null) out.add(goal.only());
+            else if (goal.kind != null) out.addAll(weighted(in.kit.matching(goal.kind, null, goal.wing)));
             else out.addAll(weighted(goal.entrance() ? in.kit.ofKind(SitePart.Kind.ENTRANCE) : in.kit.forRoom(goal.roomType())));
         }
         if (depth > 0) {
-            List<SitePart> halls = weighted(in.kit.ofKind(SitePart.Kind.HALLWAY));
-            List<SitePart> stairs = weighted(in.kit.ofKind(SitePart.Kind.STAIRWELL));
+            String wing = themed(fillerRole) ? goal.wing : null;
+            boolean spine = Wings.ROLE_SPINE.equals(fillerRole);
+            List<SitePart> halls = weighted(in.kit.fillers(SitePart.Kind.HALLWAY, wing, spine));
+            if (spine) halls.sort(Comparator.comparingInt(h -> h.tagged(SitePart.TAG_SPINE) ? 0 : 1));
+            List<SitePart> stairs = weighted(in.kit.fillers(SitePart.Kind.STAIRWELL, wing, false));
             if (delta != 0 || from.vertical()) {
                 out.addAll(stairs);
                 if (!from.vertical()) out.addAll(halls);
@@ -227,6 +325,24 @@ public final class Assembler {
             }
         }
         return out;
+    }
+
+    /** Wing-themed hallways are only used inside the wing (§4A.6). */
+    private static boolean themed(String role) {
+        return Wings.ROLE_CORRIDOR.equals(role) || Wings.ROLE_SECTION.equals(role);
+    }
+
+    private static boolean stepMet(Step s, SitePart p, Goal goal) {
+        if (p.kind != s.kind() || (p.wing != null && !p.wing.equals(goal.wing))) return false;
+        if (s.tag() == null) return s.kind() != SitePart.Kind.GATE || !p.tagged(SitePart.TAG_SECTION);
+        return p.tagged(s.tag());
+    }
+
+    private boolean filler(SitePart p, Goal goal, String role) {
+        if (p.kind != SitePart.Kind.HALLWAY && p.kind != SitePart.Kind.STAIRWELL) return false;
+        if (p.wing != null && !(themed(role) && p.wing.equals(goal.wing))) return false;
+        for (String t : p.tags) if (!(t.equals(SitePart.TAG_SPINE) && Wings.ROLE_SPINE.equals(role))) return false;
+        return true;
     }
 
     /** Stair connectors first when changing storey, horizontal ones first otherwise. */
@@ -248,7 +364,7 @@ public final class Assembler {
             return null;
         }
         int storey = forcedStorey >= 0 ? forcedStorey : Math.floorDiv(box.y1() - in.baseFloor + SitePart.STOREY / 2, SitePart.STOREY);
-        if (!SiteTypeRules.allowed(in.type, p, storey, p.storeys())) {
+        if (!SiteTypeRules.allowed(in.type, p, storey, p.storeys(), in.basement)) {
             reject = "storey " + storey + " not allowed";
             return null;
         }

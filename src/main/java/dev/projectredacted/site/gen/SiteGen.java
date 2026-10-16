@@ -76,6 +76,7 @@ public final class SiteGen {
         in.kit = PartKit.active();
         in.type = site.type;
         in.seed = seed;
+        in.basement = site.type == SiteType.SURFACE_FLAT && site.containmentBelow;
         int minX = site.minChunkX() * 16 + MARGIN, minZ = site.minChunkZ() * 16 + MARGIN;
         int maxX = (site.minChunkX() + site.claimChunks()) * 16 - 1 - MARGIN, maxZ = (site.minChunkZ() + site.claimChunks()) * 16 - 1 - MARGIN;
         in.bounds = new Box(minX, level.getMinY() + 5, minZ, maxX, level.getMaxY() - 2, maxZ);
@@ -210,7 +211,17 @@ public final class SiteGen {
         return null;
     }
 
-    /** One spot for a room joined to the facility, on the preferred storey if possible. */
+    /** One spot for a room in its wing and section (§4A.5). */
+    public static SitePlan addRoom(Site site, Survey survey, String roomType, SitePart size) {
+        List<SitePlan> spots = Skeleton.spots(site, survey, roomType, size, 1, false);
+        if (!spots.isEmpty()) return spots.get(0);
+        SitePlan failed = new SitePlan();
+        RoomType t = RoomTypes.get(roomType);
+        failed.error = "No free space in the claim for a " + (t == null ? roomType : t.name) + ".";
+        return failed;
+    }
+
+    /** One spot for a room joined to the facility anywhere, on the preferred storey if possible. */
     public static SitePlan addRoom(Site site, Assembler.Input in, String roomType, SitePart size) {
         Integer storey = preferredStorey(site, in);
         if (storey != null) {
@@ -230,6 +241,15 @@ public final class SiteGen {
         if (site.baseFloor == null) site.baseFloor = survey.input().baseFloor;
         site.genSeed = plan.seed;
         int first = site.parts.size();
+        if (plan.wing != null) {
+            Wings.WingState ws = Wings.state(site, plan.wing);
+            if (plan.newWing) ws.founded = true;
+            if (plan.newSection && ws.section(plan.section) == null) {
+                String group = null;
+                for (SitePlan.PlanPart pp : plan.parts) for (String t : pp.part.roomTypes()) if (group == null && Wings.ROLE_ROOM.equals(pp.role)) group = Wings.group(t);
+                ws.sections.add(new Wings.Section(plan.section, group == null ? "Custom" : group));
+            }
+        }
         for (int i = 0; i < plan.parts.size(); i++) {
             SitePlan.PlanPart pp = plan.parts.get(i);
             PlacedPart placed = new PlacedPart();
@@ -241,6 +261,10 @@ public final class SiteGen {
             placed.used = pp.used;
             placed.fast = fast;
             placed.seed = plan.seed + i * 31L;
+            placed.role = pp.role;
+            placed.wing = pp.wing;
+            placed.section = pp.section;
+            placed.entry = pp.entry;
             site.parts.add(placed);
             int index = site.parts.size() - 1;
             addRooms(site, pp, placed, index);
@@ -315,6 +339,9 @@ public final class SiteGen {
             if (type == null) continue;
             r.number = site.nextRoomNumber++;
             r.part = index;
+            r.wing = pp.wing != null && Wings.ROLE_ROOM.equals(pp.role) ? pp.wing : Wings.wingFor(site, r.type);
+            r.section = pp.section;
+            Wings.assign(site, r);
             r.built = false;
             RoomPlanner.name(site, r, type);
             site.rooms.add(r);

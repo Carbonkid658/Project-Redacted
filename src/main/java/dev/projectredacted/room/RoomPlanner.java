@@ -58,6 +58,8 @@ public final class RoomPlanner {
         room.freeform = freeform;
         room.built = freeform;
         name(site, room, type);
+        // The wing it sits in, or its type's wing (§4A.5).
+        dev.projectredacted.site.gen.Wings.assign(site, room);
         site.rooms.add(room);
         s.reset();
         String msg = freeform ? room.displayName() + " registered." : "Construction of " + room.displayName() + " has begun.";

@@ -257,6 +257,8 @@ public final class PartsCommand {
                 if (o.has("kind")) f.kind = o.get("kind").getAsString();
                 if (o.has("room_type")) f.roomType = PartKit.normalize(o.get("room_type").getAsString());
                 if (o.has("weight")) f.weight = o.get("weight").getAsInt();
+                if (o.has("wing")) f.wing = o.get("wing").getAsString();
+                if (o.has("tags") && o.get("tags").isJsonArray()) for (var partTag : o.getAsJsonArray("tags")) f.tags.add(partTag.getAsString());
                 if (o.has("rooms")) {
                     for (var el : o.getAsJsonArray("rooms")) {
                         JsonObject r = el.getAsJsonObject();
@@ -345,7 +347,7 @@ public final class PartsCommand {
                     s.input().kit = kit;
                     List<SitePart> sizes = kit.sizes(t.id);
                     if (sizes.isEmpty()) continue;
-                    SitePlan room = SiteGen.addRoom(site, s.input(), t.id, sizes.get(sizes.size() - 1));
+                    SitePlan room = SiteGen.addRoom(site, s, t.id, sizes.get(sizes.size() - 1));
                     if (!room.ok()) continue;
                     SiteGen.commit(level, site, room, s, false);
                     grown++;
@@ -386,7 +388,7 @@ public final class PartsCommand {
                 s.input().exitOk = (p, d) -> true;
                 List<SitePart> sizes = kit.sizes(t.id);
                 if (sizes.isEmpty()) continue;
-                SitePlan room = SiteGen.addRoom(site, s.input(), t.id, sizes.get(0));
+                SitePlan room = SiteGen.addRoom(site, s, t.id, sizes.get(0));
                 if (!room.ok()) {
                     failed.add(t.name);
                     continue;
@@ -513,7 +515,7 @@ public final class PartsCommand {
             SiteGen.Survey s = SiteGen.survey(level, site, RANDOM.nextLong());
             s.input().exitOk = (p, d) -> true;
             List<SitePart> sizes = PartKit.active().sizes(Expansion.STORAGE_ROOM);
-            SitePlan plan = SiteGen.addRoom(site, s.input(), Expansion.STORAGE_ROOM, sizes.get(sizes.size() - 1));
+            SitePlan plan = SiteGen.addRoom(site, s, Expansion.STORAGE_ROOM, sizes.get(sizes.size() - 1));
             if (!plan.ok()) {
                 say(src, site.type.displayName + ": no space for a Storage Room: " + plan.error, ChatFormatting.RED);
                 continue;

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "#  ",
+    "## ",
+    "###"
+  ],
+  "key": {
+    "#": "projectredacted:blue_tile"
+  },
+  "result": {
+    "id": "projectredacted:blue_tile_stairs",
+    "count": 4
+  }
+}

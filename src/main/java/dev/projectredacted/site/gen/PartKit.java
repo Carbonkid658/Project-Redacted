@@ -58,6 +58,42 @@ public class PartKit {
         return out;
     }
 
+    /**
+     * Hallways and stairwells the assembler may use as in-between parts (§4A.6): untagged hallways anywhere,
+     * wing-themed ones only inside their wing, spine segments only when growing a spine. Tunnels, section doors
+     * and transitions are never fillers; they're placed on purpose.
+     */
+    public List<SitePart> fillers(SitePart.Kind kind, String wing, boolean spine) {
+        List<SitePart> out = new ArrayList<>();
+        for (SitePart p : parts) if (filler(p, kind, wing, spine)) out.add(p);
+        if (out.isEmpty()) for (SitePart p : placeholders()) if (filler(p, kind, wing, spine)) out.add(p);
+        return out;
+    }
+
+    private static boolean filler(SitePart p, SitePart.Kind kind, String wing, boolean spine) {
+        if (p.kind != kind) return false;
+        if (p.wing != null && !p.wing.equals(wing)) return false;
+        for (String t : p.tags) if (!(spine && t.equals(SitePart.TAG_SPINE))) return false;
+        return true;
+    }
+
+    /**
+     * Parts of a kind for one step of a wing's layout (§4A.5): with this tag (or, for a null tag, the plain
+     * version), themed for this wing or for any wing. The placeholder versions if the kit has none.
+     */
+    public List<SitePart> matching(SitePart.Kind kind, String tag, String wing) {
+        List<SitePart> out = new ArrayList<>();
+        for (SitePart p : parts) if (matches(p, kind, tag, wing)) out.add(p);
+        if (out.isEmpty() && tag == null) for (SitePart p : parts) if (p.kind == kind && (p.wing == null || p.wing.equals(wing)) && !p.tagged(SitePart.TAG_SECTION) && !p.tagged(SitePart.TAG_TUNNEL)) out.add(p);
+        if (out.isEmpty()) for (SitePart p : placeholders()) if (matches(p, kind, tag, wing)) out.add(p);
+        return out;
+    }
+
+    private static boolean matches(SitePart p, SitePart.Kind kind, String tag, String wing) {
+        if (p.kind != kind || (p.wing != null && !p.wing.equals(wing))) return false;
+        return tag == null ? p.tags.isEmpty() : p.tagged(tag);
+    }
+
     /** Parts that contain this room type; the placeholder sizes if the kit has none (§2.8). */
     public List<SitePart> forRoom(String roomType) {
         List<SitePart> out = new ArrayList<>();
@@ -189,6 +225,13 @@ public class PartKit {
         p.kind = SitePart.Kind.parse(str(json, "kind", "room"));
         p.roomType = normalize(str(json, "room_type", null));
         p.weight = json.has("weight") ? Math.max(1, json.get("weight").getAsInt()) : 10;
+        String wing = str(json, "wing", null);
+        p.wing = wing == null || wing.isBlank() ? null : wing.trim().toUpperCase(Locale.ROOT);
+        if (json.has("tags")) {
+            JsonElement tags = json.get("tags");
+            if (tags.isJsonArray()) for (JsonElement t : tags.getAsJsonArray()) p.tags.add(t.getAsString().trim().toLowerCase(Locale.ROOT));
+            else for (String t : tags.getAsString().split(",")) if (!t.isBlank()) p.tags.add(t.trim().toLowerCase(Locale.ROOT));
+        }
         p.template = PartTemplate.parse(tag, BuiltInRegistries.BLOCK);
         p.sx = p.template.sx;
         p.sy = p.template.sy;
@@ -296,12 +339,25 @@ public class PartKit {
                 if (exits == 0) out.add("the Entrance needs a surface_exit");
                 if (halls + doors == 0) out.add("the Entrance needs a hall or door going inward");
             }
+            case HUB -> {
+                if (halls < 3) out.add("a hub needs at least three hall openings (it has " + halls + ")");
+            }
+            case GATE -> {
+                if (halls + doors < 2) out.add("a gate needs two openings: the side it's entered from and the side it guards");
+                if (p.readers.isEmpty()) out.add("a gate needs a Keycard Reader; its level is set from the area behind it");
+                if (!p.tagged(SitePart.TAG_SECTION) && p.markers.stream().noneMatch(m -> m.name().startsWith("staff_post")))
+                    out.add("a wing gate needs a staff_post marker for its guard");
+            }
             case ROOM -> {
                 if (halls + doors == 0) out.add("the room has no doorway");
                 if (p.roomTypes().isEmpty()) out.add("no room type: set one in the frame or register the rooms inside");
                 for (String t : p.roomTypes()) if (RoomTypes.get(t) == null) out.add("unknown room type " + t);
             }
         }
+        for (String t : p.tags) if (!SitePart.TAGS.contains(t)) out.add("unknown tag \"" + t + "\" (use section, transition, spine or tunnel)");
+        if ((p.tagged(SitePart.TAG_SPINE) || p.tagged(SitePart.TAG_TUNNEL)) && p.kind != SitePart.Kind.HALLWAY) out.add("spine and tunnel tags are for hallways");
+        if ((p.tagged(SitePart.TAG_SECTION) || p.tagged(SitePart.TAG_TRANSITION)) && p.kind != SitePart.Kind.GATE) out.add("section and transition tags are for gates");
+        if (p.wing != null && Wings.get(p.wing) == null) out.add("unknown wing " + p.wing);
         if (p.roomTypes().contains(RoomTypes.DIRECTORS_OFFICE)) {
             if (p.mainframe == null) out.add("the Director's Office has no Mainframe");
             if (p.terminal == null) out.add("the Director's Office has no Site Director's Computer");
@@ -314,8 +370,9 @@ public class PartKit {
         List<String> out = new ArrayList<>();
         if (!hasOwnPart(RoomTypes.DIRECTORS_OFFICE)) out.add("Director's Office");
         if (!hasOwnPart(RoomTypes.BARRACKS)) out.add("Barracks");
-        boolean entrance = false, hallway = false, stairwell = false;
+        boolean entrance = false, hallway = false, stairwell = false, hub = false;
         for (SitePart p : parts) {
+            hub |= p.kind == SitePart.Kind.HUB;
             entrance |= p.kind == SitePart.Kind.ENTRANCE;
             hallway |= p.kind == SitePart.Kind.HALLWAY;
             stairwell |= p.kind == SitePart.Kind.STAIRWELL;
@@ -323,6 +380,7 @@ public class PartKit {
         if (!entrance) out.add("Entrance");
         if (!hallway) out.add("Hallway");
         if (!stairwell) out.add("Stairwell");
+        if (!hub) out.add("Hub");
         return out;
     }
 

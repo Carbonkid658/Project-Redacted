@@ -15,6 +15,11 @@ public class SitePlan {
         public final int storey;
         /** Connector indexes joined to something. */
         public int used;
+        /** See {@link PlacedPart#role}. */
+        public String role;
+        public String wing;
+        public int section;
+        public int entry = -1;
 
         PlanPart(SitePart part, BlockPos origin, int rot, int storey) {
             this.part = part;
@@ -34,6 +39,12 @@ public class SitePlan {
     public final List<Integer> openedDoorways = new ArrayList<>();
     public long seed;
     public int overwrites;
+    /** The wing and section the room goes into (§4A.5), and whether this plan starts them. */
+    public String wing;
+    public int section;
+    public boolean newWing, newSection;
+    /** "Lab → D Wing, section D-1", for the preview. */
+    public String note;
     /** Why no plan was found, or null. */
     public String error;
 
