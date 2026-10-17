@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/orientable",
-  "textures": {
-    "front": "projectredacted:block/depot_terminal_front",
-    "side": "projectredacted:block/depot_terminal_side",
-    "top": "projectredacted:block/depot_terminal_top"
-  }
-}

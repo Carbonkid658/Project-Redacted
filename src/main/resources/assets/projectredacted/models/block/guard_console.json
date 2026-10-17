@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/orientable",
-  "textures": {
-    "front": "projectredacted:block/guard_console_front",
-    "side": "projectredacted:block/guard_console_side",
-    "top": "projectredacted:block/guard_console_top"
-  }
-}
