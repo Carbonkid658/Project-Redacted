@@ -43,3 +43,9 @@ jobs:
         with:
           name: project-redacted-jar
           path: build/libs/*.jar
+      - name: Post build to Discord
+        if: success() && github.event_name == 'push' && github.ref == 'refs/heads/main'
+        continue-on-error: true
+        run: python3 .github/discord-notify.py
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
